@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TENFALL — Drop. Match. Survive.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --bg: #F6F5F1;
+  --surface: #FFFFFF;
+  --text-primary: #1D1D1F;
+  --text-secondary: #86868B;
+  --text-tertiary: #AEAEB2;
+  --accent-blue: #5CABEB;
+  --accent-purple: #B373D9;
+  --accent-green: #4DD199;
+  --accent-gold: #E6B840;
+  --accent-orange: #E6943A;
+  --tile-1: #3380C7;
+  --tile-2: #278C61;
+  --tile-3: #B88C1A;
+  --tile-4: #E69438;
+  --tile-5: #B373D9;
+  --tile-6: #B866A0;
+  --tile-7: #338C8C;
+  --tile-8: #9E7340;
+  --tile-9: #8C8CBF;
+  --lava: #D93310;
+  --grain-opacity: 0.025;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* ---- Grain Overlay ---- */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  opacity: var(--grain-opacity);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ---- Utility ---- */
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+}
+
+/* ---- Reveal Animations ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Navigation ---- */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0 40px;
+  transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+}
+nav.scrolled {
+  background: rgba(246, 245, 241, 0.82);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 0.5px 0 rgba(0,0,0,0.08);
+}
+nav .nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+}
+nav .wordmark {
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+nav .wordmark span {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+nav .nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+nav .nav-links a {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+nav .nav-links a:hover {
+  color: var(--text-primary);
+}
+nav .download-sm {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--text-primary);
+  padding: 6px 18px;
+  border-radius: 980px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+nav .download-sm:hover {
+  opacity: 0.82;
+}
+
+/* ---- Hero ---- */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 40px 80px;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+  background: rgba(92, 171, 235, 0.08);
+  border: 1px solid rgba(92, 171, 235, 0.15);
+  padding: 6px 16px;
+  border-radius: 980px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: badgeIn 0.8s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero h1 {
+  font-size: clamp(4rem, 12vw, 9rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: headlineIn 1s 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero h1 .gradient-text {
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 50%, var(--accent-orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero .subtitle {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  color: var(--text-secondary);
+  max-width: 440px;
+  margin: 0 auto 44px;
+  line-height: 1.45;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero .cta-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--text-primary);
+  padding: 14px 32px;
+  border-radius: 980px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.btn-secondary {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: none;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  padding: 13px 28px;
+  border-radius: 980px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-secondary:hover {
+  border-color: rgba(0,0,0,0.3);
+  color: var(--text-primary);
+}
+
+/* ---- Phone Mockup ---- */
+.phone-section {
+  padding: 0 40px 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.phone-frame {
+  width: 280px;
+  height: 580px;
+  background: #1E2130;
+  border-radius: 40px;
+  padding: 12px;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.04),
+    0 8px 24px rgba(0,0,0,0.06),
+    0 32px 80px rgba(0,0,0,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  position: relative;
+  opacity: 0;
+  animation: phoneIn 1.2s 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  background: #1E212C;
+  position: relative;
+}
+
+/* Game board simulation inside phone */
+.game-sim {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px 12px;
+}
+
+.game-score-bar {
+  text-align: left;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+.game-score-bar .label {
+  font-size: 7px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.game-score-bar .score {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+.game-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 3px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+.grid-cell {
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.035);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.grid-cell.filled {
+  animation: tilePlace 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.grid-cell.clearing {
+  animation: tileClear 0.5s cubic-bezier(0.55, 0, 0.1, 1) forwards;
+}
+
+.grid-cell.lava {
+  background: linear-gradient(135deg, #8C1A0A, #D93310);
+  color: rgba(255,80,50,0.9);
+  font-size: 11px;
+}
+
+.game-queue {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 0 2px;
+}
+
+.queue-tile {
+  width: 36px;
+  height: 36px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+  opacity: 0.5;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.queue-tile.active {
+  opacity: 1;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 2px var(--accent-blue), 0 0 12px rgba(92,171,235,0.3);
+}
+
+/* ---- Statement Section ---- */
+.statement {
+  padding: 100px 40px 120px;
+  text-align: center;
+}
+
+.statement h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  max-width: 700px;
+  margin: 0 auto 24px;
+}
+
+.statement p {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ---- Mechanic Showcase ---- */
+.mechanics {
+  padding: 40px 40px 140px;
+}
+
+.mechanic-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.mechanic-card {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 48px 40px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.mechanic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+}
+
+.mechanic-card .icon-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.mechanic-card .tile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.95);
+}
+
+.mechanic-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.mechanic-card p {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  max-width: 340px;
+}
+
+.mechanic-card .card-accent {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  opacity: 0.06;
+}
+
+/* Card-specific accents */
+.mechanic-card.card-match .card-accent { background: var(--accent-blue); }
+.mechanic-card.card-powerups .card-accent { background: var(--accent-purple); }
+.mechanic-card.card-lava .card-accent { background: var(--lava); }
+.mechanic-card.card-combos .card-accent { background: var(--accent-gold); }
+
+/* ---- Numbers Strip ---- */
+.number-strip {
+  padding: 80px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.number-track {
+  display: flex;
+  gap: 16px;
+  animation: marquee 30s linear infinite;
+  width: max-content;
+}
+
+.number-track .num {
+  font-size: 5rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  opacity: 0.07;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ---- Feature Callouts ---- */
+.features {
+  padding: 60px 40px 140px;
+}
+
+.feature-row {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  max-width: 960px;
+  margin: 0 auto 120px;
+}
+.feature-row:last-child {
+  margin-bottom: 0;
+}
+.feature-row.reversed {
+  flex-direction: row-reverse;
+}
+
+.feature-visual {
+  flex: 0 0 360px;
+  height: 360px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-visual.vis-cascade {
+  background: linear-gradient(145deg, #1A1D28, #252838);
+}
+.feature-visual.vis-lava {
+  background: linear-gradient(145deg, #2A1410, #1A1D28);
+}
+.feature-visual.vis-leaderboard {
+  background: var(--surface);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Cascade visual: animated tiles */
+.cascade-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  gap: 4px;
+}
+.cascade-tiles .ct {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+  opacity: 0;
+}
+.cascade-tiles .ct.anim {
+  animation: cascadeIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Lava visual */
+.lava-visual-inner {
+  width: 200px;
+  height: 260px;
+  position: relative;
+}
+.lava-col {
+  position: absolute;
+  bottom: 0;
+  width: 38px;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(to top, #D93310, #E65020, #FF7840);
+  opacity: 0.85;
+}
+.lava-col::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: #FF9050;
+  border-radius: 3px;
+  filter: blur(2px);
+}
+
+/* Leaderboard visual */
+.lb-visual-inner {
+  width: 260px;
+  padding: 20px;
+}
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.lb-row:last-child { border-bottom: none; }
+.lb-rank {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  width: 24px;
+}
+.lb-rank.gold { color: var(--accent-gold); }
+.lb-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.lb-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+}
+.lb-score {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  width: 52px;
+  text-align: right;
+}
+
+/* Achievements visual */
+.feature-visual.vis-achievements {
+  background: var(--surface);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.ach-visual-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 240px;
+}
+
+.ach-badge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 12px 16px;
+  border-left: 3px solid transparent;
+}
+
+.ach-badge-info { flex: 1; }
+
+.ach-badge-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.ach-badge-tier {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.ach-check { flex-shrink: 0; }
+.ach-lock { flex-shrink: 0; opacity: 0.35; }
+
+.ach-easy  { border-color: var(--accent-green); }
+.ach-easy  .ach-badge-tier, .ach-easy  .ach-check { color: var(--accent-green); }
+.ach-medium { border-color: var(--accent-blue); }
+.ach-medium .ach-badge-tier, .ach-medium .ach-check { color: var(--accent-blue); }
+.ach-hard  { border-color: var(--accent-purple); }
+.ach-hard  .ach-badge-tier, .ach-hard  .ach-check { color: var(--accent-purple); }
+.ach-legendary { border-color: var(--accent-gold); }
+.ach-legendary .ach-badge-tier { color: var(--accent-gold); }
+
+.feature-text h3 {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.feature-text p {
+  font-size: 1.0625rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.feature-text .feature-tag {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-purple);
+  margin-bottom: 12px;
+}
+
+/* ---- Final CTA ---- */
+.final-cta {
+  text-align: center;
+  padding: 100px 40px 140px;
+  position: relative;
+}
+
+.final-cta h2 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: 20px;
+}
+
+.final-cta .subtitle {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+}
+
+/* ---- Footer ---- */
+footer {
+  padding: 40px;
+  text-align: center;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+footer p {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+footer a:hover {
+  color: var(--text-primary);
+}
+
+/* ---- Keyframes ---- */
+@keyframes badgeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes headlineIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes phoneIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes tilePlace {
+  0%   { opacity: 0; transform: scale(0.5); }
+  60%  { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes tileClear {
+  0%   { opacity: 1; transform: scale(1); }
+  40%  { transform: scale(1.2); opacity: 0.8; }
+  100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes cascadeIn {
+  0%   { opacity: 0; transform: translateY(-20px) scale(0.7); }
+  60%  { transform: translateY(2px) scale(1.05); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .mechanic-grid {
+    grid-template-columns: 1fr;
+  }
+  .feature-row, .feature-row.reversed {
+    flex-direction: column;
+    gap: 40px;
+  }
+  .feature-visual {
+    flex: none;
+    width: 100%;
+    height: 280px;
+  }
+  nav .nav-links {
+    display: none;
+  }
+  .hero {
+    padding: 100px 24px 60px;
+  }
+  .container, .mechanics, .features, .statement, .final-cta {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <div class="wordmark"><span>TENFALL</span></div>
+    <ul class="nav-links">
+      <li><a href="#mechanics">How It Works</a></li>
+      <li><a href="#features">Features</a></li>
+    </ul>
+    <a href="#download" class="download-sm">Download</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+    Available on the App Store
+  </div>
+  <h1><span class="gradient-text">TENFALL.</span></h1>
+  <p class="subtitle">Drop numbered tiles. Make them sum to ten. Survive the rising lava.</p>
+  <div class="cta-group">
+    <a href="#download" class="btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+      Download Free
+    </a>
+    <a href="#mechanics" class="btn-secondary">See how it works</a>
+  </div>
+</section>
+
+<!-- Phone Mockup -->
+<section class="phone-section">
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="game-sim">
+        <div class="game-score-bar">
+          <div class="label">Score</div>
+          <div class="score" id="simScore">2,470</div>
+        </div>
+        <div class="game-grid" id="gameGrid"></div>
+        <div class="game-queue" id="gameQueue"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Statement -->
+<section class="statement">
+  <div class="container reveal">
+    <h2>Simple to learn.<br>Impossible to put down.</h2>
+    <p>Every tile drop is a decision. Every clear cascades into the next. The lava never stops rising. How long can you last?</p>
+  </div>
+</section>
+
+<!-- Mechanics Grid -->
+<section class="mechanics" id="mechanics">
+  <div class="mechanic-grid">
+    <div class="mechanic-card card-match reveal">
+      <div class="card-accent"></div>
+      <div class="icon-row">
+        <div class="tile-icon" style="background:var(--tile-3)">3</div>
+        <div class="tile-icon" style="background:var(--tile-7)">7</div>
+        <div style="display:flex;align-items:center;font-size:1.25rem;font-weight:700;color:var(--accent-blue)">=&nbsp;10</div>
+      </div>
+      <h3>Match to Ten</h3>
+      <p>Adjacent tiles that sum to 10 clear from the board. Chain multiple clears in a single drop for massive cascading combos.</p>
+    </div>
+
+    <div class="mechanic-card card-powerups reveal">
+      <div class="card-accent"></div>
+      <div class="icon-row">
+        <div class="tile-icon" style="background:var(--tile-5)">?</div>
+        <div class="tile-icon" style="background:var(--accent-orange)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+        <div class="tile-icon" style="background:var(--tile-2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+      </div>
+      <h3>Five Powerups</h3>
+      <p>Wild, Laser, Time Bomb, Glitch, and Re-roll — each reshapes the board differently. Unlock them by triggering hidden combos, then evolve them to max level for even stronger effects.</p>
+    </div>
+
+    <div class="mechanic-card card-lava reveal">
+      <div class="card-accent"></div>
+      <div class="icon-row">
+        <div class="tile-icon" style="background:linear-gradient(135deg, #8C1A0A, #D93310)">0</div>
+        <div class="tile-icon" style="background:linear-gradient(135deg, #8C1A0A, #D93310)">0</div>
+        <div class="tile-icon" style="background:linear-gradient(135deg, #8C1A0A, #D93310)">0</div>
+      </div>
+      <h3>Rising Lava</h3>
+      <p>Zero rows erupt from below, devouring playable space. Shatter them before the board fills up, or the game is over.</p>
+    </div>
+
+    <div class="mechanic-card card-combos reveal">
+      <div class="card-accent"></div>
+      <div class="icon-row">
+        <div style="font-size:1.75rem;line-height:1">
+          <span style="opacity:0.25">x</span><span style="font-weight:800;color:var(--accent-gold)">3</span>
+        </div>
+      </div>
+      <h3>40+ Hidden Combos</h3>
+      <p>Two parallel combo tracks fire every move — one for clear patterns (Perfect Ten), one for board state (Imaginary &amp; Irrational). Each combo levels up to 10 through repeated triggers. Most unlock or evolve a powerup.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Number Strip -->
+<div class="number-strip" aria-hidden="true">
+  <div class="number-track">
+    <span class="num">1 + 9 = 10</span>
+    <span class="num">2 + 8 = 10</span>
+    <span class="num">3 + 7 = 10</span>
+    <span class="num">4 + 6 = 10</span>
+    <span class="num">5 + 5 = 10</span>
+    <span class="num">6 + 4 = 10</span>
+    <span class="num">7 + 3 = 10</span>
+    <span class="num">8 + 2 = 10</span>
+    <span class="num">9 + 1 = 10</span>
+    <!-- duplicate for seamless loop -->
+    <span class="num">1 + 9 = 10</span>
+    <span class="num">2 + 8 = 10</span>
+    <span class="num">3 + 7 = 10</span>
+    <span class="num">4 + 6 = 10</span>
+    <span class="num">5 + 5 = 10</span>
+    <span class="num">6 + 4 = 10</span>
+    <span class="num">7 + 3 = 10</span>
+    <span class="num">8 + 2 = 10</span>
+    <span class="num">9 + 1 = 10</span>
+  </div>
+</div>
+
+<!-- Feature Callouts -->
+<section class="features" id="features">
+
+  <div class="feature-row reveal">
+    <div class="feature-visual vis-cascade">
+      <div class="cascade-tiles" id="cascadeTiles"></div>
+    </div>
+    <div class="feature-text">
+      <div class="feature-tag">Cascades</div>
+      <h3>One drop.<br>Chain reaction.</h3>
+      <p>When tiles clear, everything above falls. New adjacencies form. New tens appear. A single well-placed tile can cascade through the entire board.</p>
+    </div>
+  </div>
+
+  <div class="feature-row reversed reveal">
+    <div class="feature-visual vis-lava">
+      <div class="lava-visual-inner" id="lavaVisual"></div>
+    </div>
+    <div class="feature-text">
+      <div class="feature-tag" style="color:var(--lava)">Lava Mechanics</div>
+      <h3>The clock is<br>always ticking.</h3>
+      <p>Every few moves, molten lava rises from below — filling the bottom row with immovable zeros. Shatter them with precision, or watch your board shrink to nothing.</p>
+    </div>
+  </div>
+
+  <div class="feature-row reveal">
+    <div class="feature-visual vis-leaderboard">
+      <div class="lb-visual-inner">
+        <div class="lb-row"><span class="lb-rank gold">#1</span><div class="lb-bar"><div class="lb-bar-fill" style="width:100%"></div></div><span class="lb-score">12,840</span></div>
+        <div class="lb-row"><span class="lb-rank gold">#2</span><div class="lb-bar"><div class="lb-bar-fill" style="width:78%"></div></div><span class="lb-score">9,920</span></div>
+        <div class="lb-row"><span class="lb-rank gold">#3</span><div class="lb-bar"><div class="lb-bar-fill" style="width:61%"></div></div><span class="lb-score">7,810</span></div>
+        <div class="lb-row"><span class="lb-rank">#4</span><div class="lb-bar"><div class="lb-bar-fill" style="width:48%"></div></div><span class="lb-score">6,150</span></div>
+        <div class="lb-row"><span class="lb-rank">#5</span><div class="lb-bar"><div class="lb-bar-fill" style="width:35%"></div></div><span class="lb-score">4,490</span></div>
+      </div>
+    </div>
+    <div class="feature-text">
+      <div class="feature-tag" style="color:var(--accent-gold)">Recap &amp; Compete</div>
+      <h3>Every game<br>tells a story.</h3>
+      <p>A full session recap after every run — combos triggered, powerups used, clears, and duration. Then compare on the leaderboard and chase your personal best.</p>
+    </div>
+  </div>
+
+
+  <div class="feature-row reversed reveal">
+    <div class="feature-visual vis-achievements">
+      <div class="ach-visual-inner">
+        <div class="ach-badge ach-easy">
+          <div class="ach-badge-info">
+            <div class="ach-badge-name">Graduate</div>
+            <div class="ach-badge-tier">Easy</div>
+          </div>
+          <svg class="ach-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="ach-badge ach-medium">
+          <div class="ach-badge-info">
+            <div class="ach-badge-name">Combo Breaker</div>
+            <div class="ach-badge-tier">Medium</div>
+          </div>
+          <svg class="ach-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="ach-badge ach-hard">
+          <div class="ach-badge-info">
+            <div class="ach-badge-name">Power Trip</div>
+            <div class="ach-badge-tier">Hard</div>
+          </div>
+          <svg class="ach-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="ach-badge ach-legendary">
+          <div class="ach-badge-info">
+            <div class="ach-badge-name">TENFALL Legend</div>
+            <div class="ach-badge-tier">Legendary</div>
+          </div>
+          <div class="ach-lock">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="feature-text">
+      <div class="feature-tag" style="color:var(--accent-purple)">Achievements</div>
+      <h3>Earn your stripes.<br>All four tiers.</h3>
+      <p>Achievements across Easy, Medium, Hard, and Legendary tiers. Trigger every combo, max out every powerup, survive the longest runs. The hardest ones take a long time to see.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta" id="download">
+  <div class="reveal">
+    <h2><span class="gradient-text">TENFALL.</span><br>Stay alive.</h2>
+    <p class="subtitle">Free on iPhone and iPad.</p>
+    <a href="#" class="btn-primary" style="font-size:1.125rem;padding:16px 40px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+      Download on the App Store
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2026 TENFALL. <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+</footer>
+
+<script>
+// ---- Nav scroll effect ----
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ---- Reveal on scroll ----
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el => revealObs.observe(el));
+
+// ---- Game Simulation ----
+const TILE_COLORS = {
+  1: '#3380C7', 2: '#278C61', 3: '#B88C1A', 4: '#E69438',
+  5: '#B373D9', 6: '#B866A0', 7: '#338C8C', 8: '#9E7340', 9: '#8C8CBF'
+};
+
+function setupGameSim() {
+  const grid = document.getElementById('gameGrid');
+  const queue = document.getElementById('gameQueue');
+
+  // Build 50 cells
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 5; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'grid-cell';
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+      grid.appendChild(cell);
+    }
+  }
+
+  // Build queue
+  const queueNums = [4, 7, 2, 8, 5];
+  queueNums.forEach((n, i) => {
+    const t = document.createElement('div');
+    t.className = 'queue-tile' + (i === 0 ? ' active' : '');
+    t.textContent = n;
+    t.style.background = TILE_COLORS[n];
+    queue.appendChild(t);
+  });
+
+  // Pre-place some tiles for visual interest
+  const preset = [
+    [9, 0, 3], [9, 1, 7], [9, 3, 6], [9, 4, 2],
+    [8, 0, 8], [8, 2, 1], [8, 4, 5],
+    [7, 1, 4], [7, 3, 9],
+    [6, 2, 3],
+  ];
+
+  // Lava rows at bottom
+  const lavaRows = [];
+
+  preset.forEach(([r, c, n]) => {
+    const idx = r * 5 + c;
+    const cell = grid.children[idx];
+    cell.textContent = n;
+    cell.style.background = TILE_COLORS[n];
+    cell.classList.add('filled');
+  });
+
+  // Animate tiles appearing with stagger
+  let delay = 800;
+  preset.forEach(([r, c, n], i) => {
+    const idx = r * 5 + c;
+    const cell = grid.children[idx];
+    cell.style.opacity = '0';
+    cell.style.animationDelay = (delay + i * 120) + 'ms';
+  });
+
+  // Periodically simulate a clear
+  setInterval(() => {
+    const filled = [...grid.querySelectorAll('.grid-cell.filled')];
+    if (filled.length >= 2) {
+      const pair = filled.slice(0, 2);
+      pair.forEach(c => {
+        c.classList.remove('filled');
+        c.classList.add('clearing');
+        setTimeout(() => {
+          c.classList.remove('clearing');
+          c.textContent = '';
+          c.style.background = 'rgba(255,255,255,0.035)';
+          c.style.opacity = '1';
+        }, 500);
+      });
+
+      // Re-add new tiles after a pause
+      setTimeout(() => {
+        pair.forEach(c => {
+          const n = Math.floor(Math.random() * 9) + 1;
+          c.textContent = n;
+          c.style.background = TILE_COLORS[n];
+          c.classList.add('filled');
+        });
+      }, 1200);
+    }
+  }, 3500);
+}
+
+setupGameSim();
+
+// ---- Cascade animation ----
+function setupCascade() {
+  const container = document.getElementById('cascadeTiles');
+  const tiles = [
+    [6, 4, 3], [7, '', 7], ['', '', '']
+  ];
+  const colors = { 3: '#B88C1A', 4: '#E69438', 6: '#B866A0', 7: '#338C8C' };
+
+  tiles.flat().forEach((n, i) => {
+    const t = document.createElement('div');
+    t.className = 'ct';
+    if (n !== '') {
+      t.textContent = n;
+      t.style.background = colors[n] || 'rgba(255,255,255,0.08)';
+    } else {
+      t.style.background = 'rgba(255,255,255,0.04)';
+    }
+    container.appendChild(t);
+  });
+
+  // Trigger animation when visible
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const cts = container.querySelectorAll('.ct');
+        cts.forEach((ct, i) => {
+          if (ct.textContent) {
+            ct.style.animationDelay = (i * 100) + 'ms';
+            ct.classList.add('anim');
+          } else {
+            ct.style.opacity = '0.5';
+          }
+        });
+
+        // Simulate clear after tiles appear
+        setTimeout(() => {
+          // 6+4 = 10 clear
+          cts[0].classList.add('clearing');
+          cts[1].classList.add('clearing');
+          setTimeout(() => {
+            cts[0].style.opacity = '0';
+            cts[1].style.opacity = '0';
+            // cascade: 3 and 7 fall down
+            setTimeout(() => {
+              cts[0].textContent = '3';
+              cts[0].style.background = colors[3];
+              cts[0].style.opacity = '1';
+              cts[0].classList.remove('clearing');
+              cts[0].classList.remove('anim');
+              void cts[0].offsetWidth;
+              cts[0].classList.add('anim');
+
+              cts[1].textContent = '7';
+              cts[1].style.background = colors[7];
+              cts[1].style.opacity = '1';
+              cts[1].classList.remove('clearing');
+              cts[1].classList.remove('anim');
+              void cts[1].offsetWidth;
+              cts[1].classList.add('anim');
+
+              // Now 3+7=10, clear again
+              setTimeout(() => {
+                cts[0].classList.add('clearing');
+                cts[1].classList.add('clearing');
+              }, 800);
+            }, 400);
+          }, 500);
+        }, 1400);
+
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  obs.observe(container);
+}
+setupCascade();
+
+// ---- Lava columns ----
+function setupLava() {
+  const container = document.getElementById('lavaVisual');
+  const heights = [65, 85, 100, 75, 55];
+  heights.forEach((h, i) => {
+    const col = document.createElement('div');
+    col.className = 'lava-col';
+    col.style.left = (i * 40 + 2) + 'px';
+    col.style.height = '0px';
+    container.appendChild(col);
+
+    // Animate on scroll
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          setTimeout(() => {
+            col.style.transition = 'height 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            col.style.height = h + 'px';
+          }, i * 150);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    obs.observe(container);
+  });
+}
+setupLava();
+
+// ---- Score counter animation ----
+const scoreEl = document.getElementById('simScore');
+let currentScore = 2470;
+setInterval(() => {
+  const add = Math.floor(Math.random() * 80) + 10;
+  currentScore += add;
+  scoreEl.textContent = currentScore.toLocaleString();
+}, 3500);
+</script>
+</body>
+</html>
