@@ -572,30 +572,29 @@ nav .download-sm:hover {
   animation: cascadeIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* Lava visual */
-.lava-visual-inner {
-  width: 200px;
-  height: 260px;
-  position: relative;
+/* Zeros visual */
+.zeros-visual-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 48px);
+  grid-template-rows: repeat(5, 48px);
+  gap: 5px;
 }
-.lava-col {
-  position: absolute;
-  bottom: 0;
-  width: 38px;
-  border-radius: 6px 6px 0 0;
-  background: linear-gradient(to top, #D93310, #E65020, #FF7840);
-  opacity: 0.85;
+
+.z-cell {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.035);
+  transition: background 0.5s ease, color 0.5s ease;
 }
-.lava-col::after {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: #FF9050;
-  border-radius: 3px;
-  filter: blur(2px);
+
+.z-zero {
+  background: linear-gradient(135deg, #8C1A0A, #D93310) !important;
+  color: rgba(255,80,50,0.9) !important;
 }
 
 /* Leaderboard visual */
@@ -841,7 +840,7 @@ footer a:hover {
     Available on the App Store
   </div>
   <h1><span class="gradient-text">TENFALL.</span></h1>
-  <p class="subtitle">Drop numbered tiles. Make them sum to ten. Survive the rising lava.</p>
+  <p class="subtitle">Drop numbered tiles. Match the rising target. Don't let the zeros take over.</p>
   <div class="cta-group">
     <a href="#download" class="btn-primary">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
@@ -871,7 +870,7 @@ footer a:hover {
 <section class="statement">
   <div class="container reveal">
     <h2>Simple to learn.<br>Impossible to put down.</h2>
-    <p>Every tile drop is a decision. Every clear cascades into the next. The lava never stops rising. How long can you last?</p>
+    <p>Every tile drop is a decision. Every clear cascades into the next. The target keeps rising. How long can you last?</p>
   </div>
 </section>
 
@@ -881,12 +880,15 @@ footer a:hover {
     <div class="mechanic-card card-match reveal">
       <div class="card-accent"></div>
       <div class="icon-row">
-        <div class="tile-icon" style="background:var(--tile-3)">3</div>
-        <div class="tile-icon" style="background:var(--tile-7)">7</div>
-        <div style="display:flex;align-items:center;font-size:1.25rem;font-weight:700;color:var(--accent-blue)">=&nbsp;10</div>
+        <div class="tile-icon" style="background:var(--tile-4)">4</div>
+        <div class="tile-icon" style="background:var(--tile-8)">9</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:1.25rem;font-weight:700;color:var(--accent-blue)">=&nbsp;13</span>
+          <span style="font-size:1.125rem;font-weight:800;color:var(--accent-green)">↑</span>
+        </div>
       </div>
-      <h3>Match to Ten</h3>
-      <p>Adjacent tiles that sum to 10 clear from the board. Chain multiple clears in a single drop for massive cascading combos.</p>
+      <h3>Match the Target</h3>
+      <p>Adjacent tiles that sum to the current target clear from the board. The target rises as you play, demanding bigger, bolder combinations. Chain multiple clears for massive cascades.</p>
     </div>
 
     <div class="mechanic-card card-powerups reveal">
@@ -911,8 +913,8 @@ footer a:hover {
         <div class="tile-icon" style="background:linear-gradient(135deg, #8C1A0A, #D93310)">0</div>
         <div class="tile-icon" style="background:linear-gradient(135deg, #8C1A0A, #D93310)">0</div>
       </div>
-      <h3>Rising Lava</h3>
-      <p>Zero rows erupt from below, devouring playable space. Shatter them before the board fills up, or the game is over.</p>
+      <h3>Zero Tiles</h3>
+      <p>Zero tiles can't be cleared by matching — they're inert and they crowd your board. Use powerups to remove them, or work around them. Let them pile up and you'll run out of space.</p>
     </div>
 
     <div class="mechanic-card card-combos reveal">
@@ -931,25 +933,25 @@ footer a:hover {
 <!-- Number Strip -->
 <div class="number-strip" aria-hidden="true">
   <div class="number-track">
-    <span class="num">1 + 9 = 10</span>
-    <span class="num">2 + 8 = 10</span>
-    <span class="num">3 + 7 = 10</span>
-    <span class="num">4 + 6 = 10</span>
-    <span class="num">5 + 5 = 10</span>
-    <span class="num">6 + 4 = 10</span>
-    <span class="num">7 + 3 = 10</span>
-    <span class="num">8 + 2 = 10</span>
-    <span class="num">9 + 1 = 10</span>
+    <span class="num">TARGET 10</span>
+    <span class="num">TARGET 11</span>
+    <span class="num">TARGET 12</span>
+    <span class="num">TARGET 13</span>
+    <span class="num">TARGET 14</span>
+    <span class="num">TARGET 15</span>
+    <span class="num">TARGET 16</span>
+    <span class="num">TARGET 17</span>
+    <span class="num">TARGET 18</span>
     <!-- duplicate for seamless loop -->
-    <span class="num">1 + 9 = 10</span>
-    <span class="num">2 + 8 = 10</span>
-    <span class="num">3 + 7 = 10</span>
-    <span class="num">4 + 6 = 10</span>
-    <span class="num">5 + 5 = 10</span>
-    <span class="num">6 + 4 = 10</span>
-    <span class="num">7 + 3 = 10</span>
-    <span class="num">8 + 2 = 10</span>
-    <span class="num">9 + 1 = 10</span>
+    <span class="num">TARGET 10</span>
+    <span class="num">TARGET 11</span>
+    <span class="num">TARGET 12</span>
+    <span class="num">TARGET 13</span>
+    <span class="num">TARGET 14</span>
+    <span class="num">TARGET 15</span>
+    <span class="num">TARGET 16</span>
+    <span class="num">TARGET 17</span>
+    <span class="num">TARGET 18</span>
   </div>
 </div>
 
@@ -963,18 +965,18 @@ footer a:hover {
     <div class="feature-text">
       <div class="feature-tag">Cascades</div>
       <h3>One drop.<br>Chain reaction.</h3>
-      <p>When tiles clear, everything above falls. New adjacencies form. New tens appear. A single well-placed tile can cascade through the entire board.</p>
+      <p>When tiles clear, everything above falls. New adjacencies form. New matches appear. A single well-placed tile can cascade through the entire board.</p>
     </div>
   </div>
 
   <div class="feature-row reversed reveal">
     <div class="feature-visual vis-lava">
-      <div class="lava-visual-inner" id="lavaVisual"></div>
+      <div class="zeros-visual-inner" id="zerosVisual"></div>
     </div>
     <div class="feature-text">
-      <div class="feature-tag" style="color:var(--lava)">Lava Mechanics</div>
-      <h3>The clock is<br>always ticking.</h3>
-      <p>Every few moves, molten lava rises from below — filling the bottom row with immovable zeros. Shatter them with precision, or watch your board shrink to nothing.</p>
+      <div class="feature-tag" style="color:var(--lava)">Zero Tiles</div>
+      <h3>They never go<br>away on their own.</h3>
+      <p>Zero tiles are inert — they can't be cleared by matching and they sit exactly where they land. As they accumulate, your usable board shrinks. Use powerups to remove them before they take over.</p>
     </div>
   </div>
 
@@ -1243,33 +1245,71 @@ function setupCascade() {
 }
 setupCascade();
 
-// ---- Lava columns ----
-function setupLava() {
-  const container = document.getElementById('lavaVisual');
-  const heights = [65, 85, 100, 75, 55];
-  heights.forEach((h, i) => {
-    const col = document.createElement('div');
-    col.className = 'lava-col';
-    col.style.left = (i * 40 + 2) + 'px';
-    col.style.height = '0px';
-    container.appendChild(col);
+// ---- Zeros spreading ----
+function setupZeros() {
+  const container = document.getElementById('zerosVisual');
+  // 4 cols x 5 rows — null = empty cell
+  const phase1 = [
+     3,  7,  1,  4,
+     6,null,  8,  2,
+  null,  5, null, 9,
+     0, null, 7, null,
+  null, null, null, null
+  ];
+  const phase2 = [
+     3,  7,  1,  4,
+     6,  0,  8,  2,
+     0,  5,  0,  9,
+     0,  0,  7,  0,
+     0,  0,  0,  0
+  ];
 
-    // Animate on scroll
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          setTimeout(() => {
-            col.style.transition = 'height 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            col.style.height = h + 'px';
-          }, i * 150);
-          obs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    obs.observe(container);
+  const cells = [];
+  phase1.forEach(() => {
+    const c = document.createElement('div');
+    c.className = 'z-cell';
+    container.appendChild(c);
+    cells.push(c);
   });
+
+  function setCell(idx, val) {
+    const c = cells[idx];
+    if (val === 0) {
+      c.textContent = '0';
+      c.classList.add('z-zero');
+    } else if (val === null) {
+      c.textContent = '';
+      c.style.background = '';
+      c.classList.remove('z-zero');
+    } else {
+      c.textContent = val;
+      c.style.background = TILE_COLORS[val] || 'rgba(255,255,255,0.1)';
+      c.classList.remove('z-zero');
+    }
+  }
+
+  let running = false;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !running) {
+        running = true;
+        phase1.forEach((v, i) => setCell(i, v));
+
+        setTimeout(() => {
+          phase2.forEach((v, i) => {
+            if (v !== phase1[i]) {
+              setTimeout(() => setCell(i, v), Math.floor(i / 4) * 200);
+            }
+          });
+        }, 1200);
+
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  obs.observe(container);
 }
-setupLava();
+setupZeros();
 
 // ---- Score counter animation ----
 const scoreEl = document.getElementById('simScore');
