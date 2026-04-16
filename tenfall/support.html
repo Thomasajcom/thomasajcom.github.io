@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — TENFALL</title>
+<meta name="description" content="Support, FAQ, and contact for Tenfall, an iOS puzzle game.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --bg: #F6F5F1;
+  --surface: #FFFFFF;
+  --text-primary: #1D1D1F;
+  --text-secondary: #86868B;
+  --text-tertiary: #AEAEB2;
+  --accent-blue: #5CABEB;
+  --accent-purple: #B373D9;
+  --accent-orange: #E6943A;
+  --accent-gold: #E6B840;
+  --grain-opacity: 0.025;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  opacity: var(--grain-opacity);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ---- Navigation ---- */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0 40px;
+  transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+}
+nav.scrolled {
+  background: rgba(246, 245, 241, 0.82);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 0.5px 0 rgba(0,0,0,0.08);
+}
+nav .nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+}
+nav .wordmark {
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+nav .wordmark span {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+nav .nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  align-items: center;
+}
+nav .nav-links a {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+nav .nav-links a:hover {
+  color: var(--text-primary);
+}
+
+/* ---- Page container ---- */
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 140px 40px 80px;
+}
+
+/* ---- Page header ---- */
+.page-header {
+  margin-bottom: 40px;
+}
+.eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 980px;
+  background: rgba(179, 115, 217, 0.16);
+  color: var(--accent-purple);
+  margin-bottom: 20px;
+}
+h1 {
+  font-size: clamp(2.25rem, 5.5vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.meta {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* ---- Prose ---- */
+.prose h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 48px 0 12px;
+  color: var(--text-primary);
+}
+.prose p { margin: 12px 0; color: var(--text-primary); }
+.prose ul, .prose ol { margin: 12px 0 16px; padding-left: 24px; }
+.prose li { margin: 6px 0; }
+.prose a {
+  color: var(--accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-thickness 0.15s;
+}
+.prose a:hover { text-decoration-thickness: 2px; }
+.prose code {
+  background: rgba(29, 29, 31, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+/* ---- Contact card ---- */
+.contact-card {
+  background: var(--surface);
+  border: 1px solid rgba(29, 29, 31, 0.08);
+  border-left: 3px solid var(--accent-purple);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 24px 0 36px;
+}
+.contact-card strong { color: var(--accent-purple); }
+
+/* ---- Details / FAQ ---- */
+details {
+  border-bottom: 1px solid rgba(29, 29, 31, 0.08);
+  padding: 18px 0;
+}
+details:first-of-type { border-top: 1px solid rgba(29, 29, 31, 0.08); }
+summary {
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  list-style: none;
+  padding-right: 28px;
+  position: relative;
+  color: var(--text-primary);
+  transition: color 0.15s;
+}
+summary:hover { color: var(--accent-purple); }
+summary::-webkit-details-marker { display: none; }
+summary::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--accent-purple);
+  border-bottom: 2px solid var(--accent-purple);
+  transform: translateY(-75%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+details[open] summary::after {
+  transform: translateY(-25%) rotate(-135deg);
+}
+details > p,
+details > ul,
+details > ol {
+  margin-top: 10px;
+  color: var(--text-primary);
+}
+
+/* ---- Links section ---- */
+.links-list { list-style: none; padding-left: 0; margin: 12px 0; }
+.links-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(29, 29, 31, 0.06);
+}
+.links-list li:last-child { border-bottom: none; }
+
+/* ---- Footer ---- */
+footer {
+  max-width: 1120px;
+  margin: 60px auto 0;
+  padding: 40px;
+  text-align: center;
+  border-top: 1px solid rgba(29, 29, 31, 0.06);
+}
+footer p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 6px 0;
+}
+footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+footer a:hover { color: var(--text-primary); }
+footer .footer-links {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 14px;
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  nav .nav-links { gap: 18px; }
+  main { padding: 120px 22px 60px; }
+  .page-header { margin-bottom: 28px; }
+  .prose h2 { font-size: 1.25rem; margin-top: 36px; }
+  summary { font-size: 0.9375rem; }
+  footer { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/tenfall/" class="wordmark">TEN<span>FALL</span></a>
+    <ul class="nav-links">
+      <li><a href="/tenfall/">Home</a></li>
+      <li><a href="/tenfall/privacy.html">Privacy</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <header class="page-header">
+    <span class="eyebrow">Support</span>
+    <h1>Tenfall Support</h1>
+    <p class="meta">Everything you need to play, fix, or contact me about TENFALL.</p>
+  </header>
+
+  <!-- USER: confirm hello@thomasaj.com is the correct contact email -->
+  <div class="contact-card">
+    <strong>Need help fast?</strong> Email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a>. I'm the solo developer and I answer every message.
+  </div>
+
+  <div class="prose">
+
+    <h2>How to play</h2>
+    <p>Tenfall is a quick puzzle about making sums of ten.</p>
+    <ol>
+      <li><strong>Numbers fall</strong> onto the board from the top.</li>
+      <li><strong>Drag across adjacent tiles</strong> to connect numbers that sum to the target (ten).</li>
+      <li><strong>Clear tiles</strong> to score points and keep the board from filling up.</li>
+      <li><strong>Trigger combos</strong> by clearing with specific patterns or shapes &mdash; each one you discover unlocks a new entry in the Combo book.</li>
+      <li><strong>Use powerups</strong> earned at clear, round, and score milestones to break out of tight spots.</li>
+    </ol>
+    <p>Game ends when no more moves are possible. Chase your high score, level up combos (every 10 triggers bumps a combo one level, up to Lv.10), and unlock all the hidden ones.</p>
+
+    <h2>Frequently asked questions</h2>
+
+    <details>
+      <summary>How do I remove ads?</summary>
+      <p>Open <strong>Settings &rarr; Remove Ads</strong> inside the app and complete the one-time in-app purchase ($3.99 USD or local equivalent). Once the transaction goes through, interstitial ads no longer appear. The purchase is tied to your Apple ID and works on any device signed in to the same ID. Rewarded ads (the optional "watch to continue" or "watch for a free powerup" prompts) stay available &mdash; they're opt-in, so Remove Ads doesn't silence them.</p>
+    </details>
+
+    <details>
+      <summary>How do I restore purchases?</summary>
+      <p>Open <strong>Settings &rarr; Restore Purchases</strong>. This re-checks your Apple ID with the App Store and re-applies the "Remove Ads" entitlement if you've previously purchased it. Make sure you're signed in to the same Apple ID you used for the original purchase.</p>
+    </details>
+
+    <details>
+      <summary>How do I see my combos?</summary>
+      <p>Tap the <strong>Secrets</strong> tab from the main menu. Combos you've never triggered appear as Lv.0 silhouettes. The first time you trigger one, it unlocks to Lv.1. Every additional 10 triggers bumps the level by one, all the way up to Lv.10.</p>
+    </details>
+
+    <details>
+      <summary>Why can't I see the leaderboard?</summary>
+      <p>Leaderboards use Apple Game Center. If you're not signed in, go to <strong>iOS Settings &rarr; Game Center</strong> and sign in with your Apple ID. Once Game Center is active, the leaderboard becomes available inside Tenfall and your scores start syncing.</p>
+    </details>
+
+    <details>
+      <summary>Is my progress synced across devices?</summary>
+      <p><strong>Local save data</strong> (current run, settings, unlocked combos, lifetime stats) is stored per-device and doesn't sync. <strong>Game Center scores and achievements</strong> do sync across any device signed in to the same Apple ID. If you uninstall the app, local progress is lost; Game Center progress persists.</p>
+    </details>
+
+    <details>
+      <summary>I bought "Remove Ads" but I still see interstitials. What now?</summary>
+      <p>Three quick checks:</p>
+      <ol>
+        <li>Confirm you're signed in with the same Apple ID that made the purchase.</li>
+        <li>Tap <strong>Settings &rarr; Restore Purchases</strong>.</li>
+        <li>Force-quit and relaunch the app.</li>
+      </ol>
+      <p>If ads still appear, email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a> with your device model, iOS version, and approximate purchase date and I'll sort it.</p>
+    </details>
+
+    <details>
+      <summary>How do I opt out of personalized ads?</summary>
+      <p>Go to <strong>iOS Settings &rarr; Privacy &amp; Security &rarr; Tracking</strong> and turn off tracking for Tenfall (or for all apps). Ads still appear, but they'll be contextual (non-personalized) rather than based on your device's IDFA. If you prefer no interstitials at all, purchase "Remove Ads" &mdash; that silences them entirely. You can also revisit your consent choices any time via <strong>Settings &rarr; Manage Consent</strong> inside the app.</p>
+    </details>
+
+    <details>
+      <summary>What data does Tenfall collect?</summary>
+      <p>Tenfall itself stores game data locally on your device and has no server. Optional third parties (Apple Game Center, Apple StoreKit, Google AdMob) process specific data under their own policies. Full details: see the <a href="/tenfall/privacy.html">Privacy Policy</a>.</p>
+    </details>
+
+    <details>
+      <summary>How do I reset my progress?</summary>
+      <p>Open <strong>Settings &rarr; Reset</strong> inside the app. This clears lifetime stats, unlocked combos, and high scores stored on the device. Game Center scores and achievements are handled by Apple &mdash; to reset those, see Apple's <a href="https://support.apple.com/game-center" target="_blank" rel="noopener">Game Center support</a>.</p>
+    </details>
+
+    <details>
+      <summary>How do I report a bug or crash?</summary>
+      <p>Email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a> with:</p>
+      <ul>
+        <li>Device model (e.g., iPhone 15 Pro) and iOS version.</li>
+        <li>Tenfall version (from <strong>Settings &rarr; About</strong>).</li>
+        <li>Steps that triggered the problem, or what you were doing when it happened.</li>
+        <li>A screenshot or screen recording if you can grab one.</li>
+      </ul>
+      <p>I'll follow up directly.</p>
+    </details>
+
+    <details>
+      <summary>Does Tenfall work offline?</summary>
+      <p>Yes. Gameplay, local stats, combos, and settings all work fully offline. Game Center score submission and in-app purchase restoration need a network connection. Ads (if you haven't purchased "Remove Ads") require a connection to load; if you're offline, the slot is skipped.</p>
+    </details>
+
+    <details>
+      <summary>Can I request a feature?</summary>
+      <p>Please do. I'm a solo developer and I read every email. Features that fit the game's minimal, chill vibe get highest priority.</p>
+    </details>
+
+    <h2>Contact</h2>
+    <div class="contact-card">
+      <p><strong>Email:</strong> <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a></p>
+      <p><strong>Developer:</strong> Thomas A Johansen (solo indie).</p>
+      <p><strong>Response time:</strong> usually a couple of business days, sometimes same day.</p>
+    </div>
+
+    <h2>Links</h2>
+    <!-- USER: replace [APP-STORE-ID] once App Store listing is created -->
+    <ul class="links-list">
+      <li><a href="/tenfall/">Tenfall home</a></li>
+      <li><a href="https://apps.apple.com/app/[APP-STORE-ID]">Tenfall on the App Store</a></li>
+      <li><a href="/tenfall/privacy.html">Privacy Policy</a></li>
+    </ul>
+
+  </div>
+</main>
+
+<footer>
+  <ul class="footer-links">
+    <li><a href="/tenfall/">Home</a></li>
+    <li><a href="/tenfall/privacy.html">Privacy</a></li>
+  </ul>
+  <p>&copy; 2026 TENFALL &middot; Thomas A Johansen</p>
+</footer>
+
+<script>
+  const nav = document.querySelector('nav');
+  const applyScroll = () => {
+    if (window.scrollY > 10) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  applyScroll();
+  window.addEventListener('scroll', applyScroll, { passive: true });
+</script>
+
+</body>
+</html>

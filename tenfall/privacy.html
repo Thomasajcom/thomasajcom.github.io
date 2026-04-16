@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — TENFALL</title>
+<meta name="description" content="Privacy Policy for Tenfall, an iOS puzzle game by Thomas A Johansen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --bg: #F6F5F1;
+  --surface: #FFFFFF;
+  --text-primary: #1D1D1F;
+  --text-secondary: #86868B;
+  --text-tertiary: #AEAEB2;
+  --accent-blue: #5CABEB;
+  --accent-purple: #B373D9;
+  --accent-orange: #E6943A;
+  --accent-gold: #E6B840;
+  --grain-opacity: 0.025;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  opacity: var(--grain-opacity);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ---- Navigation ---- */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0 40px;
+  transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+}
+nav.scrolled {
+  background: rgba(246, 245, 241, 0.82);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 0.5px 0 rgba(0,0,0,0.08);
+}
+nav .nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+}
+nav .wordmark {
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+nav .wordmark span {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+nav .nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  align-items: center;
+}
+nav .nav-links a {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+nav .nav-links a:hover {
+  color: var(--text-primary);
+}
+
+/* ---- Page container ---- */
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 140px 40px 80px;
+}
+
+/* ---- Page header ---- */
+.page-header {
+  margin-bottom: 40px;
+}
+.eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 980px;
+  background: rgba(92, 171, 235, 0.14);
+  color: var(--accent-blue);
+  margin-bottom: 20px;
+}
+h1 {
+  font-size: clamp(2.25rem, 5.5vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.meta {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+.meta strong {
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+/* ---- Prose ---- */
+.prose h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 48px 0 12px;
+  color: var(--text-primary);
+}
+.prose h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 28px 0 8px;
+  color: var(--text-primary);
+}
+.prose p {
+  margin: 12px 0;
+  color: var(--text-primary);
+}
+.prose ul,
+.prose ol {
+  margin: 12px 0 16px;
+  padding-left: 24px;
+}
+.prose li {
+  margin: 6px 0;
+}
+.prose a {
+  color: var(--accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-thickness 0.15s;
+}
+.prose a:hover {
+  text-decoration-thickness: 2px;
+}
+.prose code {
+  background: rgba(29, 29, 31, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+}
+.prose em { font-style: italic; }
+
+/* ---- TL;DR callout ---- */
+.tldr {
+  background: var(--surface);
+  border: 1px solid rgba(29, 29, 31, 0.08);
+  border-left: 3px solid var(--accent-blue);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 24px 0 36px;
+}
+.tldr strong { color: var(--accent-blue); }
+
+/* ---- Footer ---- */
+footer {
+  max-width: 1120px;
+  margin: 60px auto 0;
+  padding: 40px 40px 40px;
+  text-align: center;
+  border-top: 1px solid rgba(29, 29, 31, 0.06);
+}
+footer p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 6px 0;
+}
+footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+footer a:hover { color: var(--text-primary); }
+footer .footer-links {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 14px;
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  nav .nav-links { gap: 18px; }
+  main { padding: 120px 22px 60px; }
+  .page-header { margin-bottom: 28px; }
+  .prose h2 { font-size: 1.25rem; margin-top: 36px; }
+  .prose h3 { font-size: 1.0625rem; }
+  footer { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/tenfall/" class="wordmark">TEN<span>FALL</span></a>
+    <ul class="nav-links">
+      <li><a href="/tenfall/">Home</a></li>
+      <li><a href="/tenfall/support.html">Support</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <header class="page-header">
+    <span class="eyebrow">Privacy</span>
+    <h1>Privacy Policy</h1>
+    <p class="meta">TENFALL for iOS &middot; Effective date: <strong>April 16, 2026</strong></p>
+  </header>
+
+  <div class="prose">
+
+    <!-- USER: confirm hello@thomasaj.com is the correct contact email -->
+    <p>Hi, I'm Thomas A Johansen, the solo developer behind Tenfall. I wrote this policy myself in plain English because I want you to actually understand what the app does (and doesn't do) with your data. If anything here is unclear, email me: <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a>.</p>
+
+    <div class="tldr">
+      <strong>TL;DR:</strong> Tenfall stores your game progress locally on your device. It does not have a server. Optional features — Game Center leaderboards, StoreKit purchases, and Google AdMob ads — send data to Apple or Google under their own policies. Tenfall does not run custom analytics and does not sell your data.
+    </div>
+
+    <h2>1. Who we are</h2>
+    <p>Tenfall is developed and published by Thomas A Johansen (an individual / solo indie developer). The app's bundle identifier is <code>com.thomasaj.tenfall</code>. For any privacy question, contact <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a>.</p>
+
+    <h2>2. What data Tenfall stores on your device</h2>
+    <p>The following is stored <em>locally</em> on your iPhone or iPad and is never transmitted to any server I operate (I don't operate one):</p>
+    <ul>
+      <li>Game progress: current round, score, board state, and unlocked combos.</li>
+      <li>Lifetime stats: totals like rounds played, combos triggered, and powerups used.</li>
+      <li>Preferences: theme, sound/music volume, haptics, reduce motion, and similar settings.</li>
+      <li>High scores and best runs.</li>
+    </ul>
+    <p>This data lives in <code>UserDefaults</code> (via SwiftUI's <code>@AppStorage</code>) and the app's sandboxed Documents folder. It is included in your iCloud device backup only if you have Apple's device backup enabled — that's an Apple feature, not a Tenfall feature.</p>
+
+    <h2>3. What data Tenfall does <em>not</em> collect</h2>
+    <ul>
+      <li>No account system. No email, password, username, or sign-up.</li>
+      <li>No contacts, photos, microphone, camera, location, calendar, or health data.</li>
+      <li>No custom analytics SDK (no Firebase Analytics, Mixpanel, Amplitude, etc.).</li>
+      <li>No crash reporter that sends data off-device. System diagnostics stay on your device (see &sect;4.3).</li>
+      <li>No social-login or friends graph. No newsletter signup.</li>
+    </ul>
+
+    <h2>4. Third-party services</h2>
+    <p>Tenfall integrates four Apple and Google services. Each only runs when the conditions below are met, and each is governed by the third party's own privacy policy.</p>
+
+    <h3>4.1 Apple Game Center (optional)</h3>
+    <p>If you are signed in to Game Center on your device, Tenfall submits your scores and achievement progress to Apple via <code>GKLeaderboard</code> and <code>GKAchievement</code>. Apple handles that data under the <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple Privacy Policy</a>. If you aren't signed in, no scores are submitted.</p>
+
+    <h3>4.2 Apple StoreKit (for the "Remove Ads" in-app purchase)</h3>
+    <p>Tenfall offers one non-consumable purchase: <strong>Remove Ads</strong> ($3.99 USD, or the local equivalent set by Apple). Apple processes the transaction end-to-end; Tenfall receives only a non-revealing entitlement confirming the purchase. Apple's handling is governed by the <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple Privacy Policy</a>.</p>
+
+    <h3>4.3 Apple MetricKit (on-device diagnostics)</h3>
+    <p>Tenfall uses Apple's <code>MetricKit</code> and <code>OSLog</code> to record local diagnostic signals (crashes, hangs, frame pacing). These are written to the system log on your device. They are not exfiltrated to any server run by Tenfall or to any third-party analytics vendor. If you choose to share diagnostics with Apple in iOS Settings, Apple may receive them under its own policy.</p>
+
+    <h3>4.4 Google AdMob (ads between rounds)</h3>
+    <p>Tenfall shows interstitial ads between some rounds, and optional rewarded ads when you choose to watch one. Both are served by the Google AdMob SDK. AdMob receives information from your device necessary to serve ads — for example approximate device type, OS version, coarse country, and ad interaction signals. With your permission via Apple's App Tracking Transparency prompt (see &sect;5), AdMob may also use your device's Advertising Identifier (IDFA) to show personalized ads. Without that permission, AdMob serves contextual (non-personalized) ads only.</p>
+    <p>Google's handling of ad-network data is governed by the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a> and the <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google Ads &amp; Measurement policy</a>. If you purchase "Remove Ads," no interstitial ad requests are made. Rewarded ads remain available for opt-in use.</p>
+
+    <h2>5. App Tracking Transparency (ATT)</h2>
+    <p>The first time Tenfall is about to request an ad, iOS shows Apple's standard App Tracking Transparency prompt. It asks whether you allow Tenfall (and its ad partner, Google AdMob) to track you across apps and websites owned by other companies using your device's IDFA.</p>
+    <ul>
+      <li><strong>If you allow:</strong> AdMob may use your IDFA to show personalized ads.</li>
+      <li><strong>If you ask app not to track:</strong> AdMob serves contextual (non-personalized) ads. Ads still appear; they just aren't targeted using your identifier.</li>
+    </ul>
+    <p>You can change this any time in <strong>iOS Settings &rarr; Privacy &amp; Security &rarr; Tracking</strong>.</p>
+
+    <h2>6. Your rights</h2>
+    <p>Because Tenfall stores game data locally and operates no server, most privacy requests map cleanly to actions you control from your device. Depending on where you live, you may also have additional rights under GDPR (EU/UK), CCPA/CPRA (California), or similar laws.</p>
+    <ul>
+      <li><strong>Access:</strong> All Tenfall data I hold is already on your device. I have no additional copy.</li>
+      <li><strong>Deletion / erasure:</strong> Deleting the Tenfall app from your device erases all locally stored game data. To delete Game Center scores and achievements, use the Game Center resetting options in iOS Settings or <a href="https://support.apple.com/game-center" target="_blank" rel="noopener">contact Apple</a>. To reset your ad profile with Google, see the <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google Ads Settings</a>.</li>
+      <li><strong>Opt-out of ad tracking:</strong> Use the iOS Tracking setting above, or purchase "Remove Ads" to disable interstitials entirely.</li>
+      <li><strong>Portability / rectification / objection:</strong> Because no server-side profile exists, these don't practically apply to data held by Tenfall. For data held by Apple or Google, use their respective tools.</li>
+      <li><strong>Do Not Sell or Share (California):</strong> Tenfall does not sell or share personal information for cross-context behavioral advertising in the CCPA/CPRA sense, other than the AdMob ad requests you control via the ATT prompt.</li>
+    </ul>
+    <p>To exercise any right or ask a question, email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a>. I'll reply personally, usually within a few business days.</p>
+
+    <h2>7. Children</h2>
+    <p>Tenfall is rated 9+ on the App Store and is designed to be family-friendly. Tenfall does not knowingly collect personal information from anyone, including children under 13 (or the equivalent minimum age in your jurisdiction). If a parent or guardian believes a child has interacted with Tenfall in a way that warrants review, please contact me at the address above and I'll act promptly.</p>
+
+    <h2>8. Data retention</h2>
+    <p>Tenfall itself retains nothing server-side (no server). Locally, game data persists until you delete the app or reset it from the in-app settings. Apple (Game Center, StoreKit) and Google (AdMob) retain data under their own policies linked above.</p>
+
+    <h2>9. International data transfers</h2>
+    <p>Tenfall does not transfer personal data internationally. Apple and Google operate globally; when they process data on your behalf (Game Center sync, ad serving, payment processing), that data may be handled in data centers outside your country under those companies' own safeguards (e.g., Standard Contractual Clauses and equivalent mechanisms).</p>
+
+    <h2>10. Changes to this policy</h2>
+    <p>If this policy changes materially — for example, if I add a new SDK or a new data flow — I'll update the effective date at the top of this page and, where practical, flag the change in the app's release notes. Minor wording edits won't always bump the effective date.</p>
+
+    <h2>11. Contact</h2>
+    <p>Email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a>. I read everything, and as a solo developer, I'm the person who replies.</p>
+
+  </div>
+</main>
+
+<footer>
+  <ul class="footer-links">
+    <li><a href="/tenfall/">Home</a></li>
+    <li><a href="/tenfall/support.html">Support</a></li>
+  </ul>
+  <p>&copy; 2026 TENFALL &middot; Thomas A Johansen</p>
+</footer>
+
+<script>
+  const nav = document.querySelector('nav');
+  const applyScroll = () => {
+    if (window.scrollY > 10) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  applyScroll();
+  window.addEventListener('scroll', applyScroll, { passive: true });
+</script>
+
+</body>
+</html>
