@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — Atten</title>
+<meta name="description" content="Support, FAQ, and contact for Atten, an iOS puzzle game.">
+<meta name="theme-color" content="#F4F1E8">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://thomasaj.com/Atten/support.html">
+<meta property="og:title" content="Support — Atten">
+<meta property="og:description" content="Everything you need to play, fix, or contact me about Atten.">
+<meta property="og:image" content="https://thomasaj.com/Atten/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Atten">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Support — Atten">
+<meta name="twitter:description" content="Everything you need to play, fix, or contact me about Atten.">
+<meta name="twitter:image" content="https://thomasaj.com/Atten/assets/og-image.png">
+
+<!-- Icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="/Atten/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/Atten/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/Atten/assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --bg: #F4F1E8;
+  --surface: #FFFFFF;
+  --text-primary: #1D1D1F;
+  --text-secondary: #6F6E74;
+  --text-tertiary: #A6A4AC;
+  --gold-top: #F4D47A;
+  --gold-mid: #C89838;
+  --gold-bot: #8A6420;
+  --plum: #B373D9;
+  --grain-opacity: 0.025;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  opacity: var(--grain-opacity);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ---- Nav ---- */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 40px;
+  transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+}
+nav.scrolled {
+  background: rgba(244, 241, 232, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 0.5px 0 rgba(0,0,0,0.08);
+}
+nav .nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+nav .wordmark {
+  font-weight: 900;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+nav .wordmark .stop {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+nav .nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  align-items: center;
+}
+nav .nav-links a {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+nav .nav-links a:hover { color: var(--text-primary); }
+
+/* ---- Page ---- */
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 140px 40px 80px;
+}
+
+.page-header { margin-bottom: 40px; }
+.eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 980px;
+  background: rgba(179, 115, 217, 0.16);
+  color: var(--plum);
+  margin-bottom: 20px;
+}
+h1 {
+  font-size: clamp(2.25rem, 5.5vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.meta {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* ---- Prose ---- */
+.prose h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 48px 0 12px;
+  color: var(--text-primary);
+}
+.prose p { margin: 12px 0; color: var(--text-primary); }
+.prose ul, .prose ol { margin: 12px 0 16px; padding-left: 24px; }
+.prose li { margin: 6px 0; }
+.prose a {
+  color: var(--gold-mid);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-thickness 0.15s;
+}
+.prose a:hover { text-decoration-thickness: 2px; }
+.prose code {
+  background: rgba(29, 29, 31, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+/* ---- Contact card ---- */
+.contact-card {
+  background: var(--surface);
+  border: 1px solid rgba(29, 29, 31, 0.08);
+  border-left: 3px solid var(--plum);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 24px 0 36px;
+}
+.contact-card strong { color: var(--plum); }
+
+/* ---- FAQ details ---- */
+details {
+  border-bottom: 1px solid rgba(29, 29, 31, 0.08);
+  padding: 18px 0;
+}
+details:first-of-type { border-top: 1px solid rgba(29, 29, 31, 0.08); }
+summary {
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  list-style: none;
+  padding-right: 28px;
+  position: relative;
+  color: var(--text-primary);
+  transition: color 0.15s;
+}
+summary:hover { color: var(--gold-mid); }
+summary::-webkit-details-marker { display: none; }
+summary::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--gold-mid);
+  border-bottom: 2px solid var(--gold-mid);
+  transform: translateY(-75%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+details[open] summary::after { transform: translateY(-25%) rotate(-135deg); }
+details > p,
+details > ul,
+details > ol {
+  margin-top: 10px;
+  color: var(--text-primary);
+}
+
+/* ---- Links section ---- */
+.links-list { list-style: none; padding-left: 0; margin: 12px 0; }
+.links-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(29, 29, 31, 0.06);
+}
+.links-list li:last-child { border-bottom: none; }
+
+/* ---- Footer ---- */
+footer {
+  max-width: 1120px;
+  margin: 60px auto 0;
+  padding: 40px;
+  text-align: center;
+  border-top: 1px solid rgba(29, 29, 31, 0.06);
+}
+footer p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 6px 0;
+}
+footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+footer a:hover { color: var(--text-primary); }
+footer .footer-links {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 14px;
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  nav .nav-links { gap: 18px; }
+  main { padding: 120px 22px 60px; }
+  .page-header { margin-bottom: 28px; }
+  .prose h2 { font-size: 1.25rem; margin-top: 36px; }
+  summary { font-size: 0.9375rem; }
+  footer { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/Atten/" class="wordmark">a<span class="stop">t</span>t<span class="stop">e</span>n</a>
+    <ul class="nav-links">
+      <li><a href="/Atten/">Home</a></li>
+      <li><a href="/Atten/privacy.html">Privacy</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <header class="page-header">
+    <span class="eyebrow">Support</span>
+    <h1>Atten Support</h1>
+    <p class="meta">Everything you need to play, fix, or contact me about Atten.</p>
+  </header>
+
+  <div class="contact-card">
+    <strong>Need help fast?</strong> Email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a>. I'm the solo developer and I answer every message.
+  </div>
+
+  <div class="prose">
+
+    <h2>How to play</h2>
+    <p><em>Atten</em> is Norwegian for <em>eighteen</em>. The whole game is about making them.</p>
+    <ol>
+      <li><strong>Numbers fall</strong> from the top — values 1 through 9.</li>
+      <li><strong>When a tile lands on another</strong>, they merge if their sum is 18 or less. So 7 dropping onto 3 becomes 10. 9 onto 9 becomes 18 — a <em>charged</em> gold tile.</li>
+      <li><strong>Charged 18s don't merge</strong>. Instead, when two of them sit next to each other, they both clear and the tiles above fall in. Set up chains and a single drop can ripple through the board.</li>
+      <li><strong>Tap to split</strong> the active tile across two columns. <strong>Swipe down to slam</strong>. <strong>Swipe left or right</strong> to slide the whole board (when sliding is enabled in Settings).</li>
+      <li><strong>Long-press</strong> a charged 18 to lock it in place once the board has grown — locked tiles don't slide or clear, useful for protecting a corner.</li>
+      <li><strong>Hit all the gold goal cells</strong> with 18s at the same time and the board explodes into a jackpot — the grid grows by one in each dimension, all the way up to 9×9.</li>
+    </ol>
+    <p>The game ends when the spawn column gets fully blocked. Watch a rewarded ad for one continue per run, or reset and chase the high score again.</p>
+
+    <h2>Modes</h2>
+    <p>Three ways to play, all on the same core rules:</p>
+    <ul>
+      <li><strong>Classic.</strong> Random seed, endless run. Score and growth are uncapped — the board climbs from 4×5 to 9×9 as you keep landing jackpots.</li>
+      <li><strong>Daily Puzzle.</strong> A new fixed seed every day. Same board for everyone. One attempt per device. Build a daily streak to unlock the 7-day achievement.</li>
+      <li><strong>Infinite.</strong> Pick your board size and goal-cell layout up front. No game-over. Best for putting the game down whenever you like.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+
+    <details>
+      <summary>How do I remove ads?</summary>
+      <p>Open <strong>Settings &rarr; Support &rarr; Remove Ads</strong> inside the app and complete the one-time in-app purchase ($2.99 USD or local equivalent). Once the transaction goes through, interstitial ads no longer appear. The purchase is tied to your Apple ID and works on any device signed in to the same ID, including Family Sharing. <strong>Rewarded ads</strong> (the optional "watch to continue" prompt on game-over) stay available — they're opt-in, so Remove Ads doesn't silence them.</p>
+    </details>
+
+    <details>
+      <summary>How do I restore purchases?</summary>
+      <p>Open <strong>Settings &rarr; Support &rarr; Restore Purchases</strong>. This re-checks your Apple ID with the App Store and re-applies the Remove Ads entitlement if you've previously purchased it. Make sure you're signed in to the same Apple ID you used for the original purchase.</p>
+    </details>
+
+    <details>
+      <summary>Why is the Daily Puzzle locked / says "Done"?</summary>
+      <p>Daily Puzzle is one attempt per device per day. After you finish today's puzzle, the tile shows your score for the day. A fresh puzzle drops at midnight in your local time zone — you can tap the locked tile to jump straight to the day's leaderboard.</p>
+    </details>
+
+    <details>
+      <summary>How do I keep my Daily streak alive?</summary>
+      <p>Play and finish the Daily Puzzle on consecutive calendar days (your local time zone). Miss a day and the streak resets to 1 next time you play. Streaks of 7, 30, and longer are tracked under your stats; the 7-day streak unlocks a Game Center achievement.</p>
+    </details>
+
+    <details>
+      <summary>Where can I see my scores?</summary>
+      <p>Three places. <strong>Settings &rarr; Statistics</strong> shows your local lifetime totals. <strong>Main menu &rarr; Leaderboard</strong> shows recent runs stored on your device. <strong>Main menu &rarr; Game Center</strong> opens the Apple-native leaderboards and achievements view, including the global Classic and Daily boards.</p>
+    </details>
+
+    <details>
+      <summary>Why can't I see the leaderboard?</summary>
+      <p>Leaderboards use Apple Game Center. If you're not signed in, go to <strong>iOS Settings &rarr; Game Center</strong> and sign in with your Apple ID. Once Game Center is active, your runs start syncing automatically and the floating Game Center badge appears on the main menu.</p>
+    </details>
+
+    <details>
+      <summary>Is my progress synced across devices?</summary>
+      <p><strong>Local save data</strong> (current run, settings, stats, Daily history) is stored per-device and doesn't sync. <strong>Game Center scores and achievements</strong> sync across any device signed in to the same Apple ID. <strong>Remove Ads</strong> is restorable on every device with the same Apple ID. If you uninstall the app, local progress is lost; Game Center progress persists.</p>
+    </details>
+
+    <details>
+      <summary>I bought "Remove Ads" but I still see interstitials. What now?</summary>
+      <p>Three quick checks:</p>
+      <ol>
+        <li>Confirm you're signed in with the same Apple ID that made the purchase.</li>
+        <li>Tap <strong>Settings &rarr; Support &rarr; Restore Purchases</strong>.</li>
+        <li>Force-quit and relaunch the app.</li>
+      </ol>
+      <p>If ads still appear, email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a> with your device model, iOS version, and approximate purchase date and I'll sort it.</p>
+    </details>
+
+    <details>
+      <summary>How do I opt out of personalized ads?</summary>
+      <p>Go to <strong>iOS Settings &rarr; Privacy &amp; Security &rarr; Tracking</strong> and turn off tracking for Atten (or for all apps). Ads still appear, but they'll be contextual (non-personalized) rather than based on your device's IDFA. If you prefer no interstitials at all, purchase "Remove Ads" — that silences them entirely. EU/UK players can re-open Google's UMP consent flow any time from <strong>Settings &rarr; Manage Consent</strong>.</p>
+    </details>
+
+    <details>
+      <summary>How do I turn the Daily Puzzle reminder on or off?</summary>
+      <p>Open <strong>Settings &rarr; Daily Puzzle &rarr; Daily Reminder</strong>. The toggle requests notification permission the first time you enable it. To change the reminder hour, tap the time picker in the same section. The reminder fires once a day at your chosen time and is automatically suppressed for the rest of the day after you complete that day's puzzle.</p>
+    </details>
+
+    <details>
+      <summary>What data does Atten collect?</summary>
+      <p>Atten itself stores game data locally on your device and has no server. Optional third parties (Apple Game Center, Apple StoreKit, Google AdMob) process specific data under their own policies. Full details: see the <a href="/Atten/privacy.html">Privacy Policy</a>.</p>
+    </details>
+
+    <details>
+      <summary>How do I reset my progress?</summary>
+      <p>Open <strong>Settings &rarr; Data Management</strong>. Three buttons let you reset just the leaderboard, just the stats, or all data. Game Center scores and achievements are handled by Apple — to reset those, see Apple's <a href="https://support.apple.com/game-center" target="_blank" rel="noopener">Game Center support</a>.</p>
+    </details>
+
+    <details>
+      <summary>How do I report a bug or crash?</summary>
+      <p>Email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a> with:</p>
+      <ul>
+        <li>Device model (e.g., iPhone 15 Pro) and iOS version.</li>
+        <li>Atten version (from <strong>Settings &rarr; About</strong>).</li>
+        <li>Steps that triggered the problem, or what you were doing when it happened.</li>
+        <li>A screenshot or screen recording if you can grab one.</li>
+        <li>If the bug is in Daily Puzzle, the date — that pins down the seed.</li>
+      </ul>
+      <p>I'll follow up directly.</p>
+    </details>
+
+    <details>
+      <summary>Does Atten work offline?</summary>
+      <p>Yes. Gameplay, local stats, Daily Puzzle, and settings all work fully offline. Game Center score submission and in-app purchase restoration need a network connection. Ads (if you haven't purchased "Remove Ads") require a connection to load; if you're offline, the slot is skipped.</p>
+    </details>
+
+    <details>
+      <summary>What's the difference between the two themes?</summary>
+      <p><strong>Midnight Forge</strong> is a dark theme with neon glow on charged 18s. <strong>Studio Daylight</strong> is a warm ivory light theme with no glow. Both are free, both ship in v1, and both can be picked from <strong>Settings &rarr; Appearance</strong>. Atten also follows your system Light/Dark setting if you choose Auto.</p>
+    </details>
+
+    <details>
+      <summary>Can I request a feature?</summary>
+      <p>Please do. I'm a solo developer and I read every email. Features that fit Atten's minimal, clean vibe get highest priority.</p>
+    </details>
+
+    <h2>Contact</h2>
+    <div class="contact-card">
+      <p><strong>Email:</strong> <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a></p>
+      <p><strong>Developer:</strong> Thomas A Johansen (solo indie).</p>
+      <p><strong>Response time:</strong> usually a couple of business days, sometimes same day.</p>
+    </div>
+
+    <h2>Links</h2>
+    <ul class="links-list">
+      <li><a href="/Atten/">Atten home</a></li>
+      <li><a href="https://apps.apple.com/app/[APP-STORE-ID]">Atten on the App Store</a> <em>(coming soon)</em></li>
+      <li><a href="/Atten/privacy.html">Privacy Policy</a></li>
+    </ul>
+
+  </div>
+</main>
+
+<footer>
+  <ul class="footer-links">
+    <li><a href="/Atten/">Home</a></li>
+    <li><a href="/Atten/privacy.html">Privacy</a></li>
+  </ul>
+  <p>&copy; 2026 Atten &middot; Thomas A Johansen</p>
+</footer>
+
+<script>
+  const nav = document.querySelector('nav');
+  const applyScroll = () => {
+    if (window.scrollY > 10) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  applyScroll();
+  window.addEventListener('scroll', applyScroll, { passive: true });
+</script>
+
+</body>
+</html>

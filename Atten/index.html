@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATTEN — Drop. Merge. Eighteen.</title>
+<meta name="description" content="A clean, addictive falling-tile puzzle for iPhone and iPad. Drop numbers 1–9. Merge them up. Reach 18 — atten — and watch the cascades.">
+<meta name="theme-color" content="#F4F1E8">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thomasaj.com/Atten/">
+<meta property="og:title" content="Atten — Drop. Merge. Eighteen.">
+<meta property="og:description" content="A clean falling-tile puzzle for iPhone and iPad. Drop 1–9. Merge them up. Reach 18 — atten — and watch the chain reactions.">
+<meta property="og:image" content="https://thomasaj.com/Atten/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The atten wordmark with sample tiles showing 9 + 9 = 18 cascading into a chain.">
+<meta property="og:site_name" content="Atten">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Atten — Drop. Merge. Eighteen.">
+<meta name="twitter:description" content="A clean falling-tile puzzle for iPhone and iPad. Drop 1–9. Merge them up. Reach 18 — atten — and watch the chain reactions.">
+<meta name="twitter:image" content="https://thomasaj.com/Atten/assets/og-image.png">
+
+<!-- Icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="/Atten/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/Atten/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/Atten/assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --bg: #F4F1E8;
+  --surface: #FFFFFF;
+  --night: #1A1B22;
+  --night-2: #23242E;
+  --text-primary: #1D1D1F;
+  --text-secondary: #6F6E74;
+  --text-tertiary: #A6A4AC;
+
+  /* Atten gold — the 18 hero color */
+  --gold-top: #F4D47A;
+  --gold-mid: #C89838;
+  --gold-bot: #8A6420;
+  --gold-text: #3A2810;
+
+  /* Accents */
+  --teal: #338C8C;
+  --plum: #B373D9;
+  --amber: #E69A3A;
+  --ember: #E04A2A;
+
+  /* Tile palette (matches the in-game ivory tile fills) */
+  --tile-fill-light: #F1EBDA;
+  --tile-fill-dark: #2F2F38;
+  --tile-text-light: #2F2A1F;
+  --tile-text-dark: #EFE7CD;
+
+  --grain-opacity: 0.025;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  opacity: var(--grain-opacity);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.container { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+
+/* Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ---- Nav ---- */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 40px;
+  transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+}
+nav.scrolled {
+  background: rgba(244, 241, 232, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 0.5px 0 rgba(0,0,0,0.08);
+}
+nav .nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+nav .wordmark {
+  font-weight: 900;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+nav .wordmark .stop {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+nav .nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+nav .nav-links a {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+nav .nav-links a:hover { color: var(--text-primary); }
+nav .download-sm {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--text-primary);
+  padding: 6px 18px;
+  border-radius: 980px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+nav .download-sm:hover { opacity: 0.82; }
+
+/* ---- Hero ---- */
+.hero {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 40px 60px;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-mid);
+  background: rgba(200, 152, 56, 0.10);
+  border: 1px solid rgba(200, 152, 56, 0.22);
+  padding: 6px 16px;
+  border-radius: 980px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: badgeIn 0.8s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero h1 {
+  font-size: clamp(4.5rem, 14vw, 11rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 0.88;
+  margin-bottom: 18px;
+  opacity: 0;
+  animation: headlineIn 1s 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero h1 .gold {
+  background: linear-gradient(135deg, var(--gold-top) 0%, var(--gold-mid) 55%, var(--gold-bot) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero .subtitle {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: clamp(1.125rem, 2.4vw, 1.5rem);
+  color: var(--text-secondary);
+  max-width: 460px;
+  margin: 0 auto 14px;
+  line-height: 1.45;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero .word-translation {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 36px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero .cta-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--text-primary);
+  padding: 14px 32px;
+  border-radius: 980px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-top) 0%, var(--gold-mid) 60%, var(--gold-bot) 100%);
+  color: var(--gold-text);
+  box-shadow: 0 4px 16px rgba(200, 152, 56, 0.25);
+}
+.btn-gold:hover {
+  box-shadow: 0 8px 30px rgba(200, 152, 56, 0.35);
+}
+
+.btn-secondary {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: none;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  padding: 13px 28px;
+  border-radius: 980px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-secondary:hover {
+  border-color: rgba(0,0,0,0.32);
+  color: var(--text-primary);
+}
+
+/* ---- Phone Mockup ---- */
+.phone-section {
+  padding: 0 40px 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.phone-frame {
+  width: 280px;
+  height: 580px;
+  background: #0E0F14;
+  border-radius: 40px;
+  padding: 12px;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.05),
+    0 8px 24px rgba(0,0,0,0.08),
+    0 32px 80px rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  position: relative;
+  opacity: 0;
+  animation: phoneIn 1.2s 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #14161E 0%, #1A1C26 100%);
+  position: relative;
+}
+
+.game-sim {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 14px 16px;
+}
+
+.sim-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+  padding: 0 6px;
+}
+.sim-hud .label {
+  font-size: 7px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.sim-hud .score {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--gold-top);
+  line-height: 1.1;
+}
+.sim-hud .right { text-align: right; }
+.sim-hud .right .num {
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.85);
+}
+
+.sim-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 4px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.sim-cell {
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--tile-text-dark);
+  background: rgba(255,255,255,0.025);
+  position: relative;
+  transition: background 0.5s ease, color 0.5s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sim-cell.tile {
+  background: var(--tile-fill-dark);
+  color: var(--tile-text-dark);
+  animation: tilePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.sim-cell.gold {
+  background: linear-gradient(135deg, var(--gold-top) 0%, var(--gold-mid) 60%, var(--gold-bot) 100%);
+  color: var(--gold-text);
+  box-shadow: 0 0 16px rgba(244, 212, 122, 0.4);
+}
+
+.sim-cell.golden-cell::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(244, 212, 122, 0.45);
+  pointer-events: none;
+}
+
+.sim-cell.clearing {
+  animation: tileClear 0.5s cubic-bezier(0.55, 0, 0.1, 1) forwards;
+}
+
+.sim-queue {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0 4px;
+}
+
+.sim-queue .label {
+  font-size: 7px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
+.queue-tile {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  background: var(--tile-fill-dark);
+  color: var(--tile-text-dark);
+  opacity: 0.85;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.queue-tile.active {
+  transform: scale(1.1);
+  opacity: 1;
+  box-shadow: 0 0 0 2px rgba(244, 212, 122, 0.55), 0 0 14px rgba(244, 212, 122, 0.25);
+}
+
+/* ---- Statement ---- */
+.statement {
+  padding: 80px 40px 100px;
+  text-align: center;
+}
+.statement h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  max-width: 760px;
+  margin: 0 auto 24px;
+}
+.statement h2 .ital {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.statement p {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ---- Mechanics Grid ---- */
+.mechanics {
+  padding: 30px 40px 130px;
+}
+.mechanic-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.mechanic-card {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 44px 36px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.mechanic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.07);
+}
+.mechanic-card .icon-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.mechanic-card .tile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  background: var(--tile-fill-dark);
+  color: var(--tile-text-dark);
+}
+.mechanic-card .tile-icon.gold {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  color: var(--gold-text);
+}
+.mechanic-card .plus, .mechanic-card .equals {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+}
+.mechanic-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.mechanic-card p {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  max-width: 360px;
+}
+.mechanic-card .card-accent {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  opacity: 0.06;
+}
+.mechanic-card.card-merge .card-accent { background: var(--teal); }
+.mechanic-card.card-eighteen .card-accent { background: var(--gold-mid); opacity: 0.10; }
+.mechanic-card.card-cascade .card-accent { background: var(--plum); }
+.mechanic-card.card-modes .card-accent { background: var(--amber); }
+
+/* ---- Number marquee ---- */
+.number-strip {
+  padding: 80px 0;
+  overflow: hidden;
+  position: relative;
+  background: var(--surface);
+  border-top: 1px solid rgba(0,0,0,0.04);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.number-track {
+  display: flex;
+  gap: 18px;
+  animation: marquee 38s linear infinite;
+  width: max-content;
+}
+.number-track .num {
+  font-size: 5rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  opacity: 0.06;
+  white-space: nowrap;
+  user-select: none;
+  color: var(--text-primary);
+}
+.number-track .num.gold {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.42;
+}
+
+/* ---- Feature rows ---- */
+.features {
+  padding: 90px 40px 100px;
+}
+.feature-row {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  max-width: 960px;
+  margin: 0 auto 110px;
+}
+.feature-row:last-child { margin-bottom: 0; }
+.feature-row.reversed { flex-direction: row-reverse; }
+
+.feature-visual {
+  flex: 0 0 360px;
+  height: 360px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-visual.vis-cascade {
+  background: linear-gradient(145deg, #14161E 0%, #23242E 100%);
+}
+.feature-visual.vis-daily {
+  background: var(--surface);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.feature-visual.vis-themes {
+  background: linear-gradient(135deg, #14161E 0%, #14161E 49.5%, #F4F1E8 50.5%, #F4F1E8 100%);
+}
+.feature-visual.vis-leaderboard {
+  background: var(--surface);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.cascade-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  gap: 5px;
+}
+.cascade-tiles .ct {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  font-weight: 800;
+  background: var(--tile-fill-dark);
+  color: var(--tile-text-dark);
+  opacity: 0;
+}
+.cascade-tiles .ct.gold {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  color: var(--gold-text);
+}
+.cascade-tiles .ct.anim {
+  animation: cascadeIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.cascade-tiles .ct.clearing {
+  animation: tileClear 0.5s cubic-bezier(0.55, 0, 0.1, 1) forwards;
+}
+
+/* Daily-puzzle visual: streak card */
+.daily-card {
+  width: 260px;
+  padding: 20px;
+}
+.daily-card .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.daily-card .head .date {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+.daily-card .head .streak {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-mid);
+  background: rgba(200, 152, 56, 0.12);
+  padding: 4px 10px;
+  border-radius: 980px;
+}
+.daily-card .puzzle-mini {
+  display: grid;
+  grid-template-columns: repeat(4, 36px);
+  grid-template-rows: repeat(5, 36px);
+  gap: 3px;
+  padding: 8px;
+  background: var(--bg);
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.daily-card .pm-cell {
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  background: rgba(0,0,0,0.04);
+}
+.daily-card .pm-cell.tile {
+  background: var(--tile-fill-light);
+  color: var(--tile-text-light);
+}
+.daily-card .pm-cell.gold {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  color: var(--gold-text);
+}
+.daily-card .footer-line {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.daily-card .footer-line strong { color: var(--text-primary); }
+
+/* Themes split visual */
+.themes-split {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.theme-tile {
+  width: 110px;
+  height: 110px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.theme-tile.dark {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  box-shadow: 0 0 26px rgba(244, 212, 122, 0.45);
+}
+.theme-tile.light {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+}
+.theme-tile .num {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--gold-text);
+  letter-spacing: -0.02em;
+}
+.theme-tile .label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+  opacity: 0.7;
+}
+
+/* Leaderboard visual */
+.lb-visual-inner { width: 260px; padding: 20px; }
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.lb-row:last-child { border-bottom: none; }
+.lb-rank {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  width: 24px;
+}
+.lb-rank.gold { color: var(--gold-mid); }
+.lb-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.lb-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+}
+.lb-score {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  width: 40px;
+  text-align: right;
+}
+
+.feature-text h3 {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.feature-text p {
+  font-size: 1.0625rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 420px;
+}
+.feature-text .feature-tag {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* ---- Modes ---- */
+.modes {
+  padding: 60px 40px 130px;
+}
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.mode-card {
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 30px 26px;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+.mode-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0,0,0,0.10);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.05);
+}
+.mode-card .mode-tag {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 980px;
+  margin-bottom: 14px;
+}
+.mode-card.classic .mode-tag {
+  background: rgba(200, 152, 56, 0.12);
+  color: var(--gold-mid);
+}
+.mode-card.daily .mode-tag {
+  background: rgba(51, 140, 140, 0.12);
+  color: var(--teal);
+}
+.mode-card.infinite .mode-tag {
+  background: rgba(179, 115, 217, 0.12);
+  color: var(--plum);
+}
+.mode-card h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.mode-card p {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* ---- Final CTA ---- */
+.final-cta {
+  text-align: center;
+  padding: 100px 40px 130px;
+  position: relative;
+  background: linear-gradient(180deg, var(--bg) 0%, #ECE7D6 100%);
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+.final-cta h2 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: 18px;
+}
+.final-cta h2 .gold {
+  background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.final-cta .subtitle {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+}
+
+/* ---- Footer ---- */
+footer {
+  padding: 40px;
+  text-align: center;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+footer p {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+footer a:hover { color: var(--text-primary); }
+
+/* ---- Keyframes ---- */
+@keyframes badgeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes headlineIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes phoneIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes tilePop {
+  0%   { opacity: 0; transform: scale(0.5); }
+  60%  { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes tileClear {
+  0%   { opacity: 1; transform: scale(1); }
+  40%  { transform: scale(1.22); opacity: 0.8; }
+  100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes cascadeIn {
+  0%   { opacity: 0; transform: translateY(-22px) scale(0.7); }
+  60%  { transform: translateY(2px) scale(1.05); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .mechanic-grid, .modes-grid { grid-template-columns: 1fr; }
+  .feature-row, .feature-row.reversed {
+    flex-direction: column;
+    gap: 40px;
+  }
+  .feature-visual {
+    flex: none;
+    width: 100%;
+    height: 280px;
+  }
+  nav .nav-links { display: none; }
+  .hero { padding: 100px 24px 50px; }
+  .container, .mechanics, .features, .statement, .final-cta, .modes {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .feature-text p { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="/Atten/" class="wordmark">a<span class="stop">t</span>t<span class="stop">e</span>n</a>
+    <ul class="nav-links">
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#modes">Modes</a></li>
+      <li><a href="#features">Features</a></li>
+    </ul>
+    <a href="#download" class="download-sm">Download</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+    Coming to the App Store
+  </div>
+  <h1>at<span class="gold">t</span>e<span class="gold">n</span>.</h1>
+  <p class="subtitle">Drop the numbers. Merge them up.<br>Reach <strong style="color:var(--gold-mid);font-style:normal">eighteen</strong> — and watch the chain.</p>
+  <p class="word-translation">A · T · T · E · N · &nbsp;&nbsp;·&nbsp;&nbsp; Norwegian for eighteen</p>
+  <div class="cta-group">
+    <a href="#download" class="btn-primary btn-gold">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+      Download Free
+    </a>
+    <a href="#how" class="btn-secondary">How it works</a>
+  </div>
+</section>
+
+<!-- Phone Mockup -->
+<section class="phone-section">
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="game-sim">
+        <div class="sim-hud">
+          <div>
+            <div class="label">18s</div>
+            <div class="score" id="simScore">7</div>
+          </div>
+          <div class="right">
+            <div class="label">Streak</div>
+            <div class="num" id="simStreak">×3</div>
+          </div>
+        </div>
+        <div class="sim-grid" id="simGrid"></div>
+        <div class="sim-queue" id="simQueue">
+          <span class="label">Next</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Statement -->
+<section class="statement">
+  <div class="container reveal">
+    <h2>Simple rules. <span class="ital">A board that grows.</span><br>Decisions that snowball.</h2>
+    <p>The board is small. The numbers are small. But every drop has consequences — and the satisfying click of a fresh eighteen falling into place is hard to put down.</p>
+  </div>
+</section>
+
+<!-- Mechanics -->
+<section class="mechanics" id="how">
+  <div class="mechanic-grid">
+
+    <div class="mechanic-card card-merge reveal">
+      <div class="card-accent"></div>
+      <div class="icon-row">
+        <div class="tile-icon">7</div>
+        <span class="plus">+</span>
+        <div class="tile-icon">3</div>
+        <span class="equals">=</span>
+        <div class="tile-icon">10</div>
+      </div>
+      <h3>Drop. Merge.</h3>
+      <p>Numbers between 1 and 9 fall from the top. When a tile lands on another, they merge — if their sum is 18 or less. Anything more bounces and stacks.</p>
+    </div>
+
+    <div class="mechanic-card card-eighteen reveal">
+      <div class="card-accent"></div>
+      <div class="icon-row">
+        <div class="tile-icon">9</div>
+        <span class="plus">+</span>
+        <div class="tile-icon">9</div>
+        <span class="equals">=</span>
+        <div class="tile-icon gold">18</div>
+      </div>
+      <h3>Make ATTEN.</h3>
+      <p>Hit eighteen and the tile turns gold — charged, and sticky. It refuses to merge. Now your job changes: pair it with another eighteen.</p>
+    </div>
+
+    <div class="mechanic-card card-cascade reveal">
+      <div class="card-accent"></div>
+      <div class="icon-row">
+        <div class="tile-icon gold">18</div>
+        <div class="tile-icon gold">18</div>
+        <span class="equals" style="color:var(--gold-mid)">→ ✦</span>
+      </div>
+      <h3>Adjacent eighteens clear.</h3>
+      <p>Two eighteens touching? Both vanish. The board collapses, new neighbors form, and a single setup can chain through the whole grid.</p>
+    </div>
+
+    <div class="mechanic-card card-modes reveal">
+      <div class="card-accent"></div>
+      <div class="icon-row">
+        <div class="tile-icon" style="background:rgba(200,152,56,0.18);color:var(--gold-mid)">C</div>
+        <div class="tile-icon" style="background:rgba(51,140,140,0.18);color:var(--teal)">D</div>
+        <div class="tile-icon" style="background:rgba(179,115,217,0.18);color:var(--plum)">Z</div>
+      </div>
+      <h3>Three ways to play.</h3>
+      <p>Classic for the chase. Daily Puzzle for one shared board with the whole world. Infinite for the quiet runs that don't end.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Number marquee -->
+<div class="number-strip" aria-hidden="true">
+  <div class="number-track">
+    <span class="num">1 + 8 = 9</span>
+    <span class="num">2 + 7 = 9</span>
+    <span class="num">3 + 8 = 11</span>
+    <span class="num">5 + 6 = 11</span>
+    <span class="num">7 + 8 = 15</span>
+    <span class="num">9 + 8 = 17</span>
+    <span class="num gold">9 + 9 = 18</span>
+    <span class="num gold">18 + 18 = ✦</span>
+    <!-- duplicate for seamless loop -->
+    <span class="num">1 + 8 = 9</span>
+    <span class="num">2 + 7 = 9</span>
+    <span class="num">3 + 8 = 11</span>
+    <span class="num">5 + 6 = 11</span>
+    <span class="num">7 + 8 = 15</span>
+    <span class="num">9 + 8 = 17</span>
+    <span class="num gold">9 + 9 = 18</span>
+    <span class="num gold">18 + 18 = ✦</span>
+  </div>
+</div>
+
+<!-- Features -->
+<section class="features" id="features">
+
+  <div class="feature-row reveal">
+    <div class="feature-visual vis-cascade">
+      <div class="cascade-tiles" id="cascadeTiles"></div>
+    </div>
+    <div class="feature-text">
+      <div class="feature-tag" style="color:var(--plum)">Cascades</div>
+      <h3>One drop.<br>Chain reaction.</h3>
+      <p>When eighteens clear, the tiles above fall and re-merge on landing. New neighbors form. New eighteens pop. A single well-placed tile can ripple through the whole board — and the bigger the chain, the bigger the bonus.</p>
+    </div>
+  </div>
+
+  <div class="feature-row reversed reveal">
+    <div class="feature-visual vis-daily">
+      <div class="daily-card">
+        <div class="head">
+          <span class="date">April 24</span>
+          <span class="streak">streak · 7</span>
+        </div>
+        <div class="puzzle-mini" id="puzzleMini"></div>
+        <div class="footer-line"><strong>One try per day.</strong> Same seed for everyone.</div>
+      </div>
+    </div>
+    <div class="feature-text">
+      <div class="feature-tag" style="color:var(--teal)">Daily Puzzle</div>
+      <h3>Same board.<br>Whole world.</h3>
+      <p>A new fixed seed every day. One shot. Compare on Game Center against everyone else who tried it. Hold a streak across days for bragging rights — miss a day and it resets.</p>
+    </div>
+  </div>
+
+  <div class="feature-row reveal">
+    <div class="feature-visual vis-themes">
+      <div class="themes-split">
+        <div class="theme-tile dark"><span class="num">18</span><span class="label">Midnight</span></div>
+        <div class="theme-tile light"><span class="num">18</span><span class="label">Daylight</span></div>
+      </div>
+    </div>
+    <div class="feature-text">
+      <div class="feature-tag" style="color:var(--gold-mid)">Two themes</div>
+      <h3>Midnight Forge.<br>Studio Daylight.</h3>
+      <p>A neon-lit dark mode for evening runs and a warm ivory light mode for the commute. Both are free, both are first-class — pick whichever matches the room.</p>
+    </div>
+  </div>
+
+  <div class="feature-row reversed reveal">
+    <div class="feature-visual vis-leaderboard">
+      <div class="lb-visual-inner">
+        <div class="lb-row"><span class="lb-rank gold">#1</span><div class="lb-bar"><div class="lb-bar-fill" style="width:100%"></div></div><span class="lb-score">142</span></div>
+        <div class="lb-row"><span class="lb-rank gold">#2</span><div class="lb-bar"><div class="lb-bar-fill" style="width:78%"></div></div><span class="lb-score">112</span></div>
+        <div class="lb-row"><span class="lb-rank gold">#3</span><div class="lb-bar"><div class="lb-bar-fill" style="width:61%"></div></div><span class="lb-score">88</span></div>
+        <div class="lb-row"><span class="lb-rank">#4</span><div class="lb-bar"><div class="lb-bar-fill" style="width:48%"></div></div><span class="lb-score">71</span></div>
+        <div class="lb-row"><span class="lb-rank">#5</span><div class="lb-bar"><div class="lb-bar-fill" style="width:35%"></div></div><span class="lb-score">53</span></div>
+      </div>
+    </div>
+    <div class="feature-text">
+      <div class="feature-tag" style="color:var(--gold-mid)">Game Center</div>
+      <h3>Climb the board.<br>Earn the badges.</h3>
+      <p>Every run submits to Game Center. All-time and Daily leaderboards, plus achievements for first eighteens, your first cascade, your first jackpot, and a 7-day Daily streak.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- Modes -->
+<section class="modes" id="modes">
+  <div class="container reveal" style="text-align:center;margin-bottom:40px">
+    <div class="feature-tag" style="color:var(--text-tertiary);margin-bottom:8px">Three modes</div>
+    <h3 style="font-size:clamp(1.75rem, 3vw, 2.25rem);font-weight:800;letter-spacing:-0.03em">Pick your pace.</h3>
+  </div>
+  <div class="modes-grid">
+    <div class="mode-card classic reveal">
+      <span class="mode-tag">Classic</span>
+      <h4>Endless run</h4>
+      <p>Every clear charges the board. The grid grows on each jackpot — 4×5, then 5×6, all the way to 9×9. Push your high score until the spawn column locks up.</p>
+    </div>
+    <div class="mode-card daily reveal">
+      <span class="mode-tag">Daily Puzzle</span>
+      <h4>One shared board</h4>
+      <p>A fresh seed every day for everyone. One attempt per device. Build a streak day over day — and see how your run stacks up on the daily leaderboard.</p>
+    </div>
+    <div class="mode-card infinite reveal">
+      <span class="mode-tag">Infinite</span>
+      <h4>No game-over</h4>
+      <p>Pick your board size, your jackpot rule, your goal cells. The clock doesn't tick. The board doesn't end. Play until you put it down.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta" id="download">
+  <div class="reveal">
+    <h2><span class="gold">Atten.</span><br>Make eighteen.</h2>
+    <p class="subtitle">Free on iPhone and iPad.</p>
+    <a href="#" class="btn-primary btn-gold" style="font-size:1.125rem;padding:16px 40px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+      Download on the App Store
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2026 Atten &middot; Thomas A Johansen &middot; <a href="/Atten/privacy.html">Privacy</a> &middot; <a href="/Atten/support.html">Support</a></p>
+</footer>
+
+<script>
+// ---- Nav scroll effect ----
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ---- Reveal on scroll ----
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el => revealObs.observe(el));
+
+// ---- Phone simulation: 4x5 board, gold cells, merge → ATTEN → cascade ----
+function setupGameSim() {
+  const grid = document.getElementById('simGrid');
+  const queue = document.getElementById('simQueue');
+  const COLS = 4, ROWS = 5;
+  const cells = [];
+
+  // Build 20 cells
+  for (let i = 0; i < ROWS * COLS; i++) {
+    const c = document.createElement('div');
+    c.className = 'sim-cell';
+    grid.appendChild(c);
+    cells.push(c);
+  }
+
+  // Mark golden cells (bottom row middle pair) — visual hint of goal cells.
+  const goldenIdx = [(ROWS-1)*COLS + 1, (ROWS-1)*COLS + 2];
+  goldenIdx.forEach(i => cells[i].classList.add('golden-cell'));
+
+  function setCell(idx, val, options = {}) {
+    const c = cells[idx];
+    c.classList.remove('tile', 'gold', 'clearing');
+    c.textContent = '';
+    c.style.animation = 'none';
+    void c.offsetWidth;
+    c.style.animation = '';
+    if (val === null || val === undefined) return;
+    c.textContent = val;
+    if (val === 18) c.classList.add('gold');
+    else c.classList.add('tile');
+    if (options.delay) c.style.animationDelay = options.delay + 'ms';
+  }
+
+  function clearCell(idx) {
+    const c = cells[idx];
+    c.classList.add('clearing');
+    setTimeout(() => {
+      c.classList.remove('tile', 'gold', 'clearing');
+      c.textContent = '';
+    }, 500);
+  }
+
+  // Build queue
+  const queueValues = [9, 6, 3];
+  queueValues.forEach((n, i) => {
+    const t = document.createElement('div');
+    t.className = 'queue-tile' + (i === 0 ? ' active' : '');
+    t.textContent = n;
+    queue.appendChild(t);
+  });
+
+  // Idx helper
+  const ix = (r, c) => r * COLS + c;
+
+  // Initial board state — a chunky mid-game look.
+  // Bottom row builds toward two gold tiles on golden cells.
+  const setup = [
+    [4, 0, 7],    // row 4 (bottom)
+    [4, 1, 18],   // gold
+    [4, 2, 18],   // gold (about to clear with neighbor!)
+    [4, 3, 5],
+    [3, 1, 9],
+    [3, 2, 8],
+    [3, 3, 2],
+    [2, 0, 1],
+    [2, 2, 4],
+  ];
+  setup.forEach(([r, c, v], i) => setCell(ix(r, c), v, { delay: i * 60 }));
+
+  // Score / streak displays
+  const scoreEl = document.getElementById('simScore');
+  const streakEl = document.getElementById('simStreak');
+  let score = 7;
+  let streak = 3;
+  let busy = false;
+
+  // Animation loop: drop the next tile, possibly merge, occasionally cascade.
+  async function tick() {
+    if (busy) return;
+    busy = true;
+
+    // 1) "Drop" the active queue tile into a column. We just animate a
+    //    reposition by clearing-and-repopulating the bottom-of-column cell.
+    const dropCol = Math.floor(Math.random() * COLS);
+    const dropValue = queueValues.shift();
+    queueValues.push(Math.floor(Math.random() * 9) + 1);
+    refreshQueue();
+
+    // Find lowest empty cell in dropCol
+    let landingRow = -1;
+    for (let r = ROWS - 1; r >= 0; r--) {
+      if (!cells[ix(r, dropCol)].classList.contains('tile') && !cells[ix(r, dropCol)].classList.contains('gold')) {
+        landingRow = r; break;
+      }
+    }
+
+    if (landingRow >= 0) {
+      const belowRow = landingRow + 1;
+      let merged = false;
+      if (belowRow < ROWS) {
+        const belowCell = cells[ix(belowRow, dropCol)];
+        const belowVal = parseInt(belowCell.textContent || '0', 10);
+        if (belowVal && belowVal !== 18 && belowVal + dropValue <= 18) {
+          const sum = belowVal + dropValue;
+          await sleep(280);
+          setCell(ix(belowRow, dropCol), sum);
+          if (sum === 18) {
+            // Charged tile celebration
+            score += 1;
+            scoreEl.textContent = score;
+          }
+          merged = true;
+        }
+      }
+      if (!merged) {
+        await sleep(280);
+        setCell(ix(landingRow, dropCol), dropValue);
+      }
+    }
+
+    // 2) Roll the dice on a cascade — find any two adjacent 18s and clear them.
+    await sleep(900);
+    const goldPositions = [];
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (cells[ix(r, c)].classList.contains('gold')) goldPositions.push([r, c]);
+      }
+    }
+    let cascadePair = null;
+    for (const [r, c] of goldPositions) {
+      const nbrs = [[r,c+1],[r+1,c]];
+      for (const [nr, nc] of nbrs) {
+        if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) continue;
+        if (cells[ix(nr, nc)].classList.contains('gold')) {
+          cascadePair = [[r,c],[nr,nc]];
+          break;
+        }
+      }
+      if (cascadePair) break;
+    }
+
+    if (cascadePair) {
+      cascadePair.forEach(([r,c]) => clearCell(ix(r, c)));
+      await sleep(700);
+      // Settle: nudge tiles down in the cleared columns by re-rendering randomly
+      cascadePair.forEach(([r, c]) => {
+        // Drop something fresh into the cell above
+        for (let row = r - 1; row >= 0; row--) {
+          if (cells[ix(row, c)].classList.contains('tile')) {
+            const v = parseInt(cells[ix(row, c)].textContent, 10);
+            setCell(ix(row, c), null);
+            setCell(ix(row + 1, c), v);
+            break;
+          }
+        }
+      });
+      streak += 1;
+      streakEl.textContent = '×' + streak;
+      score += 2;
+      scoreEl.textContent = score;
+    }
+
+    busy = false;
+  }
+
+  function refreshQueue() {
+    [...queue.querySelectorAll('.queue-tile')].forEach((el, i) => {
+      el.textContent = queueValues[i] ?? '';
+      el.classList.toggle('active', i === 0);
+    });
+  }
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // First tick after the entry animation finishes
+  setTimeout(() => {
+    tick();
+    setInterval(tick, 4200);
+  }, 1800);
+}
+setupGameSim();
+
+// ---- Cascade animation in the feature visual ----
+function setupCascade() {
+  const container = document.getElementById('cascadeTiles');
+  // 3 columns x 3 rows. Two 18s sit adjacent — they'll clear and a third 18 forms.
+  const tiles = [
+    null, null, null,
+    null, 18,   18,
+    7,    11,   18
+  ];
+
+  tiles.forEach((v) => {
+    const t = document.createElement('div');
+    t.className = 'ct';
+    if (v != null) {
+      t.textContent = v;
+      if (v === 18) t.classList.add('gold');
+    }
+    container.appendChild(t);
+  });
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const cts = container.querySelectorAll('.ct');
+        cts.forEach((ct, i) => {
+          if (ct.textContent) {
+            ct.style.animationDelay = (i * 90) + 'ms';
+            ct.classList.add('anim');
+          } else {
+            ct.style.opacity = '0.3';
+          }
+        });
+
+        // After tiles land, cascade: clear the adjacent 18 pair, then form a third
+        setTimeout(() => {
+          // The pair at (1,1) and (1,2)
+          cts[4].classList.add('clearing');
+          cts[5].classList.add('clearing');
+          setTimeout(() => {
+            // 7 + 11 = 18, gravity merges
+            cts[6].classList.add('clearing');
+            cts[7].classList.add('clearing');
+            setTimeout(() => {
+              cts[4].textContent = '';
+              cts[5].textContent = '';
+              cts[6].textContent = '';
+              cts[7].textContent = '';
+              // New 18 forms in the bottom row
+              cts[7].classList.remove('clearing', 'gold');
+              cts[7].textContent = '18';
+              cts[7].classList.add('gold', 'anim');
+              cts[7].style.animation = 'none';
+              void cts[7].offsetWidth;
+              cts[7].style.animation = 'cascadeIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+            }, 500);
+          }, 600);
+        }, 1500);
+
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  obs.observe(container);
+}
+setupCascade();
+
+// ---- Daily-puzzle mini board ----
+function setupDailyMini() {
+  const container = document.getElementById('puzzleMini');
+  // 4 cols x 5 rows. Mix of empty cells, regular tiles, and a few golds.
+  const layout = [
+    null, null, null, null,
+    null, 6,    null, 3,
+    4,    null, 9,    8,
+    7,    null, 18,   2,
+    18,   18,   1,    18
+  ];
+  layout.forEach((v) => {
+    const c = document.createElement('div');
+    c.className = 'pm-cell';
+    if (v === 18) {
+      c.classList.add('gold');
+      c.textContent = 18;
+    } else if (v != null) {
+      c.classList.add('tile');
+      c.textContent = v;
+    }
+    container.appendChild(c);
+  });
+}
+setupDailyMini();
+</script>
+</body>
+</html>
