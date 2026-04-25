@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#14161E"/>
+      <stop offset="100%" stop-color="#23242E"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#F4D47A"/>
+      <stop offset="55%"  stop-color="#C89838"/>
+      <stop offset="100%" stop-color="#8A6420"/>
+    </linearGradient>
+    <linearGradient id="goldFlat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#F4D47A"/>
+      <stop offset="100%" stop-color="#C89838"/>
+    </linearGradient>
+    <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="6" result="offset"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.4"/></feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grain" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <rect width="200" height="200" fill="black" opacity="0"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle radial glow behind the wordmark -->
+  <circle cx="600" cy="280" r="320" fill="url(#gold)" opacity="0.08"/>
+
+  <!-- Sample tile row showing 9 + 9 = 18 progression -->
+  <g transform="translate(220, 410)" font-family="-apple-system, 'SF Pro Display', 'Inter', sans-serif" font-weight="900">
+    <!-- Tile: 9 -->
+    <rect x="0" y="0" width="100" height="100" rx="14" fill="#2F2F38"/>
+    <text x="50" y="72" text-anchor="middle" font-size="56" fill="#EFE7CD">9</text>
+    <!-- Plus -->
+    <text x="140" y="72" text-anchor="middle" font-size="40" fill="#A6A4AC">+</text>
+    <!-- Tile: 9 -->
+    <rect x="180" y="0" width="100" height="100" rx="14" fill="#2F2F38"/>
+    <text x="230" y="72" text-anchor="middle" font-size="56" fill="#EFE7CD">9</text>
+    <!-- Equals -->
+    <text x="320" y="72" text-anchor="middle" font-size="40" fill="#A6A4AC">=</text>
+    <!-- Tile: 18 (gold, glowing) -->
+    <g filter="url(#goldGlow)">
+      <rect x="360" y="0" width="100" height="100" rx="14" fill="url(#gold)"/>
+      <text x="410" y="72" text-anchor="middle" font-size="48" fill="#3A2810">18</text>
+    </g>
+    <!-- Arrow → -->
+    <text x="510" y="72" text-anchor="middle" font-size="40" fill="#C89838">→</text>
+    <!-- Tile: 18 (gold) -->
+    <g filter="url(#goldGlow)">
+      <rect x="550" y="0" width="100" height="100" rx="14" fill="url(#gold)"/>
+      <text x="600" y="72" text-anchor="middle" font-size="48" fill="#3A2810">18</text>
+    </g>
+    <!-- Tile: 18 (gold, adjacent — about to clear) -->
+    <g filter="url(#goldGlow)">
+      <rect x="660" y="0" width="100" height="100" rx="14" fill="url(#gold)"/>
+      <text x="710" y="72" text-anchor="middle" font-size="48" fill="#3A2810">18</text>
+    </g>
+    <!-- Spark -->
+    <g transform="translate(800, 50)" fill="url(#goldFlat)">
+      <path d="M0,-30 L6,-6 L30,0 L6,6 L0,30 L-6,6 L-30,0 L-6,-6 Z" filter="url(#goldGlow)"/>
+    </g>
+  </g>
+
+  <!-- Wordmark "atten" with gold t and n -->
+  <g transform="translate(600, 250)" text-anchor="middle" font-family="-apple-system, 'SF Pro Display', 'Inter', sans-serif" font-weight="900" font-size="220" letter-spacing="-12">
+    <text fill="#EFE7CD" filter="url(#softShadow)">a<tspan fill="url(#gold)">t</tspan>te<tspan fill="url(#gold)">n</tspan></text>
+  </g>
+
+  <!-- Tagline -->
+  <g text-anchor="middle" font-family="'Newsreader', Georgia, serif" font-style="italic">
+    <text x="600" y="335" font-size="34" fill="#A6A4AC">Drop the numbers. Merge them up.</text>
+    <text x="600" y="378" font-size="34" fill="#A6A4AC">Reach <tspan fill="#C89838" font-style="normal" font-family="-apple-system, 'SF Pro Display', sans-serif" font-weight="700">eighteen</tspan> — and watch the chain.</text>
+  </g>
+
+  <!-- Bottom: "Coming to the App Store" -->
+  <g transform="translate(600, 575)" text-anchor="middle" font-family="-apple-system, 'SF Pro Display', sans-serif">
+    <text font-size="18" font-weight="700" letter-spacing="3" fill="#A6A4AC">COMING TO THE APP STORE · IPHONE &amp; IPAD</text>
+  </g>
+
+  <!-- Top-left: small wordmark for context -->
+  <g transform="translate(60, 60)" font-family="-apple-system, 'SF Pro Display', sans-serif" font-weight="900" font-size="22" letter-spacing="-1">
+    <text fill="#EFE7CD">a<tspan fill="url(#gold)">t</tspan>te<tspan fill="url(#gold)">n</tspan></text>
+  </g>
+</svg>
