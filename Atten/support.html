@@ -115,10 +115,13 @@ nav .nav-links {
   align-items: center;
 }
 nav .nav-links a {
+  display: inline-block;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
   text-decoration: none;
+  padding: 12px 4px;
+  margin: -12px -4px;
   transition: color 0.2s;
 }
 nav .nav-links a:hover { color: var(--text-primary); }
@@ -211,7 +214,8 @@ summary {
   font-size: 1rem;
   cursor: pointer;
   list-style: none;
-  padding-right: 28px;
+  padding: 10px 28px 10px 0;
+  margin: -10px 0;
   position: relative;
   color: var(--text-primary);
   transition: color 0.15s;
@@ -241,10 +245,10 @@ details > ol {
 /* ---- Links section ---- */
 .links-list { list-style: none; padding-left: 0; margin: 12px 0; }
 .links-list li {
-  padding: 10px 0;
   border-bottom: 1px solid rgba(29, 29, 31, 0.06);
 }
 .links-list li:last-child { border-bottom: none; }
+.links-list a { display: block; padding: 12px 0; }
 
 /* ---- Footer ---- */
 footer {
@@ -260,8 +264,10 @@ footer p {
   margin: 6px 0;
 }
 footer a {
+  display: inline-block;
   color: var(--text-secondary);
   text-decoration: none;
+  padding: 8px 4px;
   transition: color 0.2s;
 }
 footer a:hover { color: var(--text-primary); }
@@ -305,7 +311,7 @@ footer .footer-links {
   </header>
 
   <div class="contact-card">
-    <strong>Need help fast?</strong> Email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a>. I'm the solo developer and I answer every message.
+    <strong>Need help fast?</strong> Email <a href="mailto:support@thomasaj.com">support@thomasaj.com</a>. I'm the solo developer and I answer every message.
   </div>
 
   <div class="prose">
@@ -375,7 +381,7 @@ footer .footer-links {
         <li>Tap <strong>Settings &rarr; Support &rarr; Restore Purchases</strong>.</li>
         <li>Force-quit and relaunch the app.</li>
       </ol>
-      <p>If ads still appear, email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a> with your device model, iOS version, and approximate purchase date and I'll sort it.</p>
+      <p>If ads still appear, email <a href="mailto:support@thomasaj.com">support@thomasaj.com</a> with your device model, iOS version, and approximate purchase date and I'll sort it.</p>
     </details>
 
     <details>
@@ -400,7 +406,7 @@ footer .footer-links {
 
     <details>
       <summary>How do I report a bug or crash?</summary>
-      <p>Email <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a> with:</p>
+      <p>Email <a href="mailto:support@thomasaj.com">support@thomasaj.com</a> with:</p>
       <ul>
         <li>Device model (e.g., iPhone 15 Pro) and iOS version.</li>
         <li>Atten version (from <strong>Settings &rarr; About</strong>).</li>
@@ -428,7 +434,7 @@ footer .footer-links {
 
     <h2>Contact</h2>
     <div class="contact-card">
-      <p><strong>Email:</strong> <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a></p>
+      <p><strong>Email:</strong> <a href="mailto:support@thomasaj.com">support@thomasaj.com</a></p>
       <p><strong>Developer:</strong> Thomas A Johansen (solo indie).</p>
       <p><strong>Response time:</strong> usually a couple of business days, sometimes same day.</p>
     </div>

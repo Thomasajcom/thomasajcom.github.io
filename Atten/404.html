@@ -79,6 +79,11 @@ body::after {
   box-shadow: 0 4px 14px rgba(0,0,0,0.10);
 }
 
+@media (max-width: 360px) {
+  body { padding: 48px 20px; }
+  .tile { width: 72px; height: 72px; font-size: 32px; }
+}
+
 .tile.gold {
   background: linear-gradient(135deg, var(--gold-top), var(--gold-mid), var(--gold-bot));
   color: var(--gold-text);

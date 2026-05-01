@@ -61,12 +61,14 @@ nav .container {
 }
 
 .nav-brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   font-weight: 600;
   font-size: 1.125rem;
   color: var(--text);
+  padding: 8px 4px;
+  margin: -8px -4px;
 }
 
 .nav-brand img {
@@ -82,9 +84,12 @@ nav .container {
 }
 
 .nav-links a {
+  display: inline-block;
   color: var(--text-light);
   font-size: 0.9375rem;
   font-weight: 500;
+  padding: 10px 6px;
+  margin: -10px -6px;
   transition: color 0.2s;
 }
 
@@ -140,6 +145,7 @@ nav .container {
 
 .app-store-badge img {
   height: 54px;
+  max-width: 100%;
 }
 
 /* Features */
@@ -300,8 +306,10 @@ footer .footer-links {
 }
 
 footer .footer-links a {
+  display: inline-block;
   color: var(--text-light);
   font-size: 0.875rem;
+  padding: 8px 0;
 }
 
 footer .copyright {
@@ -359,6 +367,10 @@ footer .copyright {
 /* Responsive */
 
 @media (max-width: 640px) {
+  .container {
+    padding: 0 20px;
+  }
+
   .hero {
     padding: 48px 0 40px;
   }
@@ -375,12 +387,16 @@ footer .copyright {
     grid-template-columns: 1fr;
   }
 
+  .feature-card {
+    padding: 24px;
+  }
+
   .steps {
     grid-template-columns: 1fr;
     gap: 24px;
   }
 
   .nav-links {
-    gap: 16px;
+    gap: 12px;
   }
 }

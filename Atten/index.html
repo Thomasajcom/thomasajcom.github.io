@@ -144,19 +144,23 @@ nav .nav-links {
   list-style: none;
 }
 nav .nav-links a {
+  display: inline-block;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
   text-decoration: none;
+  padding: 12px 4px;
+  margin: -12px -4px;
   transition: color 0.2s;
 }
 nav .nav-links a:hover { color: var(--text-primary); }
 nav .download-sm {
+  display: inline-block;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--surface);
   background: var(--text-primary);
-  padding: 6px 18px;
+  padding: 10px 20px;
   border-radius: 980px;
   text-decoration: none;
   transition: opacity 0.2s;
@@ -959,12 +963,32 @@ footer a:hover { color: var(--text-primary); }
     height: 280px;
   }
   nav .nav-links { display: none; }
+  nav { padding: 0 20px; }
   .hero { padding: 100px 24px 50px; }
   .container, .mechanics, .features, .statement, .final-cta, .modes {
     padding-left: 24px;
     padding-right: 24px;
   }
   .feature-text p { max-width: 100%; }
+  .phone-section { padding-left: 20px; padding-right: 20px; padding-bottom: 80px; }
+  .mechanic-card { padding: 32px 22px; }
+  footer { padding: 32px 20px; }
+}
+
+.btn-cta-final {
+  font-size: 1.125rem;
+  padding: 16px 40px;
+}
+
+@media (max-width: 480px) {
+  .btn-cta-final { font-size: 1rem; padding: 14px 24px; }
+  nav { padding: 0 16px; }
+  .container, .mechanics, .features, .statement, .final-cta, .modes {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .phone-section { padding-left: 16px; padding-right: 16px; }
+  .phone-frame { width: 100%; max-width: 280px; }
 }
 </style>
 </head>
@@ -1206,7 +1230,7 @@ footer a:hover { color: var(--text-primary); }
   <div class="reveal">
     <h2><span class="gold">Atten.</span><br>Make eighteen.</h2>
     <p class="subtitle">Free on iPhone and iPad.</p>
-    <a href="#" class="btn-primary btn-gold" style="font-size:1.125rem;padding:16px 40px">
+    <a href="#" class="btn-primary btn-gold btn-cta-final">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
       Download on the App Store
     </a>
