@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — Little Knots</title>
+<meta name="description" content="Help, FAQ, and contact for Little Knots — sharing with your partner, subscriptions, your data, and getting started.">
+<meta name="theme-color" content="#FBF6EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#211C2E" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://thomasaj.com/tinyknots/support.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://thomasaj.com/tinyknots/support.html">
+<meta property="og:title" content="Support — Little Knots">
+<meta property="og:description" content="Help, FAQ, and contact for Little Knots.">
+<meta property="og:image" content="https://thomasaj.com/tinyknots/assets/og-image.png">
+<meta property="og:site_name" content="Little Knots">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/tinyknots/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/tinyknots/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/tinyknots/assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root {
+  --paper-top:#FBF6EE; --paper-bottom:#F6EDDE; --card:#FFFFFF;
+  --ink:#43355A; --ink-soft:#716586; --kicker:#73695A;
+  --accent:#7C5CBF; --strand:#E96B9F; --strand-tint:#FCE3ED;
+  --mint:#2FA67E; --mint-tint:#DFF5EC;
+  --sky:#4799D6; --sky-tint:#E0F0FB;
+  --peach:#E07F3C; --peach-tint:#FCEADD;
+  --lavender:#8A63CE; --lavender-tint:#EDE6F9;
+  --sunshine:#C4960F; --sunshine-tint:#FBF3D9;
+  --hairline:rgba(67,53,90,0.10); --shadow:rgba(67,53,90,0.12);
+  --nav-bg:rgba(251,246,238,0.85); --grain-opacity:0.03;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper-top:#211C2E; --paper-bottom:#15111F; --card:#2C2539;
+    --ink:#EDE7F5; --ink-soft:#A396BC; --kicker:#918572;
+    --accent:#9D82DC; --strand:#F2A7C3; --strand-tint:#46303C;
+    --mint:#7AD8B8; --mint-tint:#2B4038;
+    --sky:#8FC9EA; --sky-tint:#2C3A48;
+    --peach:#F5B286; --peach-tint:#47362A;
+    --lavender:#B99BE8; --lavender-tint:#3B3150;
+    --sunshine:#EFC54A; --sunshine-tint:#453D26;
+    --hairline:rgba(237,231,245,0.12); --shadow:rgba(0,0,0,0.5);
+    --nav-bg:rgba(33,28,46,0.85); --grain-opacity:0.05;
+  }
+}
+html { font-size:16px; -webkit-font-smoothing:antialiased; scroll-behavior:smooth; }
+body {
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,var(--paper-top) 0%,var(--paper-bottom) 100%) fixed;
+  color:var(--ink); line-height:1.6; overflow-x:hidden;
+}
+body::after {
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px; opacity:var(--grain-opacity); pointer-events:none; z-index:9999;
+}
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:0 40px;
+  background:var(--nav-bg); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px);
+  box-shadow:0 0.5px 0 var(--hairline); }
+nav .nav-inner { max-width:820px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:60px; }
+.wordmark { display:inline-flex; align-items:center; gap:9px; font-weight:900; font-size:1.05rem; color:var(--ink); text-decoration:none; }
+.wordmark svg path { stroke:var(--strand); }
+nav .back { font-size:0.8125rem; font-weight:700; color:var(--ink-soft); text-decoration:none; }
+nav .back:hover { color:var(--ink); }
+
+main { max-width:820px; margin:0 auto; padding:130px 28px 60px; }
+.kicker { font-size:0.6875rem; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:var(--kicker); }
+.page-head { text-align:center; margin-bottom:26px; }
+.page-head h1 { font-size:clamp(2rem,5.5vw,3rem); font-weight:900; letter-spacing:-0.03em; line-height:1.08; margin:10px 0 12px; }
+.page-head h1 em { font-family:'Newsreader',serif; font-style:italic; font-weight:500; color:var(--strand); }
+.page-head p { font-size:1.02rem; color:var(--ink-soft); max-width:520px; margin:0 auto; }
+.contact-inline { text-align:center; margin-bottom:56px; }
+.btn { display:inline-flex; align-items:center; gap:8px; font-weight:800; font-size:0.95rem; color:var(--paper-top);
+  background:var(--ink); padding:13px 26px; border-radius:980px; text-decoration:none;
+  box-shadow:0 6px 20px var(--shadow); transition:transform 0.2s; }
+.btn:hover { transform:translateY(-2px); }
+.contact-inline .hint { display:block; margin-top:10px; font-size:0.8rem; font-weight:700; color:var(--ink-soft); }
+
+.topic { margin-bottom:44px; }
+.topic-head { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.topic-head .knot-emoji { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:20px; background:var(--tint, var(--strand-tint)); flex-shrink:0; }
+.topic-head h2 { font-size:1.35rem; font-weight:900; letter-spacing:-0.02em; }
+details {
+  background:var(--card); border:1px solid var(--hairline); border-radius:14px;
+  box-shadow:0 3px 12px var(--shadow); margin-bottom:10px; overflow:hidden;
+}
+details summary {
+  list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:16px 20px; font-size:0.98rem; font-weight:800;
+}
+details summary::-webkit-details-marker { display:none; }
+details summary::after {
+  content:''; width:10px; height:10px; border-radius:50%; flex-shrink:0;
+  border:2.5px solid var(--strand); transition:background 0.25s, transform 0.25s;
+}
+details[open] summary::after { background:var(--strand); transform:scale(1.15); }
+details .a { padding:0 20px 18px; font-size:0.94rem; color:var(--ink-soft); }
+details .a p { margin-bottom:10px; }
+details .a p:last-child { margin-bottom:0; }
+details .a strong { color:var(--ink); }
+details .a a { color:var(--accent); font-weight:700; }
+details .a ol, details .a ul { margin:4px 0 10px 20px; }
+details .a li { margin-bottom:5px; }
+
+.contact-card { text-align:center; background:var(--card); border:1px solid var(--hairline); border-radius:18px;
+  box-shadow:0 6px 24px var(--shadow); padding:40px 28px; position:relative; margin-top:60px; }
+.contact-card .washi { position:absolute; top:-11px; left:50%; width:96px; height:22px; border-radius:3px;
+  background:color-mix(in srgb, var(--sunshine) 34%, transparent); transform:translateX(-50%) rotate(-2.5deg);
+  box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+.contact-card h2 { font-size:1.5rem; font-weight:900; letter-spacing:-0.02em; margin-bottom:8px; }
+.contact-card h2 em { font-family:'Newsreader',serif; font-style:italic; font-weight:500; color:var(--strand); }
+.contact-card p { font-size:0.97rem; color:var(--ink-soft); margin-bottom:18px; max-width:440px; margin-left:auto; margin-right:auto; }
+footer { padding:38px 24px 46px; text-align:center; border-top:1px solid var(--hairline); margin-top:70px; }
+footer p { font-size:0.8125rem; color:var(--ink-soft); font-weight:600; }
+footer a { color:var(--ink-soft); }
+footer a:hover { color:var(--ink); }
+@media (max-width:600px) { nav { padding:0 20px; } main { padding:110px 18px 40px; } }
+</style>
+</head>
+<body>
+
+<nav aria-label="Main">
+  <div class="nav-inner">
+    <a href="/tinyknots/" class="wordmark" aria-label="Little Knots home">
+      <svg width="30" height="20" viewBox="0 0 68 44" aria-hidden="true">
+        <path d="M2 33 C 12 28, 18 36, 26 33 C 18 26, 20 12, 30 14 C 38 15, 36 26, 26 33 C 36 30, 42 34, 47 32 C 42 27, 44 18, 50 19 C 56 20, 54 28, 47 32 C 54 30, 60 32, 66 29"
+              fill="none" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      little knots
+    </a>
+    <a class="back" href="/tinyknots/">← Back to Little Knots</a>
+  </div>
+</nav>
+
+<main>
+  <div class="page-head">
+    <span class="kicker">Support</span>
+    <h1>In a <em>tangle?</em> Let's fix it.</h1>
+    <p>Answers to the common questions below — and a real person behind the email if they don't cover yours.</p>
+  </div>
+  <div class="contact-inline">
+    <a class="btn" href="mailto:support@thomasaj.com?subject=Little%20Knots%20support">✉️ &nbsp;Email support@thomasaj.com</a>
+    <span class="hint">Usually answered within a day or two — it's just me, and I read everything.</span>
+  </div>
+
+  <div class="topic" style="--tint: var(--sky-tint);">
+    <div class="topic-head"><span class="knot-emoji">🌱</span><h2>Getting started</h2></div>
+
+    <details>
+      <summary>Do I need an account?</summary>
+      <div class="a"><p>No. There is nothing to sign up for and no password to invent. Little Knots uses the iCloud
+      account your iPhone is already signed into — for backup and syncing only. If you're not signed
+      into iCloud, the app still works; memories then live only on that device.</p></div>
+    </details>
+    <details>
+      <summary>How do I add a memory?</summary>
+      <div class="a"><p>Look for the <strong>loose end of the thread</strong> — the dangling + at the newest end of the
+      timeline — and pull it. Pick a moment from the catalog (or write your own), add a date, a note, a
+      photo or video if you like, and tie it off. The new knot slides onto the thread with a little ceremony.</p></div>
+    </details>
+    <details>
+      <summary>How do I add my child?</summary>
+      <div class="a"><p>The Family tab → <strong>Add child</strong>. A name is enough to start; birthday (or due date —
+      pregnancy milestones are in there too), a photo, and a thread color are all optional and can come later.
+      The free version includes one child; more children are part of <a href="#pro">Little Knots Pro</a>.</p></div>
+    </details>
+    <details>
+      <summary>We're expecting — is it too early to start?</summary>
+      <div class="a"><p>Not at all. Add your child as “on the way” and the catalog starts at <em>Found out we were
+      expecting</em>, <em>Heard the heartbeat</em>, and friends. Their thread simply begins before they do.</p></div>
+    </details>
+  </div>
+
+  <div class="topic" style="--tint: var(--peach-tint);">
+    <div class="topic-head"><span class="knot-emoji">🕰️</span><h2>Memories, dates &amp; catching up</h2></div>
+
+    <details>
+      <summary>I'm months (fine — years) behind. Can I backfill?</summary>
+      <div class="a"><p>Yes — that's what <strong>Catch up</strong> is for. Open it from your child's card and work
+      through the checklist, or quick-add a batch in one sitting. The timeline doesn't care when you wrote
+      it down, only when it happened.</p></div>
+    </details>
+    <details>
+      <summary>I don't remember the exact date. What do I put?</summary>
+      <div class="a"><p>A vague date is a first-class citizen in Little Knots. Every memory's date has a precision —
+      exact day, a month, or just a year — so <em>“sometime in May”</em> or <em>“2024, roughly”</em> is stored
+      honestly and displayed that way, instead of pretending to a day you invented.</p></div>
+    </details>
+    <details>
+      <summary>What about photos and videos?</summary>
+      <div class="a"><p>Photos are free and unlimited, attached straight from the system photo picker (the app only
+      ever sees what you select). Video attachments are part of Pro — clips up to 30 seconds, compressed
+      sensibly so they sync quickly and don't eat your iCloud storage.</p></div>
+    </details>
+    <details>
+      <summary>Can I record things my child says?</summary>
+      <div class="a"><p>The Quotes tab is exactly that: a wall for the accidental poetry. Add the line, who said it,
+      and when — Little Knots keeps their age at the time next to it, which is where half the comedy lives.</p></div>
+    </details>
+  </div>
+
+  <div class="topic" id="sharing" style="--tint: var(--lavender-tint);">
+    <div class="topic-head"><span class="knot-emoji">💞</span><h2>Sharing with your partner &amp; family</h2></div>
+
+    <details>
+      <summary>How does sharing work?</summary>
+      <div class="a"><p>Sharing (a Pro feature) uses Apple's iCloud sharing under the hood — the same
+      machinery as a shared Photos album. From Settings in the app, send an invite link to your partner.
+      Once they accept on their iPhone, you both see — and both add to — the same thread. Memories either
+      of you ties appear for the other automatically.</p>
+      <p>You can also invite grandparents or godparents to <strong>follow along</strong> without editing.</p></div>
+    </details>
+    <details>
+      <summary>What does my partner need?</summary>
+      <div class="a"><ul>
+        <li>An iPhone with Little Knots installed (the app itself is a free download),</li>
+        <li>signed into their own iCloud account, with iCloud Drive turned on.</li>
+      </ul>
+      <p>Only the person who created the family needs Pro to start sharing.</p></div>
+    </details>
+    <details>
+      <summary>My partner accepted, but nothing is showing up.</summary>
+      <div class="a"><p>The very first sync can take a minute or two while iCloud moves everything across — leave the
+      app open and give it a moment, ideally on Wi-Fi. If it still looks empty after a few minutes:</p>
+      <ol>
+        <li>Check both phones are signed into iCloud (Settings → your name) with iCloud Drive on.</li>
+        <li>Check neither phone is in Low Data Mode on a connection that blocks background sync.</li>
+        <li>Close and reopen the app on both phones.</li>
+      </ol>
+      <p>Still stuck? <a href="mailto:support@thomasaj.com?subject=Little%20Knots%20sharing">Email me</a> — sharing
+      tangles are my top priority.</p></div>
+    </details>
+    <details>
+      <summary>Can I stop sharing?</summary>
+      <div class="a"><p>Yes, any time, from Settings → Sharing in the app. Participants lose access to the shared
+      thread. Anything you created stays with you.</p></div>
+    </details>
+  </div>
+
+  <div class="topic" id="pro" style="--tint: var(--sunshine-tint);">
+    <div class="topic-head"><span class="knot-emoji">✨</span><h2>Little Knots Pro &amp; purchases</h2></div>
+
+    <details>
+      <summary>What's free, and what's Pro?</summary>
+      <div class="a"><p><strong>Free, forever:</strong> one child, unlimited memories and quotes, unlimited photos,
+      the full catalog, Catch up, the widget, and reminders. No ads, no time limit.</p>
+      <p><strong>Pro adds:</strong> unlimited children, video attachments, partner &amp; family sharing,
+      thread styles, and the Linen, Petal &amp; Meadow paper themes.</p></div>
+    </details>
+    <details>
+      <summary>What plans are there?</summary>
+      <div class="a"><p>Weekly, monthly, or yearly subscriptions — or a one-time <strong>lifetime</strong> purchase if
+      subscriptions aren't your thing. Prices are shown in the app in your local currency. Every plan works
+      with Apple Family Sharing, so one purchase covers your household.</p></div>
+    </details>
+    <details>
+      <summary>What happens if I cancel?</summary>
+      <div class="a"><p>You keep Pro until the period you paid for ends. After that, <strong>everything you've saved
+      stays</strong> — every child, video, and shared memory remains visible and editable. Lapsing only stops you
+      from <em>starting</em> new Pro things (adding another child, attaching new video, sending new invites).
+      Your memories are never held hostage.</p></div>
+    </details>
+    <details>
+      <summary>How do I cancel or manage my subscription?</summary>
+      <div class="a"><p>Subscriptions are managed by Apple: iOS Settings → your name → Subscriptions → Little Knots.
+      Or from inside the app: Settings → Little Knots Pro → Manage subscription.</p></div>
+    </details>
+    <details>
+      <summary>I bought Pro but the app doesn't show it.</summary>
+      <div class="a"><p>Open the app's Settings and tap <strong>Restore Purchases</strong>. Make sure the phone is
+      signed into the same Apple Account that bought Pro. If a family member bought it, check that purchase
+      sharing is on in Apple Family Sharing. Still off? <a href="mailto:support@thomasaj.com?subject=Little%20Knots%20purchase">Email me</a>.</p></div>
+    </details>
+    <details>
+      <summary>Can I get a refund?</summary>
+      <div class="a"><p>App Store purchases are refunded by Apple, not by developers — request one at
+      <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>. If something in the app pushed
+      you to a refund, I'd genuinely like to know what went wrong.</p></div>
+    </details>
+  </div>
+
+  <div class="topic" style="--tint: var(--mint-tint);">
+    <div class="topic-head"><span class="knot-emoji">🔒</span><h2>Your data</h2></div>
+
+    <details>
+      <summary>Where do my memories actually live?</summary>
+      <div class="a"><p>On your iPhone, and — when you're signed into iCloud — in your personal iCloud account,
+      encrypted by Apple. There are no Little Knots servers and no developer access.
+      The <a href="/tinyknots/privacy.html">privacy policy</a> is short and worth the two minutes.</p></div>
+    </details>
+    <details>
+      <summary>New phone — will my memories come back?</summary>
+      <div class="a"><p>Yes. Sign the new iPhone into the same iCloud account, install Little Knots, and the thread
+      re-appears on first launch (give a big library a few minutes on Wi-Fi).</p></div>
+    </details>
+    <details>
+      <summary>How do I delete everything?</summary>
+      <div class="a"><p>Delete memories or children in the app (deletions sync everywhere), and remove the app's
+      iCloud data under iOS Settings → your name → iCloud → Manage Account Storage → Little Knots.
+      Deleting the app itself removes what's stored on the device.</p></div>
+    </details>
+  </div>
+
+  <div class="topic" style="--tint: var(--strand-tint);">
+    <div class="topic-head"><span class="knot-emoji">🧵</span><h2>Odds &amp; ends</h2></div>
+
+    <details>
+      <summary>How do I add the widget?</summary>
+      <div class="a"><p>Long-press your Home Screen → tap the + → search for <strong>Little Knots</strong> → pick a
+      size. It keeps a recent memory within thumb's reach.</p></div>
+    </details>
+    <details>
+      <summary>Reminders aren't arriving.</summary>
+      <div class="a"><p>Check the toggle in the app's Settings, then iOS Settings → Notifications → Little Knots →
+      Allow Notifications. If you previously declined the permission, the app will point you to the right
+      Settings screen when you flip the toggle back on.</p></div>
+    </details>
+    <details>
+      <summary>Which devices does it run on?</summary>
+      <div class="a"><p>Little Knots is designed for iPhone and requires iOS 26 or later. It follows your system's
+      light or dark appearance — dark mode is ink &amp; glow, and rather lovely, if we may.</p></div>
+    </details>
+    <details>
+      <summary>I found a bug. Do you want to hear about it?</summary>
+      <div class="a"><p>Very much. <a href="mailto:support@thomasaj.com?subject=Little%20Knots%20bug">Email me</a> what
+      happened and what you expected — a screenshot helps. Bugs in a memories app deserve fast funerals.</p></div>
+    </details>
+  </div>
+
+  <div class="contact-card">
+    <div class="washi" aria-hidden="true"></div>
+    <h2>Still <em>knotted up?</em></h2>
+    <p>Write to me and I'll untangle it with you. Include your iOS version and roughly what happened — I answer every email myself.</p>
+    <a class="btn" href="mailto:support@thomasaj.com?subject=Little%20Knots%20support">✉️ &nbsp;support@thomasaj.com</a>
+  </div>
+</main>
+
+<footer>
+  <p>
+    &copy; 2026 Little Knots &middot; Thomas A Johansen &middot;
+    <a href="/tinyknots/privacy.html">Privacy</a> &middot;
+    <a href="/tinyknots/support.html">Support</a> &middot;
+    <a href="/tinyknots/terms.html">Terms</a>
+  </p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Knots — Tie a knot in the little moments</title>
+<meta name="description" content="A gentle keepsake app for parents. Their firsts, their lasts, and the hilarious things they say — strung on one thread you and your partner tie together. Private, in your own iCloud.">
+<meta name="theme-color" content="#FBF6EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#211C2E" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://thomasaj.com/tinyknots/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thomasaj.com/tinyknots/">
+<meta property="og:title" content="Little Knots — Tie a knot in the little moments">
+<meta property="og:description" content="Their firsts, their lasts, and the things they say — strung on one thread you and your partner tie together. Private, in your own iCloud.">
+<meta property="og:image" content="https://thomasaj.com/tinyknots/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Little Knots icon — a thread tied into two hearts — next to the words: Their whole story, tied on one thread.">
+<meta property="og:site_name" content="Little Knots">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Little Knots — Tie a knot in the little moments">
+<meta name="twitter:description" content="Their firsts, their lasts, and the things they say — on one thread you and your partner tie together.">
+<meta name="twitter:image" content="https://thomasaj.com/tinyknots/assets/og-image.png">
+
+<!-- Icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="/tinyknots/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/tinyknots/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/tinyknots/assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  /* "Classic" paper — same palette as the app's Theme.swift */
+  --paper-top: #FBF6EE;
+  --paper-bottom: #F6EDDE;
+  --card: #FFFFFF;
+  --medallion: #FFFFFF;
+  --ink: #43355A;
+  --ink-soft: #716586;
+  --kicker: #73695A;
+  --accent: #7C5CBF;
+  --strand: #E96B9F;          /* blush — the icon's thread */
+  --strand-tint: #FCE3ED;
+  --sky: #4799D6;   --sky-tint: #E0F0FB;
+  --mint: #2FA67E;  --mint-tint: #DFF5EC;
+  --peach: #E07F3C; --peach-tint: #FCEADD;
+  --lavender: #8A63CE; --lavender-tint: #EDE6F9;
+  --sunshine: #C4960F; --sunshine-tint: #FBF3D9;
+  --hairline: rgba(67, 53, 90, 0.10);
+  --shadow: rgba(67, 53, 90, 0.14);
+  --nav-bg: rgba(251, 246, 238, 0.85);
+  --grain-opacity: 0.03;
+}
+
+/* Ink & glow — the app's dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper-top: #211C2E;
+    --paper-bottom: #15111F;
+    --card: #2C2539;
+    --medallion: #F4EFF9;      /* medallion faces stay light — they glow */
+    --ink: #EDE7F5;
+    --ink-soft: #A396BC;
+    --kicker: #918572;
+    --accent: #9D82DC;
+    --strand: #F2A7C3;
+    --strand-tint: #46303C;
+    --sky: #8FC9EA;   --sky-tint: #2C3A48;
+    --mint: #7AD8B8;  --mint-tint: #2B4038;
+    --peach: #F5B286; --peach-tint: #47362A;
+    --lavender: #B99BE8; --lavender-tint: #3B3150;
+    --sunshine: #EFC54A; --sunshine-tint: #453D26;
+    --hairline: rgba(237, 231, 245, 0.12);
+    --shadow: rgba(0, 0, 0, 0.5);
+    --nav-bg: rgba(33, 28, 46, 0.85);
+    --grain-opacity: 0.05;
+  }
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(180deg, var(--paper-top) 0%, var(--paper-bottom) 100%) fixed;
+  color: var(--ink);
+  overflow-x: hidden;
+  line-height: 1.55;
+}
+
+/* Paper grain */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  opacity: var(--grain-opacity);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.serif { font-family: 'Newsreader', serif; font-style: italic; font-weight: 400; }
+
+.kicker {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kicker);
+}
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ---- Nav ---- */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 40px;
+  transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+}
+nav.scrolled {
+  background: var(--nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 0.5px 0 var(--hairline);
+}
+nav .nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 900;
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.wordmark svg { display: block; }
+.wordmark .knot-glyph path { stroke: var(--strand); }
+nav .nav-links {
+  display: flex;
+  gap: 26px;
+  list-style: none;
+  align-items: center;
+}
+nav .nav-links a {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding: 12px 4px;
+  margin: -12px -4px;
+  transition: color 0.2s;
+}
+nav .nav-links a:hover { color: var(--ink); }
+nav .download-sm {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--paper-top);
+  background: var(--ink);
+  padding: 10px 20px;
+  border-radius: 980px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+nav .download-sm:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* ---- Hero ---- */
+.hero {
+  padding: 150px 40px 0;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  padding: 7px 16px;
+  border-radius: 980px;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.15s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+.hero-badge .spark { color: var(--sunshine); }
+.hero h1 {
+  font-size: clamp(2.6rem, 7vw, 5.25rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  max-width: 900px;
+  margin: 0 auto 22px;
+  opacity: 0;
+  animation: fadeUp 1s 0.3s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+.hero h1 em {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.015em;
+  color: var(--strand);
+}
+.hero .lede {
+  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  color: var(--ink-soft);
+  max-width: 560px;
+  margin: 0 auto 34px;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.5s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+.cta-group {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--paper-top);
+  background: var(--ink);
+  padding: 15px 30px;
+  border-radius: 980px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 22px var(--shadow);
+}
+.btn-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 34px var(--shadow); }
+.btn-secondary {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: none;
+  border: 1.5px solid var(--hairline);
+  padding: 14px 26px;
+  border-radius: 980px;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-secondary:hover { border-color: var(--ink-soft); color: var(--ink); }
+.hero .fineprint {
+  margin-top: 18px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--kicker);
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+
+/* ---- The hero thread ---- */
+.thread-stage {
+  max-width: 1220px;
+  margin: 10px auto -20px;
+  padding: 0 10px;
+}
+.thread-stage svg { width: 100%; height: auto; display: block; overflow: visible; }
+.thread-stage .thread-path {
+  fill: none;
+  stroke: var(--strand);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawThread 2.6s 0.7s cubic-bezier(0.45, 0, 0.3, 1) forwards;
+}
+.bead { opacity: 0; animation: beadPop 0.65s cubic-bezier(0.34,1.56,0.64,1) forwards; transform-box: fill-box; transform-origin: center; }
+.bead-1 { animation-delay: 1.15s; }
+.bead-2 { animation-delay: 2.2s; }
+.bead-3 { animation-delay: 2.75s; }
+.knot-dot { opacity: 0; animation: beadPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; transform-box: fill-box; transform-origin: center; }
+.knot-june { animation-delay: 1.6s; }
+.bob { animation: bob 5.5s ease-in-out infinite alternate; }
+.bob-2 { animation-delay: -1.8s; }
+.bob-3 { animation-delay: -3.4s; }
+.bead circle.face { fill: var(--medallion); stroke: var(--strand); stroke-width: 2.5; }
+.bead text.emoji { font-size: 27px; }
+.bead text.bead-label, .knot-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  fill: var(--ink-soft);
+}
+.knot-label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  fill: var(--kicker);
+}
+.sparkle { fill: var(--sunshine); opacity: 0; animation: sparkleIn 0.8s 3.1s ease forwards; }
+
+/* ---- Phone sim ---- */
+.phone-section {
+  padding: 70px 40px 110px;
+  display: flex;
+  justify-content: center;
+}
+.phone-frame {
+  width: 300px;
+  height: 620px;
+  background: #241E31;
+  border-radius: 44px;
+  padding: 11px;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.06),
+    0 12px 32px rgba(0,0,0,0.12),
+    0 40px 90px var(--shadow),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 34px;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--paper-top) 0%, var(--paper-bottom) 100%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.sim-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 18px 10px;
+}
+.sim-header .sim-title { font-size: 15px; font-weight: 900; letter-spacing: -0.01em; }
+.sim-header .sim-title .serif { color: var(--strand); font-size: 15px; }
+.sim-child-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--strand);
+  background: var(--strand-tint);
+  border-radius: 980px;
+  padding: 4px 10px;
+}
+.sim-scroll { flex: 1; position: relative; padding: 4px 0 14px; overflow: hidden; }
+.sim-thread-rail {
+  position: absolute;
+  top: 0; bottom: 0; left: 46px;
+  width: 2.5px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(180deg, var(--strand) 0 7px, transparent 7px 14px);
+  opacity: 0.85;
+}
+.sim-rows { position: relative; display: flex; flex-direction: column; gap: 11px; padding: 6px 14px 0 0; }
+.sim-row { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.sim-row.pop { animation: pulledTight 0.7s cubic-bezier(0.34,1.56,0.64,1); }
+.sim-medallion {
+  width: 44px; height: 44px;
+  margin-left: 25px;
+  border-radius: 50%;
+  background: var(--medallion);
+  border: 2px solid var(--strand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px var(--shadow);
+  position: relative;
+  z-index: 1;
+}
+.sim-row.glow .sim-medallion { box-shadow: 0 0 0 4px var(--strand-tint), 0 3px 14px var(--shadow); }
+.sim-card { min-width: 0; }
+.sim-card .sim-name { font-size: 13px; font-weight: 800; line-height: 1.25; }
+.sim-card .sim-date { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+.sim-knot-row { display: flex; align-items: center; gap: 8px; min-height: 22px; }
+.sim-knot-row .dot {
+  width: 9px; height: 9px;
+  margin-left: 42.5px;
+  border-radius: 50%;
+  background: var(--strand);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.sim-knot-row .month {
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: var(--kicker);
+}
+.sim-quote {
+  margin-left: 25px;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 10px 14px 10px 16px;
+  box-shadow: 0 4px 14px var(--shadow);
+  position: relative;
+  z-index: 1;
+}
+.sim-quote .tape {
+  position: absolute;
+  top: -7px; left: 16px;
+  width: 42px; height: 13px;
+  background: color-mix(in srgb, var(--sunshine) 38%, transparent);
+  transform: rotate(-4deg);
+  border-radius: 2px;
+}
+.sim-quote .q {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+.sim-quote .by { font-size: 10.5px; font-weight: 800; color: var(--ink-soft); margin-top: 3px; }
+.sim-loose-end { display: flex; align-items: center; gap: 10px; min-height: 40px; }
+.sim-loose-end .plus {
+  width: 34px; height: 34px;
+  margin-left: 30px;
+  border-radius: 50%;
+  background: var(--strand);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--strand) 45%, transparent);
+  animation: plusBreathe 3.2s ease-in-out infinite;
+}
+.sim-loose-end .hint { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+.sim-spark {
+  position: absolute;
+  font-size: 15px;
+  pointer-events: none;
+  animation: sparkFly 0.9s ease-out forwards;
+}
+.sim-footer {
+  padding: 10px 16px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+}
+.sim-tab { font-size: 16px; opacity: 0.4; }
+.sim-tab.active { opacity: 1; }
+
+/* ---- Statement ---- */
+.statement { padding: 40px 40px 100px; text-align: center; }
+.statement .kicker { display: block; margin-bottom: 16px; }
+.statement h2 {
+  font-size: clamp(1.9rem, 4.6vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  max-width: 780px;
+  margin: 0 auto 22px;
+}
+.statement h2 .ital {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+.statement p {
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* ---- Quote marquee ---- */
+.quote-strip {
+  padding: 56px 0;
+  overflow: hidden;
+  border-top: 2px dashed var(--hairline);
+  border-bottom: 2px dashed var(--hairline);
+}
+.quote-track {
+  display: flex;
+  gap: 64px;
+  width: max-content;
+  animation: marquee 55s linear infinite;
+}
+.quote-track .qt {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 1.45rem;
+  color: var(--ink);
+  white-space: nowrap;
+  opacity: 0.75;
+}
+.quote-track .qt .who {
+  font-family: 'Nunito', sans-serif;
+  font-style: normal;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--ink-soft);
+  margin-left: 10px;
+}
+
+/* ---- Features ---- */
+.features { padding: 100px 40px 40px; }
+.features .head { text-align: center; max-width: 720px; margin: 0 auto 56px; }
+.features .head .kicker { display: block; margin-bottom: 14px; }
+.features .head h2 {
+  font-size: clamp(1.9rem, 4.2vw, 2.9rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+.features .head h2 .ital { font-family: 'Newsreader', serif; font-style: italic; font-weight: 500; color: var(--strand); }
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.feature-card {
+  background: var(--card);
+  border-radius: 18px;   /* Theme.cardCornerRadius */
+  padding: 40px 30px 34px;
+  position: relative;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 4px 18px var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.feature-card:hover { transform: translateY(-5px) rotate(-0.3deg); box-shadow: 0 18px 44px var(--shadow); }
+.feature-card .washi {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  width: 86px;
+  height: 22px;
+  border-radius: 3px;
+  opacity: 0.85;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.feature-card .emoji-cup {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 18px;
+}
+.feature-card h3 {
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+  margin-bottom: 9px;
+}
+.feature-card p {
+  font-size: 0.94rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.feature-card p em { font-family: 'Newsreader', serif; font-size: 1.02em; }
+.pro-chip {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 3px 9px;
+  border-radius: 980px;
+  vertical-align: 3px;
+  margin-left: 7px;
+}
+.extras-line {
+  max-width: 1120px;
+  margin: 34px auto 0;
+  text-align: center;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.extras-line .serif { color: var(--strand); }
+
+/* ---- Pro ---- */
+.pro { padding: 110px 40px; }
+.pro-card {
+  max-width: 940px;
+  margin: 0 auto;
+  background: var(--card);
+  border-radius: 26px;
+  padding: 64px 56px 56px;
+  position: relative;
+  box-shadow: 0 24px 70px var(--shadow);
+  border: 1px solid var(--hairline);
+}
+.pro-card::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 2px dashed color-mix(in srgb, var(--strand) 45%, transparent);
+  border-radius: 18px;
+  pointer-events: none;
+}
+.pro-card .kicker { display: block; text-align: center; margin-bottom: 12px; color: var(--accent); }
+.pro-card h2 {
+  text-align: center;
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  margin-bottom: 14px;
+}
+.pro-card .free-line {
+  text-align: center;
+  font-size: 1.02rem;
+  color: var(--ink-soft);
+  max-width: 560px;
+  margin: 0 auto 44px;
+}
+.pro-card .free-line strong { color: var(--ink); }
+.perk-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 42px;
+}
+.perk {
+  text-align: center;
+  padding: 18px 8px 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--paper-top) 60%, transparent), transparent);
+}
+.perk .p-emoji { font-size: 26px; display: block; margin-bottom: 8px; }
+.perk .p-name { font-size: 0.82rem; font-weight: 900; display: block; margin-bottom: 3px; }
+.perk .p-sub { font-size: 0.72rem; font-weight: 600; color: var(--ink-soft); line-height: 1.35; display: block; }
+.pro-card .price-line {
+  text-align: center;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-bottom: 20px;
+}
+.promise {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+}
+.promise p {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 1.08rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.promise p strong { font-family: 'Nunito', sans-serif; font-style: normal; font-weight: 900; }
+
+/* ---- Final CTA ---- */
+.final-cta {
+  text-align: center;
+  padding: 60px 40px 130px;
+}
+.final-cta .end-thread { max-width: 460px; margin: 0 auto 8px; }
+.final-cta .end-thread svg { width: 100%; height: auto; overflow: visible; }
+.final-cta .end-thread path { fill: none; stroke: var(--strand); stroke-width: 4.5; stroke-linecap: round; }
+.final-cta h2 {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.final-cta h2 .ital { font-family: 'Newsreader', serif; font-style: italic; font-weight: 500; color: var(--strand); }
+.final-cta .sub {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--ink-soft);
+  margin-bottom: 38px;
+}
+.final-cta .fineprint {
+  margin-top: 18px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--kicker);
+}
+
+/* ---- Footer ---- */
+footer {
+  padding: 42px 40px;
+  text-align: center;
+  border-top: 1px solid var(--hairline);
+}
+footer p { font-size: 0.8125rem; color: var(--ink-soft); font-weight: 600; }
+footer a { color: var(--ink-soft); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
+footer a:hover { color: var(--ink); }
+footer .home-link { margin-top: 8px; font-size: 0.78rem; }
+
+/* ---- Keyframes ---- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes drawThread { to { stroke-dashoffset: 0; } }
+@keyframes beadPop {
+  0%   { opacity: 0; transform: scale(0.4); }
+  60%  { opacity: 1; transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes bob {
+  from { transform: translateY(-2.5px); }
+  to   { transform: translateY(2.5px); }
+}
+@keyframes sparkleIn {
+  0% { opacity: 0; transform: scale(0.3) rotate(-40deg); transform-box: fill-box; transform-origin: center; }
+  60% { opacity: 1; transform: scale(1.25) rotate(8deg); }
+  100% { opacity: 0.9; transform: scale(1) rotate(0deg); }
+}
+@keyframes pulledTight {
+  0%   { opacity: 0; transform: scale(0.55) translateY(-14px); }
+  55%  { opacity: 1; transform: scale(1.07) translateY(2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes plusBreathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.09); }
+}
+@keyframes sparkFly {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--fly-x, 18px), -30px) scale(1.15) rotate(20deg); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---- Reduce Motion: everything settles, nothing is lost ---- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .hero-badge, .hero h1, .hero .lede, .cta-group, .hero .fineprint { animation: none; opacity: 1; }
+  .thread-stage .thread-path { animation: none; stroke-dashoffset: 0; }
+  .bead, .knot-dot, .sparkle { animation: none; opacity: 1; }
+  .bob { animation: none; }
+  .quote-track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; row-gap: 14px; }
+  .sim-loose-end .plus { animation: none; }
+  .sim-row.pop { animation: none; }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .feature-grid { grid-template-columns: repeat(2, 1fr); }
+  .perk-grid { grid-template-columns: repeat(3, 1fr); row-gap: 18px; }
+}
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  nav .nav-links { display: none; }
+  .hero { padding: 120px 24px 0; }
+  .features, .pro, .statement, .final-cta { padding-left: 24px; padding-right: 24px; }
+  .phone-section { padding: 50px 20px 80px; }
+  .pro-card { padding: 48px 26px 42px; }
+  .perk-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .feature-grid { grid-template-columns: 1fr; }
+  footer { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav id="mainNav" aria-label="Main">
+  <div class="nav-inner">
+    <a href="/tinyknots/" class="wordmark" aria-label="Little Knots home">
+      <svg class="knot-glyph" width="34" height="22" viewBox="0 0 68 44" aria-hidden="true">
+        <path d="M2 33 C 12 28, 18 36, 26 33 C 18 26, 20 12, 30 14 C 38 15, 36 26, 26 33 C 36 30, 42 34, 47 32 C 42 27, 44 18, 50 19 C 56 20, 54 28, 47 32 C 54 30, 60 32, 66 29"
+              fill="none" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      little knots
+    </a>
+    <ul class="nav-links">
+      <li><a href="#thread">The thread</a></li>
+      <li><a href="#features">What you keep</a></li>
+      <li><a href="#pro">Pro</a></li>
+      <li><a href="/tinyknots/support.html">Support</a></li>
+    </ul>
+    <a href="#download" class="download-sm">Get the app</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge"><span class="spark" aria-hidden="true">✦</span> Coming soon to the App&nbsp;Store</div>
+  <h1>Tie a knot in the moments <em>you never want to lose.</em></h1>
+  <p class="lede">
+    Little Knots is a gentle keepsake for parents — their firsts, their lasts, and the
+    hilarious things they say in between, strung on one thread you and your partner tie together.
+  </p>
+  <div class="cta-group">
+    <a href="https://apps.apple.com/app/id6779225089" class="btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+      Download on the App&nbsp;Store
+    </a>
+    <a href="#thread" class="btn-secondary">See how it works</a>
+  </div>
+  <p class="fineprint">Free on iPhone · No account · No ads</p>
+</header>
+
+<!-- The thread -->
+<div class="thread-stage" aria-hidden="true">
+  <svg viewBox="0 0 1200 330" xmlns="http://www.w3.org/2000/svg">
+    <!-- One continuous thread: wave in, a big heart-knot, a small heart-knot, wave out to a curled loose end -->
+    <path class="thread-path" pathLength="1" d="
+      M 0 200
+      C 60 188, 110 214, 175 204
+      C 240 194, 300 200, 380 212
+      C 430 219, 460 230, 490 238
+      C 420 196, 428 118, 492 136
+      C 512 142, 516 158, 512 170
+      C 520 152, 534 140, 552 142
+      C 604 148, 570 216, 490 238
+      C 540 232, 580 218, 640 216
+      C 670 215, 690 219, 712 224
+      C 664 196, 676 144, 718 156
+      C 730 160, 734 170, 732 178
+      C 738 166, 748 158, 760 161
+      C 792 169, 764 210, 712 224
+      C 760 222, 800 210, 860 206
+      C 930 201, 980 214, 1040 206
+      C 1090 199, 1130 186, 1122 166
+      C 1116 152, 1096 154, 1094 166
+      C 1092 176, 1104 182, 1116 178
+    "/>
+    <!-- month knot -->
+    <g class="knot-dot knot-june">
+      <circle cx="380" cy="212" r="6.5" fill="var(--strand)"/>
+      <text class="knot-label" x="380" y="188" text-anchor="middle">JUNE</text>
+    </g>
+    <!-- beads strung on the thread -->
+    <g class="bead bead-1">
+      <g class="bob">
+        <circle class="face" cx="175" cy="204" r="31"/>
+        <text class="emoji" x="175" y="214" text-anchor="middle">😊</text>
+        <text class="bead-label" x="175" y="262" text-anchor="middle">First smile</text>
+      </g>
+    </g>
+    <g class="bead bead-2">
+      <g class="bob bob-2">
+        <circle class="face" cx="640" cy="216" r="31"/>
+        <text class="emoji" x="640" y="226" text-anchor="middle">🚶</text>
+        <text class="bead-label" x="640" y="274" text-anchor="middle">First steps</text>
+      </g>
+    </g>
+    <g class="bead bead-3">
+      <g class="bob bob-3">
+        <circle class="face" cx="940" cy="207" r="31"/>
+        <text class="emoji" x="940" y="217" text-anchor="middle">🗣️</text>
+        <text class="bead-label" x="940" y="265" text-anchor="middle">First word</text>
+      </g>
+    </g>
+    <!-- the icon's gold sparkle, landing as the thread finishes -->
+    <g class="sparkle">
+      <path d="M 1150 120 l 4.5 11 l 11 4.5 l -11 4.5 l -4.5 11 l -4.5 -11 l -11 -4.5 l 11 -4.5 Z"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Phone sim -->
+<section class="phone-section" id="thread" aria-label="A preview of the Little Knots timeline">
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="sim-header">
+        <div class="sim-title">Their <span class="serif">thread</span></div>
+        <div class="sim-child-chip">🎀 Nora</div>
+      </div>
+      <div class="sim-scroll">
+        <div class="sim-thread-rail"></div>
+        <div class="sim-rows" id="simRows">
+          <div class="sim-loose-end">
+            <div class="plus" aria-hidden="true">+</div>
+            <span class="hint">Tie a new knot</span>
+          </div>
+          <!-- rows injected by script; static fallback below for no-JS -->
+          <noscript>
+            <div class="sim-row"><div class="sim-medallion">🚶</div><div class="sim-card"><div class="sim-name">First steps</div><div class="sim-date">June 28</div></div></div>
+          </noscript>
+        </div>
+      </div>
+      <div class="sim-footer" aria-hidden="true">
+        <span class="sim-tab">👨‍👩‍👧</span>
+        <span class="sim-tab active">🧵</span>
+        <span class="sim-tab">💬</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Statement -->
+<section class="statement">
+  <div class="reveal">
+    <span class="kicker">Why a thread</span>
+    <h2>Not a feed. Not a spreadsheet. <span class="ital">A&nbsp;thread.</span></h2>
+    <p>
+      Baby apps love charts and percentiles. Little Knots is quieter than that. Your family's
+      moments hang in a line you can walk with your thumb — months tied off as little knots,
+      memories resting on it like beads. Tap one and it blooms open into a keepsake, photos,
+      video and all.
+    </p>
+  </div>
+</section>
+
+<!-- Quote marquee -->
+<div class="quote-strip" aria-label="Quotes kids have said">
+  <div class="quote-track">
+    <span class="qt">“I want to marry the moon.”<span class="who">— Nora, 3</span></span>
+    <span class="qt">“Daddy, is the sun just a big lamp?”<span class="who">— Theo, 4</span></span>
+    <span class="qt">“When I grow up I want to be a dog.”<span class="who">— Ella, 2</span></span>
+    <span class="qt">“I didn't fall. The floor came up.”<span class="who">— Oskar, 3</span></span>
+    <span class="qt">“My tummy is laughing.”<span class="who">— Mia, 2</span></span>
+    <span class="qt">“Grandma is my best old friend.”<span class="who">— Leo, 4</span></span>
+    <span class="qt" aria-hidden="true">“I want to marry the moon.”<span class="who">— Nora, 3</span></span>
+    <span class="qt" aria-hidden="true">“Daddy, is the sun just a big lamp?”<span class="who">— Theo, 4</span></span>
+    <span class="qt" aria-hidden="true">“When I grow up I want to be a dog.”<span class="who">— Ella, 2</span></span>
+    <span class="qt" aria-hidden="true">“I didn't fall. The floor came up.”<span class="who">— Oskar, 3</span></span>
+    <span class="qt" aria-hidden="true">“My tummy is laughing.”<span class="who">— Mia, 2</span></span>
+    <span class="qt" aria-hidden="true">“Grandma is my best old friend.”<span class="who">— Leo, 4</span></span>
+  </div>
+</div>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="head reveal">
+    <span class="kicker">What you keep</span>
+    <h2>Everything worth remembering, <span class="ital">nothing that isn't.</span></h2>
+  </div>
+  <div class="feature-grid">
+
+    <div class="feature-card reveal">
+      <div class="washi" style="background: color-mix(in srgb, var(--sky) 30%, transparent); transform: translateX(-50%) rotate(-3deg);"></div>
+      <div class="emoji-cup" style="background: var(--sky-tint);">🌟</div>
+      <h3>71 knots, ready to tie</h3>
+      <p>From <em>Heard the heartbeat</em> to <em>First bike ride</em> — a gentle checklist that knows what tends to come next, and never nags. Anything it doesn't know, you can tie yourself.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="washi" style="background: color-mix(in srgb, var(--strand) 28%, transparent); transform: translateX(-50%) rotate(2.5deg);"></div>
+      <div class="emoji-cup" style="background: var(--strand-tint);">🥲</div>
+      <h3>The lasts, too</h3>
+      <p>Nobody tells you when the last stroller ride happens. Little Knots keeps a place for the endings that sneak past — <em>the last bottle, the last nap, the last time they let you carry them.</em></p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="washi" style="background: color-mix(in srgb, var(--sunshine) 32%, transparent); transform: translateX(-50%) rotate(-2deg);"></div>
+      <div class="emoji-cup" style="background: var(--sunshine-tint);">💬</div>
+      <h3>Tiny philosophers, quoted</h3>
+      <p>A wall for the things they actually say, written in italics the way they deserve. Future-you will be very glad you wrote them down.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="washi" style="background: color-mix(in srgb, var(--peach) 30%, transparent); transform: translateX(-50%) rotate(3deg);"></div>
+      <div class="emoji-cup" style="background: var(--peach-tint);">🕰️</div>
+      <h3>Late is fine</h3>
+      <p>Real life runs behind. Catch up whenever, child by child — and when you can't recall the exact date, <em>“sometime that summer”</em> is a perfectly good answer.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="washi" style="background: color-mix(in srgb, var(--lavender) 30%, transparent); transform: translateX(-50%) rotate(-2.5deg);"></div>
+      <div class="emoji-cup" style="background: var(--lavender-tint);">💞</div>
+      <h3>Tied together <span class="pro-chip">Pro</span></h3>
+      <p>Invite your partner and you both hold the same thread — they tie knots too. Grandparents and godparents can follow along. Everyone sees the same story.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="washi" style="background: color-mix(in srgb, var(--mint) 30%, transparent); transform: translateX(-50%) rotate(2deg);"></div>
+      <div class="emoji-cup" style="background: var(--mint-tint);">🔒</div>
+      <h3>Yours. Actually yours.</h3>
+      <p>No account. No ads. No tracking — not even analytics. Memories live on your iPhone and sync through your own iCloud. We couldn't peek if we wanted to.</p>
+    </div>
+
+  </div>
+  <p class="extras-line reveal">
+    Also in the box: a Home Screen widget, gentle memory reminders, an ink-and-glow dark mode,
+    <span class="serif">and confetti where confetti is due.</span>
+  </p>
+</section>
+
+<!-- Pro -->
+<section class="pro" id="pro">
+  <div class="pro-card reveal">
+    <span class="kicker">Little Knots Pro</span>
+    <h2>For the whole crew.</h2>
+    <p class="free-line">
+      <strong>Free keeps one child's whole story</strong> — unlimited memories, photos, and quotes,
+      forever. Pro is for when the family (and the story) grows.
+    </p>
+    <div class="perk-grid">
+      <div class="perk"><span class="p-emoji">👶</span><span class="p-name">Every child</span><span class="p-sub">As many threads as you have kids</span></div>
+      <div class="perk"><span class="p-emoji">🎬</span><span class="p-name">Video</span><span class="p-sub">First steps, in motion</span></div>
+      <div class="perk"><span class="p-emoji">💞</span><span class="p-name">Sharing</span><span class="p-sub">Two parents, one thread</span></div>
+      <div class="perk"><span class="p-emoji">🧵</span><span class="p-name">Thread styles</span><span class="p-sub">Stitched, beaded, strung with hearts</span></div>
+      <div class="perk"><span class="p-emoji">🎨</span><span class="p-name">Papers</span><span class="p-sub">Linen, Petal &amp; Meadow</span></div>
+    </div>
+    <p class="price-line">
+      Weekly, monthly, or yearly — or one payment that's yours forever.
+      Every plan covers the whole household with Apple Family Sharing.
+    </p>
+    <div class="promise">
+      <p>And a promise, stitched in: <strong>if Pro ever lapses, every memory stays.</strong>
+      Nothing you've saved is ever locked away.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta" id="download">
+  <div class="reveal">
+    <div class="end-thread" aria-hidden="true">
+      <svg viewBox="0 0 460 70" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 5 42 C 60 34, 100 50, 150 44 C 190 39, 200 28, 230 30 C 224 18, 236 10, 244 18 C 252 26, 242 34, 232 30 C 260 32, 290 44, 330 42 C 380 39, 420 30, 455 36"/>
+      </svg>
+    </div>
+    <h2>Start <span class="ital">tying.</span></h2>
+    <p class="sub">The first knots are free.</p>
+    <a href="https://apps.apple.com/app/id6779225089" class="btn-primary" style="font-size:1.1rem; padding:17px 38px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+      Download on the App&nbsp;Store
+    </a>
+    <p class="fineprint">For iPhone · Requires iOS 26 or later</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>
+    &copy; 2026 Little Knots &middot; Thomas A Johansen &middot;
+    <a href="/tinyknots/privacy.html">Privacy</a> &middot;
+    <a href="/tinyknots/support.html">Support</a> &middot;
+    <a href="/tinyknots/terms.html">Terms</a>
+  </p>
+  <p class="home-link"><a href="/">More apps by Thomas →</a></p>
+</footer>
+
+<script>
+// ---- Nav scroll effect ----
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ---- Reveal on scroll ----
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 90);
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el => revealObs.observe(el));
+
+// ---- Timeline sim: the loose end keeps tying new knots ----
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const START_ROWS = [
+  { type: 'memory', emoji: '🚶', name: 'First steps', date: 'June 28' },
+  { type: 'quote', text: '“I want to marry the moon.”', by: 'Nora · age 3' },
+  { type: 'knot', month: 'JUNE' },
+  { type: 'memory', emoji: '🦷', name: 'First tooth', date: 'Sometime in May' },
+  { type: 'memory', emoji: '😆', name: 'First laugh', date: 'May 3' },
+  { type: 'knot', month: 'MAY' },
+  { type: 'memory', emoji: '🏠', name: 'Came home', date: 'April 30' },
+];
+
+const BLOOM_QUEUE = [
+  { type: 'memory', emoji: '🐛', name: 'Crawled', date: 'Just now' },
+  { type: 'quote', text: '“The bird is walking with its hands.”', by: 'Nora · age 3' },
+  { type: 'memory', emoji: '🗣️', name: 'Said “mama”', date: 'Just now' },
+  { type: 'memory', emoji: '🎂', name: 'First birthday cake', date: 'Just now' },
+  { type: 'quote', text: '“My shadow is following me again!”', by: 'Nora · age 3' },
+  { type: 'memory', emoji: '👋', name: 'Waved bye-bye', date: 'Just now' },
+  { type: 'memory', emoji: '🤭', name: 'Told their first joke', date: 'Just now' },
+];
+
+const simRows = document.getElementById('simRows');
+
+function buildRow(row) {
+  const el = document.createElement('div');
+  if (row.type === 'knot') {
+    el.className = 'sim-knot-row';
+    el.innerHTML = `<span class="dot"></span><span class="month">${row.month}</span>`;
+  } else if (row.type === 'quote') {
+    el.className = 'sim-row';
+    el.innerHTML = `<div class="sim-quote"><div class="tape"></div><div class="q">${row.text}</div><div class="by">${row.by}</div></div>`;
+  } else {
+    el.className = 'sim-row';
+    el.innerHTML = `<div class="sim-medallion">${row.emoji}</div><div class="sim-card"><div class="sim-name">${row.name}</div><div class="sim-date">${row.date}</div></div>`;
+  }
+  return el;
+}
+
+START_ROWS.forEach(r => simRows.appendChild(buildRow(r)));
+
+let bloomIndex = 0;
+function bloom() {
+  const data = BLOOM_QUEUE[bloomIndex % BLOOM_QUEUE.length];
+  bloomIndex++;
+  const el = buildRow(data);
+  el.classList.add('pop', 'glow');
+  // Insert right below the loose end — the newest knot on the thread.
+  simRows.insertBefore(el, simRows.children[1]);
+  setTimeout(() => el.classList.remove('glow'), 1600);
+
+  // A tiny sparkle burst by the + button — the "pulled tight" ceremony.
+  for (let i = 0; i < 3; i++) {
+    const s = document.createElement('span');
+    s.className = 'sim-spark';
+    s.textContent = '✨';
+    s.style.left = (44 + i * 14) + 'px';
+    s.style.top = '26px';
+    s.style.setProperty('--fly-x', (i - 1) * 26 + 'px');
+    s.style.animationDelay = (i * 90) + 'ms';
+    simRows.appendChild(s);
+    setTimeout(() => s.remove(), 1200);
+  }
+
+  // One in, one out: the oldest row slips off the bottom of the phone,
+  // so the story keeps its shape instead of piling up.
+  const rows = [...simRows.children].filter(c => !c.classList.contains('sim-loose-end') && !c.classList.contains('sim-spark'));
+  if (rows.length > START_ROWS.length) rows[rows.length - 1].remove();
+}
+
+if (!reduceMotion) {
+  setTimeout(() => {
+    bloom();
+    setInterval(bloom, 8500);
+  }, 3200);
+}
+</script>
+</body>
+</html>

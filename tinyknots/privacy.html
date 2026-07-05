@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy — Little Knots</title>
+<meta name="description" content="Little Knots collects nothing. Your family's memories live on your iPhone and in your own iCloud — no accounts, no analytics, no ads, no tracking.">
+<meta name="theme-color" content="#FBF6EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#211C2E" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://thomasaj.com/tinyknots/privacy.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://thomasaj.com/tinyknots/privacy.html">
+<meta property="og:title" content="Privacy — Little Knots">
+<meta property="og:description" content="Little Knots collects nothing. Your memories live in your own iCloud.">
+<meta property="og:image" content="https://thomasaj.com/tinyknots/assets/og-image.png">
+<meta property="og:site_name" content="Little Knots">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/tinyknots/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/tinyknots/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/tinyknots/assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root {
+  --paper-top:#FBF6EE; --paper-bottom:#F6EDDE; --card:#FFFFFF;
+  --ink:#43355A; --ink-soft:#716586; --kicker:#73695A;
+  --accent:#7C5CBF; --strand:#E96B9F; --strand-tint:#FCE3ED;
+  --sunshine:#C4960F;
+  --hairline:rgba(67,53,90,0.10); --shadow:rgba(67,53,90,0.12);
+  --nav-bg:rgba(251,246,238,0.85); --grain-opacity:0.03;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper-top:#211C2E; --paper-bottom:#15111F; --card:#2C2539;
+    --ink:#EDE7F5; --ink-soft:#A396BC; --kicker:#918572;
+    --accent:#9D82DC; --strand:#F2A7C3; --strand-tint:#46303C;
+    --sunshine:#EFC54A;
+    --hairline:rgba(237,231,245,0.12); --shadow:rgba(0,0,0,0.5);
+    --nav-bg:rgba(33,28,46,0.85); --grain-opacity:0.05;
+  }
+}
+html { font-size:16px; -webkit-font-smoothing:antialiased; }
+body {
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,var(--paper-top) 0%,var(--paper-bottom) 100%) fixed;
+  color:var(--ink); line-height:1.65; overflow-x:hidden;
+}
+body::after {
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px; opacity:var(--grain-opacity); pointer-events:none; z-index:9999;
+}
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:0 40px;
+  background:var(--nav-bg); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px);
+  box-shadow:0 0.5px 0 var(--hairline); }
+nav .nav-inner { max-width:760px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:60px; }
+.wordmark { display:inline-flex; align-items:center; gap:9px; font-weight:900; font-size:1.05rem; color:var(--ink); text-decoration:none; }
+.wordmark svg path { stroke:var(--strand); }
+nav .back { font-size:0.8125rem; font-weight:700; color:var(--ink-soft); text-decoration:none; }
+nav .back:hover { color:var(--ink); }
+
+main { max-width:760px; margin:0 auto; padding:130px 28px 60px; }
+.doc-head { position:relative; background:var(--card); border-radius:18px; border:1px solid var(--hairline);
+  box-shadow:0 6px 24px var(--shadow); padding:42px 40px 36px; margin-bottom:48px; }
+.doc-head .washi { position:absolute; top:-11px; left:50%; width:96px; height:22px; border-radius:3px;
+  background:color-mix(in srgb, var(--strand) 30%, transparent); transform:translateX(-50%) rotate(-2.5deg);
+  box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+.kicker { font-size:0.6875rem; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:var(--kicker); }
+.doc-head h1 { font-size:clamp(1.9rem,5vw,2.6rem); font-weight:900; letter-spacing:-0.025em; line-height:1.1; margin:10px 0 12px; }
+.doc-head h1 em { font-family:'Newsreader',serif; font-style:italic; font-weight:500; color:var(--strand); }
+.doc-head .date { font-size:0.85rem; font-weight:700; color:var(--ink-soft); }
+.tldr { margin-top:18px; padding:16px 20px; border-radius:12px; background:var(--strand-tint);
+  font-size:0.98rem; font-weight:700; }
+.tldr .serif { font-family:'Newsreader',serif; font-style:italic; font-weight:400; }
+
+/* Knots on a strand — like the app's forms */
+.strand { position:relative; padding-left:34px; }
+.strand::before { content:''; position:absolute; left:8px; top:6px; bottom:6px; width:2.5px; border-radius:2px;
+  background:repeating-linear-gradient(180deg, var(--strand) 0 7px, transparent 7px 14px); opacity:0.7; }
+section.knot { position:relative; margin-bottom:38px; }
+section.knot::before { content:''; position:absolute; left:-32.5px; top:7px; width:13px; height:13px; border-radius:50%;
+  background:var(--strand); box-shadow:0 0 0 4px color-mix(in srgb, var(--strand) 22%, transparent); }
+section.knot h2 { font-size:1.28rem; font-weight:900; letter-spacing:-0.015em; margin-bottom:10px; }
+section.knot p { font-size:0.97rem; color:var(--ink-soft); margin-bottom:10px; }
+section.knot p strong { color:var(--ink); }
+section.knot ul { margin:4px 0 12px 20px; }
+section.knot li { font-size:0.97rem; color:var(--ink-soft); margin-bottom:6px; }
+section.knot li strong { color:var(--ink); }
+section.knot a { color:var(--accent); font-weight:700; }
+.contact-card { text-align:center; background:var(--card); border:1px solid var(--hairline); border-radius:18px;
+  box-shadow:0 6px 24px var(--shadow); padding:34px 28px; margin-top:14px; }
+.contact-card p { font-size:0.97rem; color:var(--ink-soft); margin-bottom:16px; }
+.btn { display:inline-block; font-weight:800; font-size:0.95rem; color:var(--paper-top); background:var(--ink);
+  padding:13px 26px; border-radius:980px; text-decoration:none; }
+footer { padding:38px 24px 46px; text-align:center; border-top:1px solid var(--hairline); margin-top:70px; }
+footer p { font-size:0.8125rem; color:var(--ink-soft); font-weight:600; }
+footer a { color:var(--ink-soft); }
+footer a:hover { color:var(--ink); }
+@media (max-width:600px) { nav { padding:0 20px; } main { padding:110px 20px 40px; } .doc-head { padding:34px 26px 30px; } }
+</style>
+</head>
+<body>
+
+<nav aria-label="Main">
+  <div class="nav-inner">
+    <a href="/tinyknots/" class="wordmark" aria-label="Little Knots home">
+      <svg width="30" height="20" viewBox="0 0 68 44" aria-hidden="true">
+        <path d="M2 33 C 12 28, 18 36, 26 33 C 18 26, 20 12, 30 14 C 38 15, 36 26, 26 33 C 36 30, 42 34, 47 32 C 42 27, 44 18, 50 19 C 56 20, 54 28, 47 32 C 54 30, 60 32, 66 29"
+              fill="none" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      little knots
+    </a>
+    <a class="back" href="/tinyknots/">← Back to Little Knots</a>
+  </div>
+</nav>
+
+<main>
+  <div class="doc-head">
+    <div class="washi" aria-hidden="true"></div>
+    <span class="kicker">Privacy policy</span>
+    <h1>Privacy, in <em>plain language.</em></h1>
+    <p class="date">Effective July 5, 2026 · Applies to the Little Knots iOS app</p>
+    <p class="tldr">
+      The short version: <span class="serif">Little Knots collects nothing.</span>
+      Your memories live on your iPhone and in your own iCloud. There are no accounts,
+      no analytics, no ads, and no tracking — we run no servers and never see your data.
+    </p>
+  </div>
+
+  <div class="strand">
+
+    <section class="knot">
+      <h2>What the app stores, and where</h2>
+      <p>
+        Everything you put into Little Knots — children's names and birthdays, memories,
+        dates, quotes, photos, and videos — is stored in a database <strong>on your device</strong>.
+        If your device is signed into iCloud, iOS syncs that database to <strong>your personal
+        iCloud account</strong> (Apple's CloudKit private database) so your memories survive a lost
+        phone and appear on your other devices.
+      </p>
+      <p>
+        That iCloud data belongs to your Apple Account, is encrypted by Apple in transit and at
+        rest, and is subject to <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>.
+        We — the developer — have no access to it. Little Knots has no servers of its own.
+      </p>
+    </section>
+
+    <section class="knot">
+      <h2>Sharing with your partner and family</h2>
+      <p>
+        If you invite someone (a Little Knots Pro feature), sharing happens through Apple's iCloud
+        sharing — the same mechanism as shared Notes or Photos albums. Only the people you
+        explicitly invite can see your family's memories, and only after they accept.
+        Depending on the permission you grant, they can either add memories too or just follow along.
+      </p>
+      <p>
+        You can stop sharing at any time from inside the app, which ends participants' access.
+        Invited participants see the shared memories under their own iCloud account; we still see nothing.
+      </p>
+    </section>
+
+    <section class="knot">
+      <h2>Photos and videos</h2>
+      <p>
+        Little Knots uses Apple's photo picker, which shows the app <strong>only the items you
+        select</strong> — it never gets access to your whole photo library. Selected photos and
+        videos are stored with your memories, on device and in your iCloud, like everything else.
+      </p>
+    </section>
+
+    <section class="knot">
+      <h2>Notifications</h2>
+      <p>
+        Reminders are optional and generated <strong>locally on your device</strong>. Nothing about
+        them leaves your phone. You can turn them off any time in the app or in iOS Settings.
+      </p>
+    </section>
+
+    <section class="knot">
+      <h2>Purchases</h2>
+      <p>
+        Little Knots Pro is sold through Apple's App Store. Apple processes the payment; we never
+        receive your name, payment details, or billing address. The app checks your subscription
+        status on-device through Apple's StoreKit framework.
+      </p>
+    </section>
+
+    <section class="knot">
+      <h2>What we don't do</h2>
+      <ul>
+        <li><strong>No accounts</strong> — there is nothing to sign up for.</li>
+        <li><strong>No analytics or crash-reporting SDKs</strong> — the app contains no third-party code at all.</li>
+        <li><strong>No advertising</strong> — and no ad identifiers.</li>
+        <li><strong>No tracking</strong> — as defined by Apple's App Tracking Transparency, and in the everyday sense too.</li>
+        <li><strong>No selling or sharing of data</strong> — we have no data to sell.</li>
+      </ul>
+      <p>
+        Little Knots' App Store privacy label is <strong>“Data Not Collected.”</strong>
+      </p>
+    </section>
+
+    <section class="knot">
+      <h2>Children's privacy</h2>
+      <p>
+        Little Knots is made for parents and guardians, not for children. The app records
+        information <em>about</em> your children only because <em>you</em> write it down, and it
+        stays within your own iCloud and the people you invite. We do not collect personal
+        information from anyone — children included.
+      </p>
+    </section>
+
+    <section class="knot">
+      <h2>Deleting your data</h2>
+      <ul>
+        <li>Delete any memory, quote, or child inside the app — deletions sync everywhere.</li>
+        <li>Stop sharing at any time to end participants' access.</li>
+        <li>Remove the app's iCloud data in iOS Settings → your name → iCloud → Manage Account Storage.</li>
+        <li>Deleting the app removes everything stored on the device.</li>
+      </ul>
+    </section>
+
+    <section class="knot">
+      <h2>Changes to this policy</h2>
+      <p>
+        If the app ever changes in a way that affects privacy, this page will be updated first and
+        the effective date bumped. Given the design — no servers, no collection — we expect it to
+        stay boring.
+      </p>
+    </section>
+
+    <section class="knot">
+      <h2>Contact</h2>
+      <div class="contact-card">
+        <p>Questions about privacy? Ask a human — the one who built it.</p>
+        <a class="btn" href="mailto:support@thomasaj.com?subject=Little%20Knots%20privacy">Email support@thomasaj.com</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <p>
+    &copy; 2026 Little Knots &middot; Thomas A Johansen &middot;
+    <a href="/tinyknots/privacy.html">Privacy</a> &middot;
+    <a href="/tinyknots/support.html">Support</a> &middot;
+    <a href="/tinyknots/terms.html">Terms</a>
+  </p>
+</footer>
+
+</body>
+</html>
