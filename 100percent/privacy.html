@@ -26,13 +26,13 @@
   <div class="container">
     <div class="page-header">
       <h1>Privacy Policy</h1>
-      <p>Last updated: May 1, 2026</p>
+      <p>Last updated: July 10, 2026</p>
     </div>
 
     <div class="prose">
       <h2>Overview</h2>
       <p>
-        100 Percent Calculator is a calculator app. It does not require an account, does not connect to any of our servers, and does not collect personal information. Everything you enter into a calculation lives only on your device for as long as that calculation is on screen.
+        100 Percent Calculator is a calculator app. It does not require an account, has no servers of its own, and does not collect personal information. All calculations — including conversations with the built-in Assistant — happen on your device, and anything you choose to save (favorites, history, chat) stays on your device. The only network requests the app ever makes are anonymous downloads of currency exchange rates for the optional currency features, described below.
       </p>
 
       <h2>Data Stored on Your Device</h2>
@@ -40,16 +40,30 @@
       <ul>
         <li>Which calculations you have marked as favorites</li>
         <li>Which calculations you have hidden</li>
-        <li>App preferences (language, currency display, and other settings)</li>
+        <li>App preferences (language, currency display, accent color, pinned default values, Travel Mode currencies, and other settings)</li>
+        <li>Calculations you save to History, including any notes you add</li>
+        <li>Your Assistant conversation (the questions you asked and the answers you got)</li>
+        <li>A cached copy of the latest exchange rates, so currency features work offline</li>
         <li>Your in-app purchase status (whether you have unlocked Pro)</li>
       </ul>
       <p>
-        This data is stored on your device using standard Apple APIs (UserDefaults). It is not transmitted to us and not shared with third parties.
+        This data is stored on your device using Apple's standard frameworks (UserDefaults, a local SwiftData database, and files in the app's private container). It is not transmitted to us and not shared with third parties.
+      </p>
+
+      <h2>Exchange Rates (Currency Converter &amp; Travel Mode)</h2>
+      <p>
+        The currency converter and Travel Mode need up-to-date exchange rates. To get them, the app makes an anonymous HTTPS request to the free <a href="https://frankfurter.dev" target="_blank" rel="noopener">Frankfurter API</a>, which republishes the European Central Bank's daily reference rates. The request contains only the currency codes being converted — no names, no identifiers, no amounts, and nothing about you or your device beyond what any internet request technically includes (such as an IP address, which we never see and do not receive). Rates are cached on your device so the features keep working offline. If you never use the currency features, the app makes no network requests at all.
+      </p>
+
+      <h2>On-Device AI Assistant</h2>
+      <p>
+        On iPhones that support Apple Intelligence (iOS 26 and later), the app includes an Assistant that answers percent questions in plain language. It runs entirely on your device using Apple's on-device foundation models: your questions and the answers are processed locally, are never sent to us, and the conversation history is stored only on your device. You can erase it at any time with the Assistant's Clear Chat button, and the app's own calculation tools do the arithmetic — the model never invents the math.
       </p>
 
       <h2>What We Don't Collect</h2>
       <ul>
         <li>The numbers you enter into calculations</li>
+        <li>Your Assistant conversations</li>
         <li>Your name, email, address, phone number, or other identifiers</li>
         <li>Your location</li>
         <li>Your contacts, photos, or other device content</li>
@@ -71,7 +85,7 @@
 
       <h2>Data Deletion</h2>
       <p>
-        Because nothing is stored off-device, deleting the app from your device removes all of its locally stored data. There is nothing for us to delete on your behalf.
+        Because nothing is stored off-device, you are always in full control: delete individual History entries with a swipe, erase the Assistant conversation with Clear Chat, or delete the app from your device to remove all of its locally stored data at once. There is nothing for us to delete on your behalf.
       </p>
 
       <h2>Children's Privacy</h2>
