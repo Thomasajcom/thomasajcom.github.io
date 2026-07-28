@@ -33,6 +33,7 @@
 
   --max: 1180px;
   --gutter: 32px;
+  --card-radius: 18px;
 
   --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
 }
@@ -83,8 +84,8 @@ a {
 
 /* .sky wraps the header + masthead only. The aurora is bound to that element's
    real height rather than a vh guess, so it is guaranteed to have faded to
-   solid ink by the time the index starts — the rows never lose contrast to it,
-   at any viewport size. */
+   solid ink by the time the index starts — the cards never lose contrast to
+   it, at any viewport size. */
 .sky {
   position: relative;
   overflow: hidden;
@@ -399,89 +400,106 @@ a {
   color: var(--bone-faint);
 }
 
-.index-list {
+/* --------------------------------------------------------------------------
+   The card grid
+   Six cells — five shipped apps plus the in-progress slot — fill 3x2 exactly.
+   -------------------------------------------------------------------------- */
+
+.card-grid {
   list-style: none;
-}
-
-/* --- the row ------------------------------------------------------------ */
-
-.entry {
-  position: relative;
   display: grid;
-  grid-template-columns: 3.25rem 64px minmax(0, 1.05fr) minmax(0, 1fr) 2rem;
-  align-items: center;
-  gap: 26px;
-  padding: 30px 20px 30px 14px;
-  margin: 0 -20px 0 -14px;
-  border-bottom: 1px solid var(--line-soft);
-  border-radius: 14px;
-  isolation: isolate;
-  transition: transform 0.45s var(--ease);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 26px;
 }
 
-/* accent wash, revealed on hover */
-.entry::before {
+/* the li is the grid item; stretching it lets every card in a row match height
+   regardless of how much copy it carries */
+.card-grid > li {
+  display: flex;
+}
+
+.card {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 26px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+  background: linear-gradient(
+    170deg,
+    rgba(242, 237, 227, 0.04) 0%,
+    rgba(242, 237, 227, 0.012) 58%
+  );
+  /* contains the z-index:-1 wash below, so it can never slip behind .sky */
+  isolation: isolate;
+  overflow: hidden;
+  transition: transform 0.45s var(--ease), border-color 0.45s var(--ease),
+    box-shadow 0.45s var(--ease);
+}
+
+/* accent wash, pooled behind the icon and revealed on hover */
+.card::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: 14px;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--app-accent) 15%, transparent) 0%,
-    color-mix(in srgb, var(--app-accent) 5%, transparent) 42%,
-    transparent 82%
+  background: radial-gradient(
+    124% 78% at 14% 0%,
+    color-mix(in srgb, var(--app-accent) 20%, transparent) 0%,
+    transparent 62%
   );
   opacity: 0;
   transition: opacity 0.45s var(--ease);
 }
 
-/* accent hairline that draws in from the left */
-.entry::after {
+/* accent rule that draws across the top edge */
+.card::after {
   content: '';
   position: absolute;
+  top: 0;
   left: 0;
-  bottom: -1px;
-  height: 1px;
-  width: 100%;
-  background: var(--app-accent);
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--app-accent) 0%, transparent 78%);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.55s var(--ease);
 }
 
-a.entry:hover::before,
-a.entry:focus-visible::before {
+/* :focus-within keeps the keyboard path identical to the pointer one */
+.card:hover,
+.card:focus-within {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--app-accent) 38%, transparent);
+  box-shadow: 0 24px 50px -20px rgba(0, 0, 0, 0.75);
+}
+
+.card:hover::before,
+.card:focus-within::before {
   opacity: 1;
 }
 
-a.entry:hover::after,
-a.entry:focus-visible::after {
+.card:hover::after,
+.card:focus-within::after {
   transform: scaleX(1);
 }
 
-a.entry:hover {
-  transform: translateX(6px);
+/* --- card head ---------------------------------------------------------- */
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
-.entry .num {
-  font-family: "Newsreader", Georgia, serif;
-  font-size: 1.5rem;
-  font-weight: 300;
-  font-variant-numeric: tabular-nums;
-  color: var(--bone-faint);
-  transition: color 0.4s var(--ease);
-}
-
-a.entry:hover .num,
-a.entry:focus-visible .num {
-  color: var(--app-accent);
-}
-
-.entry .icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 15px;
+.card .icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
   overflow: hidden;
   background: var(--ink-raised);
   border: 1px solid var(--line);
@@ -497,7 +515,7 @@ a.entry:focus-visible .num {
    as a pale square on this background. --icon-zoom crops each one to its own
    artwork edge; the measured margins are 11.3% (Regrocer), 5.9% (Little
    Knots), 4.3% (Atten), 0% (100 Percent). */
-.entry .icon img {
+.card .icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -505,24 +523,24 @@ a.entry:focus-visible .num {
   transform: scale(var(--icon-zoom, 1));
 }
 
-a.entry:hover .icon,
-a.entry:focus-visible .icon {
-  transform: translateY(-3px) scale(1.04);
+.card:hover .icon,
+.card:focus-within .icon {
+  transform: translateY(-2px) scale(1.05);
   border-color: color-mix(in srgb, var(--app-accent) 45%, transparent);
   box-shadow: 0 14px 34px -8px color-mix(in srgb, var(--app-accent) 50%, transparent);
 }
 
 /* Tenfall has no icon file — build its mark from its own tile gradient */
-.entry .icon.mark {
+.card .icon.mark {
   font-family: "Newsreader", Georgia, serif;
-  font-size: 1.5rem;
+  font-size: 1.4375rem;
   font-weight: 400;
   letter-spacing: -0.02em;
   background: radial-gradient(120% 120% at 20% 15%, #1B2733 0%, #0E1116 100%);
 }
 
 /* :not(.soon) — otherwise the placeholder "+" inherits Tenfall's brand gradient */
-.entry .icon.mark:not(.soon) span {
+.card .icon.mark:not(.soon) span {
   background: linear-gradient(135deg, #5CABEB 0%, #B373D9 58%, #E6943A 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -530,62 +548,208 @@ a.entry:focus-visible .icon {
   color: transparent;
 }
 
-.entry .icon.mark.soon {
+.card .icon.mark.soon {
   background: transparent;
   border-style: dashed;
   color: var(--bone-faint);
-  font-size: 1.375rem;
+  font-size: 1.3125rem;
 }
 
-.entry .title h3 {
+.card .num {
   font-family: "Newsreader", Georgia, serif;
-  font-size: clamp(1.5rem, 2.7vw, 1.9375rem);
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--line);
+  transition: color 0.4s var(--ease);
+}
+
+.card:hover .num,
+.card:focus-within .num {
+  color: color-mix(in srgb, var(--app-accent) 60%, transparent);
+}
+
+/* --- card body ---------------------------------------------------------- */
+
+.card h3 {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.5rem;
   font-weight: 400;
   letter-spacing: -0.018em;
-  line-height: 1.12;
+  line-height: 1.14;
+  text-wrap: balance;
 }
 
-.entry .kind {
+/* The title link is the card's primary target: its ::after stretches over the
+   whole card. The anchor itself stays unpositioned so the overlay resolves
+   against .card. Anything that must stay separately clickable — the store
+   link — is lifted above it with z-index. */
+.card h3 a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: var(--card-radius);
+}
+
+.card .kind {
   display: block; /* inline boxes ignore margin-top */
-  margin-top: 5px;
-  font-size: 0.6875rem;
+  margin-top: 8px;
+  font-size: 0.625rem;
   font-weight: 400;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--bone-faint);
 }
 
-.entry .tag {
-  font-size: 0.9375rem;
+.card .tag {
+  margin-top: 15px;
+  font-family: "Newsreader", Georgia, serif;
+  font-style: italic;
+  font-size: 1.0625rem;
   font-weight: 300;
+  line-height: 1.35;
+  color: var(--bone);
+  text-wrap: pretty;
+}
+
+.card .desc {
+  margin-top: 11px;
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.62;
   color: var(--bone-dim);
   text-wrap: pretty;
 }
 
-.entry .go {
-  justify-self: end;
-  font-size: 1.25rem;
-  line-height: 1;
+.card .desc em {
+  font-style: italic;
+  color: var(--bone);
+}
+
+.chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 17px;
+}
+
+.chips li {
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--bone-faint);
-  transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+  background: rgba(242, 237, 227, 0.028);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  padding: 5px 11px;
+  transition: color 0.4s var(--ease), border-color 0.4s var(--ease);
 }
 
-a.entry:hover .go,
-a.entry:focus-visible .go {
+.card:hover .chips li,
+.card:focus-within .chips li {
+  color: var(--bone-dim);
+  border-color: color-mix(in srgb, var(--app-accent) 28%, transparent);
+}
+
+/* --- card foot ---------------------------------------------------------- */
+
+.card-foot {
+  /* margin-top:auto pins the foot to the bottom, so the row of cards keeps a
+     common baseline however long the copy above runs.
+     min-height reserves the height of the tallest thing that can sit here —
+     the App Store pill (29.5px) plus this padding. Without it, a card with no
+     pill grows a shorter foot and its "Open" label rides ~12px below the ones
+     either side of it. */
+  margin-top: auto;
+  padding-top: 22px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card .open {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+  transition: color 0.4s var(--ease);
+}
+
+.card:hover .open,
+.card:focus-within .open {
   color: var(--app-accent);
-  transform: translateX(5px);
 }
 
-/* The in-progress row is not a link. It recedes via colour and italics rather
+.card .open .go {
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.4s var(--ease);
+}
+
+.card:hover .open .go,
+.card:focus-within .open .go {
+  transform: translateX(4px);
+}
+
+/* lifted above the stretched title overlay so it stays its own link */
+.card .store {
+  position: relative;
+  z-index: 3;
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 13px;
+  white-space: nowrap;
+  transition: color 0.3s var(--ease), background 0.3s var(--ease),
+    border-color 0.3s var(--ease);
+}
+
+.card .store:hover {
+  color: var(--ink);
+  background: var(--bone);
+  border-color: var(--bone);
+}
+
+.card .pending {
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+  white-space: nowrap;
+}
+
+/* The in-progress card is not a link. It recedes via colour and italics rather
    than a blanket opacity — halving alpha composites in sRGB and would drop the
    small labels to ~2:1. */
-.entry.soon .title h3 {
+.card.soon {
+  background: none;
+  border-style: dashed;
+}
+
+.card.soon h3 {
   font-style: italic;
   color: var(--bone-dim);
 }
 
-.entry.soon .num {
-  color: var(--line);
+.card.soon:hover {
+  transform: none;
+  border-color: var(--line);
+  box-shadow: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -743,43 +907,16 @@ a.entry:focus-visible .go {
    Responsive
    -------------------------------------------------------------------------- */
 
-/* Below this width the tagline drops to its own line, so every cell is placed
-   explicitly — auto-placement would strand the arrow on a third row. */
-@media (max-width: 900px) {
-  .entry {
-    grid-template-columns: 2.5rem 64px minmax(0, 1fr) 1.5rem;
-    gap: 18px;
-    row-gap: 10px;
-    padding: 26px 16px 26px 12px;
-    /* must mirror the padding, or rows sit a few px off the section rule */
-    margin: 0 -16px 0 -12px;
+@media (max-width: 940px) {
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
-  .entry .num {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .entry .icon {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: start;
-  }
-
-  .entry .title {
-    grid-column: 3;
-    grid-row: 1;
-  }
-
-  .entry .go {
-    grid-column: 4;
-    grid-row: 1;
-  }
-
-  .entry .tag {
-    grid-column: 3 / -1;
-    grid-row: 2;
-    font-size: 0.875rem;
+@media (max-width: 620px) {
+  .card-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
 }
 
@@ -800,45 +937,16 @@ a.entry:focus-visible .go {
     max-width: 100%;
   }
 
-  .entry {
-    grid-template-columns: 48px minmax(0, 1fr);
-    gap: 14px;
-    row-gap: 8px;
-    padding: 22px 12px;
-    margin: 0 -12px;
+  .card {
+    padding: 22px 22px 20px;
   }
 
-  /* index numerals and the arrow get out of the way on small screens — the
-     whole row is the tap target and there is no hover to reward. */
-  .entry .num,
-  .entry .go {
-    display: none;
+  .card .num {
+    font-size: 1.75rem;
   }
 
-  .entry .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 11px;
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    align-self: start;
-  }
-
-  .entry .icon.mark {
-    font-size: 1.1875rem;
-  }
-
-  .entry .title {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .entry .tag {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  a.entry:hover {
+  /* no hover to reward on touch, and the lift fights momentum scrolling */
+  .card:hover {
     transform: none;
   }
 
@@ -857,7 +965,7 @@ a.entry:focus-visible .go {
 @media (forced-colors: active) {
   .masthead h1 em,
   .notfound .code,
-  .entry .icon.mark span,
+  .card .icon.mark span,
   .brand em {
     background: none;
     -webkit-text-fill-color: currentColor;
@@ -870,8 +978,8 @@ a.entry:focus-visible .go {
     display: none;
   }
 
-  .entry {
-    border-bottom: 1px solid CanvasText;
+  .card {
+    border: 1px solid CanvasText;
   }
 }
 
@@ -889,7 +997,7 @@ a.entry:focus-visible .go {
   *::after {
     animation-duration: 0.001ms !important;
     /* without this, .reveal's fill-mode holds content at opacity 0 for the
-       length of its stagger delay — up to 790ms of invisible page */
+       length of its stagger delay — up to 770ms of invisible page */
     animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
@@ -900,7 +1008,8 @@ a.entry:focus-visible .go {
     transform: none;
   }
 
-  a.entry:hover {
+  .card:hover,
+  .card:focus-within {
     transform: none;
   }
 }
