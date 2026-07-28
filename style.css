@@ -1,3 +1,10 @@
+/* ==========================================================================
+   thomasaj.com — hub
+   A dark editorial index. The aurora behind the masthead is mixed from the
+   five apps' own accent colours, so the page is literally lit by the work.
+   Newsreader is the serif shared by every app site; it ties the hub to them.
+   ========================================================================== */
+
 *,
 *::before,
 *::after {
@@ -7,388 +14,893 @@
 }
 
 :root {
-  --bg: #FAFAF7;
-  --surface: #FFFFFF;
-  --text: #1A1A1F;
-  --text-light: #6B6B75;
-  --text-muted: #9A9AA3;
-  --line: #E8E8E2;
-  --radius: 18px;
-  --max-width: 1080px;
+  /* Surface */
+  --ink: #0B0B10;
+  --ink-raised: #101017;
+  --bone: #F2EDE3;
+  --bone-dim: #A19C92;
+  /* 5.07:1 on --ink — the uppercase labels are small, so this clears AA */
+  --bone-faint: #85817A;
+  --line: rgba(242, 237, 227, 0.11);
+  --line-soft: rgba(242, 237, 227, 0.055);
+
+  /* App accents, tuned for legibility on ink */
+  --knots: #E96B9F;
+  --percent: #7361FF;
+  --regrocer: #7BC466;
+  --tenfall: #5CABEB;
+  --atten: #DFAF4A;
+
+  --max: 1180px;
+  --gutter: 32px;
+
+  --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
 }
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: var(--text);
-  background: var(--bg);
+  position: relative;
+  /* column flex + margin-top:auto on the footer keeps it pinned to the bottom
+     on short pages like the 404, instead of floating mid-viewport */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  background: var(--ink);
+  color: var(--bone);
   line-height: 1.55;
+  font-weight: 300;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 a {
-  color: var(--text);
+  color: inherit;
   text-decoration: none;
 }
 
+:focus-visible {
+  outline: 2px solid var(--app-accent, var(--bone));
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 .container {
-  max-width: var(--max-width);
+  width: 100%;
+  max-width: var(--max);
   margin: 0 auto;
-  padding: 0 28px;
+  padding: 0 var(--gutter);
 }
 
-@media (max-width: 480px) {
-  .container {
-    padding: 0 20px;
-  }
+/* --------------------------------------------------------------------------
+   Atmosphere: aurora + grain
+   -------------------------------------------------------------------------- */
+
+/* .sky wraps the header + masthead only. The aurora is bound to that element's
+   real height rather than a vh guess, so it is guaranteed to have faded to
+   solid ink by the time the index starts — the rows never lose contrast to it,
+   at any viewport size. */
+.sky {
+  position: relative;
+  overflow: hidden;
 }
 
-/* Header */
+/* The aurora is brightest exactly where the copy sits, so the text column gets
+   a scrim. It spans the whole sky — including the header, whose nav would
+   otherwise sit on raw aurora — and starts at y=0, so there is no horizontal
+   seam where it begins. It fades out to the right, leaving the light show
+   intact over the empty half of the masthead. */
+.sky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    rgba(11, 11, 16, 0.82) 0%,
+    rgba(11, 11, 16, 0.66) 34%,
+    rgba(11, 11, 16, 0.28) 58%,
+    transparent 78%
+  );
+}
+
+/* The scrim above clears to transparent at 78% width to let the aurora show,
+   but the nav lives at 83-94% — right in that clear band. This top vignette
+   covers the full width for the header's depth only. It starts at y=0, so
+   there is no edge to see. */
+.sky::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 190px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(11, 11, 16, 0.66) 0%,
+    rgba(11, 11, 16, 0.30) 52%,
+    transparent 100%
+  );
+}
+
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.aurora {
+  position: absolute;
+  top: -30vh;
+  left: 50%;
+  width: min(1500px, 145vw);
+  height: 105vh;
+  transform: translateX(-50%);
+  filter: blur(76px);
+  opacity: 0.72;
+}
+
+.aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.aurora .a1 {
+  width: 46%;
+  height: 58%;
+  left: 2%;
+  top: 16%;
+  background: radial-gradient(circle, var(--knots) 0%, transparent 68%);
+  animation: drift-a 26s var(--ease) infinite alternate;
+}
+
+.aurora .a2 {
+  width: 42%;
+  height: 62%;
+  left: 24%;
+  top: 4%;
+  background: radial-gradient(circle, var(--percent) 0%, transparent 68%);
+  animation: drift-b 31s var(--ease) infinite alternate;
+}
+
+.aurora .a3 {
+  width: 38%;
+  height: 50%;
+  left: 46%;
+  top: 24%;
+  background: radial-gradient(circle, var(--regrocer) 0%, transparent 70%);
+  animation: drift-c 24s var(--ease) infinite alternate;
+}
+
+.aurora .a4 {
+  width: 44%;
+  height: 56%;
+  left: 58%;
+  top: 6%;
+  background: radial-gradient(circle, var(--tenfall) 0%, transparent 68%);
+  animation: drift-b 29s var(--ease) infinite alternate-reverse;
+}
+
+.aurora .a5 {
+  width: 36%;
+  height: 46%;
+  left: 74%;
+  top: 26%;
+  background: radial-gradient(circle, var(--atten) 0%, transparent 70%);
+  animation: drift-a 22s var(--ease) infinite alternate-reverse;
+}
+
+@keyframes drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(6%, 7%, 0) scale(1.16); }
+}
+
+@keyframes drift-b {
+  from { transform: translate3d(0, 3%, 0) scale(1.08); }
+  to   { transform: translate3d(-7%, -5%, 0) scale(0.94); }
+}
+
+@keyframes drift-c {
+  from { transform: translate3d(-4%, 0, 0) scale(0.96); }
+  to   { transform: translate3d(5%, 8%, 0) scale(1.2); }
+}
+
+/* Fully resolved to ink at the bottom edge of .sky */
+.atmosphere::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(11, 11, 16, 0.14) 0%,
+    rgba(11, 11, 16, 0.44) 42%,
+    rgba(11, 11, 16, 0.84) 76%,
+    var(--ink) 100%
+  );
+}
+
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Everything real sits above the atmosphere */
+.site-header,
+.masthead,
+.index,
+.site-footer,
+.notfound {
+  position: relative;
+  z-index: 2;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
 
 .site-header {
-  padding: 24px 0;
+  padding: 30px 0 0;
 }
 
 .site-header .container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  gap: 20px;
 }
 
 .brand {
-  display: inline-block;
-  font-size: 1rem;
-  font-weight: 700;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.3125rem;
+  font-weight: 400;
   letter-spacing: -0.01em;
-  color: var(--text);
-  padding: 10px 4px;
-  margin: -10px -4px;
+  padding: 8px 2px;
+  margin: -8px -2px;
+}
+
+.brand em {
+  font-style: italic;
+  color: var(--knots);
 }
 
 .nav-links {
   display: flex;
-  gap: 24px;
+  gap: 28px;
   list-style: none;
 }
 
 .nav-links a {
   display: inline-block;
-  color: var(--text-light);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  padding: 10px 4px;
-  margin: -10px -4px;
-  transition: color 0.15s;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  /* full-strength bone: this text sits over the aurora, where --bone-dim
+     measured 2.8:1 at every animation phase */
+  color: var(--bone);
+  padding: 8px 2px;
+  margin: -8px -2px;
+  transition: color 0.2s var(--ease);
 }
 
 .nav-links a:hover {
-  color: var(--text);
+  color: var(--knots);
 }
 
-/* Hero */
+/* --------------------------------------------------------------------------
+   Masthead
+   -------------------------------------------------------------------------- */
 
-.hero {
-  padding: 80px 0 56px;
+.masthead {
+  padding: clamp(72px, 14vh, 132px) 0 clamp(56px, 9vh, 92px);
 }
 
-.hero h1 {
-  font-size: clamp(2.5rem, 5.5vw, 3.75rem);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  margin-bottom: 20px;
-  max-width: 720px;
-}
-
-.hero .lede {
-  font-size: 1.125rem;
-  color: var(--text-light);
-  max-width: 560px;
-}
-
-/* Apps grid */
-
-.apps {
-  padding: 24px 0 96px;
-}
-
-.apps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.app-card {
-  position: relative;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 24px;
+.kicker {
   display: flex;
-  flex-direction: column;
-  gap: 18px;
-  min-height: 240px;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  overflow: hidden;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+  margin-bottom: 26px;
 }
 
-.app-card::before {
+.kicker::before {
+  content: '';
+  width: 34px;
+  height: 1px;
+  background: var(--bone-dim);
+  flex-shrink: 0;
+}
+
+.masthead h1 {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(2.9rem, 8.4vw, 6.25rem);
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.028em;
+  max-width: 15ch;
+  text-wrap: balance;
+}
+
+.masthead h1 em {
+  font-style: italic;
+  font-weight: 300;
+  /* the five accents, in the order they appear below */
+  background: linear-gradient(
+    100deg,
+    var(--knots) 0%,
+    var(--percent) 26%,
+    var(--regrocer) 50%,
+    var(--tenfall) 74%,
+    var(--atten) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.masthead .lede {
+  margin-top: 30px;
+  max-width: 46ch;
+  font-size: clamp(1rem, 1.6vw, 1.1875rem);
+  font-weight: 300;
+  color: var(--bone-dim);
+}
+
+.masthead .lede strong {
+  color: var(--bone);
+  font-weight: 400;
+}
+
+/* --------------------------------------------------------------------------
+   Index
+   -------------------------------------------------------------------------- */
+
+.index {
+  padding-bottom: clamp(72px, 12vh, 128px);
+}
+
+.index-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.index-head h2,
+.index-head p {
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+}
+
+.index-list {
+  list-style: none;
+}
+
+/* --- the row ------------------------------------------------------------ */
+
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.25rem 64px minmax(0, 1.05fr) minmax(0, 1fr) 2rem;
+  align-items: center;
+  gap: 26px;
+  padding: 30px 20px 30px 14px;
+  margin: 0 -20px 0 -14px;
+  border-bottom: 1px solid var(--line-soft);
+  border-radius: 14px;
+  isolation: isolate;
+  transition: transform 0.45s var(--ease);
+}
+
+/* accent wash, revealed on hover */
+.entry::before {
   content: '';
   position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: var(--app-accent, var(--text-muted));
-  opacity: 0.9;
+  inset: 0;
+  z-index: -1;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--app-accent) 15%, transparent) 0%,
+    color-mix(in srgb, var(--app-accent) 5%, transparent) 42%,
+    transparent 82%
+  );
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
 }
 
-.app-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.07);
-  border-color: var(--app-accent, var(--line));
+/* accent hairline that draws in from the left */
+.entry::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 1px;
+  width: 100%;
+  background: var(--app-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s var(--ease);
 }
 
-.app-icon {
+a.entry:hover::before,
+a.entry:focus-visible::before {
+  opacity: 1;
+}
+
+a.entry:hover::after,
+a.entry:focus-visible::after {
+  transform: scaleX(1);
+}
+
+a.entry:hover {
+  transform: translateX(6px);
+}
+
+.entry .num {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  color: var(--bone-faint);
+  transition: color 0.4s var(--ease);
+}
+
+a.entry:hover .num,
+a.entry:focus-visible .num {
+  color: var(--app-accent);
+}
+
+.entry .icon {
   width: 64px;
   height: 64px;
-  border-radius: 14px;
+  border-radius: 15px;
   overflow: hidden;
-  background: var(--app-accent-soft, rgba(0, 0, 0, 0.04));
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease),
+    border-color 0.45s var(--ease);
 }
 
-.app-icon img {
+/* Several source icons ship with a flat margin baked into the PNG, which reads
+   as a pale square on this background. --icon-zoom crops each one to its own
+   artwork edge; the measured margins are 11.3% (Regrocer), 5.9% (Little
+   Knots), 4.3% (Atten), 0% (100 Percent). */
+.entry .icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transform: scale(var(--icon-zoom, 1));
 }
 
-.app-icon.mono {
-  background: var(--app-accent-soft, rgba(0, 0, 0, 0.04));
-  color: var(--app-accent, var(--text-muted));
-  font-weight: 800;
+a.entry:hover .icon,
+a.entry:focus-visible .icon {
+  transform: translateY(-3px) scale(1.04);
+  border-color: color-mix(in srgb, var(--app-accent) 45%, transparent);
+  box-shadow: 0 14px 34px -8px color-mix(in srgb, var(--app-accent) 50%, transparent);
+}
+
+/* Tenfall has no icon file — build its mark from its own tile gradient */
+.entry .icon.mark {
+  font-family: "Newsreader", Georgia, serif;
   font-size: 1.5rem;
+  font-weight: 400;
   letter-spacing: -0.02em;
+  background: radial-gradient(120% 120% at 20% 15%, #1B2733 0%, #0E1116 100%);
 }
 
-.app-icon.mono-tenfall span {
-  background: linear-gradient(135deg, #5CABEB 0%, #B373D9 60%, #E6943A 100%);
+/* :not(.soon) — otherwise the placeholder "+" inherits Tenfall's brand gradient */
+.entry .icon.mark:not(.soon) span {
+  background: linear-gradient(135deg, #5CABEB 0%, #B373D9 58%, #E6943A 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
-.app-icon.mono-soon {
-  background: rgba(0, 0, 0, 0.03);
-  color: var(--text-muted);
-  font-size: 1.75rem;
-  font-weight: 300;
-}
-
-.app-meta {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.app-meta h2 {
-  font-size: 1.1875rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.app-meta .kind {
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.app-meta .tag {
-  font-size: 0.9375rem;
-  color: var(--text-light);
-  margin-top: 6px;
-}
-
-.open {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--app-accent, var(--text));
-  align-self: flex-start;
-}
-
-.open span {
-  display: inline-block;
-  transition: transform 0.18s ease;
-}
-
-.app-card:hover .open span {
-  transform: translateX(3px);
-}
-
-/* Placeholder card */
-
-.app-card.placeholder {
+.entry .icon.mark.soon {
   background: transparent;
   border-style: dashed;
-  border-color: var(--line);
-  cursor: default;
+  color: var(--bone-faint);
+  font-size: 1.375rem;
 }
 
-.app-card.placeholder::before {
-  display: none;
+.entry .title h3 {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(1.5rem, 2.7vw, 1.9375rem);
+  font-weight: 400;
+  letter-spacing: -0.018em;
+  line-height: 1.12;
 }
 
-.app-card.placeholder:hover {
-  transform: none;
-  box-shadow: none;
-  border-color: var(--line);
+.entry .kind {
+  display: block; /* inline boxes ignore margin-top */
+  margin-top: 5px;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
 }
 
-.app-card.placeholder .app-meta h2 {
-  color: var(--text-light);
-  font-weight: 500;
+.entry .tag {
+  font-size: 0.9375rem;
+  font-weight: 300;
+  color: var(--bone-dim);
+  text-wrap: pretty;
 }
 
-/* Not found */
+.entry .go {
+  justify-self: end;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--bone-faint);
+  transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+a.entry:hover .go,
+a.entry:focus-visible .go {
+  color: var(--app-accent);
+  transform: translateX(5px);
+}
+
+/* The in-progress row is not a link. It recedes via colour and italics rather
+   than a blanket opacity — halving alpha composites in sRGB and would drop the
+   small labels to ~2:1. */
+.entry.soon .title h3 {
+  font-style: italic;
+  color: var(--bone-dim);
+}
+
+.entry.soon .num {
+  color: var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  padding: 44px 0 60px;
+}
+
+.site-footer .container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px 32px;
+}
+
+.site-footer p {
+  font-size: 0.9375rem;
+  font-weight: 300;
+  color: var(--bone-dim);
+}
+
+.site-footer .sig {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.0625rem;
+  color: var(--bone);
+}
+
+.site-footer .sig em {
+  font-style: italic;
+}
+
+.site-footer a {
+  color: var(--bone-dim);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1px;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.site-footer a:hover {
+  color: var(--bone);
+  border-color: var(--bone);
+}
+
+.site-footer .copyright {
+  font-size: 0.8125rem;
+  color: var(--bone-faint);
+}
+
+/* --------------------------------------------------------------------------
+   404
+   -------------------------------------------------------------------------- */
 
 .notfound {
-  padding: 88px 0 112px;
+  padding: clamp(80px, 17vh, 168px) 0 clamp(80px, 15vh, 150px);
 }
 
 .notfound .code {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 14px;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(4.5rem, 17vw, 10rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  background: linear-gradient(100deg, var(--knots) 0%, var(--percent) 45%, var(--tenfall) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .notfound h1 {
-  font-size: clamp(2.25rem, 5vw, 3.25rem);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  margin-bottom: 18px;
+  margin-top: 20px;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(1.75rem, 4.4vw, 2.75rem);
+  font-weight: 300;
+  letter-spacing: -0.022em;
+  line-height: 1.1;
 }
 
 .notfound .lede {
-  font-size: 1.125rem;
-  color: var(--text-light);
-  max-width: 520px;
-  margin-bottom: 32px;
+  margin-top: 16px;
+  max-width: 44ch;
+  font-size: 1.0625rem;
+  font-weight: 300;
+  color: var(--bone-dim);
 }
 
 .btn-row {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-top: 34px;
 }
 
 .btn {
   display: inline-block;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  padding: 13px 24px;
-  border-radius: 12px;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  padding: 15px 28px;
+  border-radius: 999px;
   border: 1px solid transparent;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: transform 0.3s var(--ease), background 0.3s var(--ease),
+    border-color 0.3s var(--ease), color 0.3s var(--ease);
 }
 
 .btn-primary {
-  background: var(--text);
-  color: var(--bg);
+  background: var(--bone);
+  color: var(--ink);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+  background: #fff;
 }
 
 .btn-secondary {
-  background: var(--surface);
   border-color: var(--line);
-  color: var(--text);
+  color: var(--bone-dim);
 }
 
 .btn-secondary:hover {
   transform: translateY(-2px);
-  border-color: var(--text-muted);
+  border-color: var(--bone);
+  color: var(--bone);
 }
 
-/* Footer */
+/* --------------------------------------------------------------------------
+   Entrance choreography
+   -------------------------------------------------------------------------- */
 
-.site-footer {
-  padding: 40px 0 56px;
-  border-top: 1px solid var(--line);
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.site-footer p {
-  color: var(--text-light);
-  font-size: 0.9375rem;
+.reveal {
+  animation: rise 0.85s var(--ease) both;
+  animation-delay: var(--d, 0s);
 }
 
-.site-footer a {
-  display: inline-block;
-  color: var(--text-light);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  padding: 6px 0;
-}
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
 
-.site-footer a:hover {
-  color: var(--text);
-}
-
-.site-footer .copyright {
-  color: var(--text-muted);
-  font-size: 0.8125rem;
-  margin-top: 8px;
-}
-
-/* Responsive */
-
-@media (max-width: 640px) {
-  .hero {
-    padding: 48px 0 32px;
+/* Below this width the tagline drops to its own line, so every cell is placed
+   explicitly — auto-placement would strand the arrow on a third row. */
+@media (max-width: 900px) {
+  .entry {
+    grid-template-columns: 2.5rem 64px minmax(0, 1fr) 1.5rem;
+    gap: 18px;
+    row-gap: 10px;
+    padding: 26px 16px 26px 12px;
+    /* must mirror the padding, or rows sit a few px off the section rule */
+    margin: 0 -16px 0 -12px;
   }
 
-  .hero h1 {
-    font-size: 2.25rem;
+  .entry .num {
+    grid-column: 1;
+    grid-row: 1;
   }
 
-  .hero .lede {
-    font-size: 1rem;
+  .entry .icon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: start;
   }
 
-  .apps-grid {
-    grid-template-columns: 1fr;
+  .entry .title {
+    grid-column: 3;
+    grid-row: 1;
   }
 
-  .app-card {
-    min-height: 0;
+  .entry .go {
+    grid-column: 4;
+    grid-row: 1;
+  }
+
+  .entry .tag {
+    grid-column: 3 / -1;
+    grid-row: 2;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 560px) {
+  :root {
+    --gutter: 20px;
+  }
+
+  .site-header {
+    padding-top: 22px;
   }
 
   .nav-links {
-    gap: 16px;
+    gap: 18px;
   }
 
-  .notfound {
-    padding: 56px 0 72px;
+  .masthead h1 {
+    max-width: 100%;
   }
 
-  .notfound .lede {
-    font-size: 1rem;
+  .entry {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 14px;
+    row-gap: 8px;
+    padding: 22px 12px;
+    margin: 0 -12px;
+  }
+
+  /* index numerals and the arrow get out of the way on small screens — the
+     whole row is the tap target and there is no hover to reward. */
+  .entry .num,
+  .entry .go {
+    display: none;
+  }
+
+  .entry .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 11px;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+
+  .entry .icon.mark {
+    font-size: 1.1875rem;
+  }
+
+  .entry .title {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .entry .tag {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  a.entry:hover {
+    transform: none;
+  }
+
+  .site-footer .container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Forced colours — background-clipped text renders as transparent glyphs when
+   the system overrides colours, so hand it back a real colour.
+   -------------------------------------------------------------------------- */
+
+@media (forced-colors: active) {
+  .masthead h1 em,
+  .notfound .code,
+  .entry .icon.mark span,
+  .brand em {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: CanvasText;
+  }
+
+  .atmosphere,
+  .grain,
+  .sky::before {
+    display: none;
+  }
+
+  .entry {
+    border-bottom: 1px solid CanvasText;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion — keep the composition, drop the movement
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    /* without this, .reveal's fill-mode holds content at opacity 0 for the
+       length of its stagger delay — up to 790ms of invisible page */
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  a.entry:hover {
+    transform: none;
   }
 }

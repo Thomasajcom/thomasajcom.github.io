@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thomas AJ — Indie iOS apps &amp; games</title>
-  <meta name="description" content="Apps and games by Thomas A Johansen. Built solo for iPhone, iPad, and Mac.">
-  <link rel="stylesheet" href="style.css">
+  <meta name="description" content="Apps and games by Thomas A Johansen. Designed, built, and shipped solo in Oslo for iPhone, iPad, and Mac.">
+  <meta name="theme-color" content="#0B0B10">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://thomasaj.com/">
+  <meta property="og:title" content="Thomas AJ — Indie iOS apps &amp; games">
+  <meta property="og:description" content="Apps and games by Thomas A Johansen. Designed, built, and shipped solo in Oslo for iPhone, iPad, and Mac.">
+  <meta name="twitter:card" content="summary">
 
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
@@ -13,113 +19,158 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-  <header class="site-header">
-    <div class="container">
-      <a href="/" class="brand">thomasaj</a>
-      <ul class="nav-links">
-        <li><a href="#apps">Apps</a></li>
-        <li><a href="mailto:hello@thomasaj.com">Contact</a></li>
-      </ul>
-    </div>
-  </header>
+  <div class="sky">
 
-  <section class="hero">
-    <div class="container">
-      <h1>Indie iOS apps &amp; games.</h1>
-      <p class="lede">
-        Hi, I'm Thomas. I design and build small, focused apps for iPhone, iPad, and Mac — solo. Here's everything I've shipped so far.
-      </p>
-    </div>
-  </section>
-
-  <main id="apps" class="apps">
-    <div class="container">
-      <div class="apps-grid">
-
-        <a class="app-card" href="/Atten/" style="--app-accent:#C89838; --app-accent-soft:rgba(200,152,56,0.16);">
-          <div class="app-icon">
-            <img src="/Atten/assets/icon-512.png" alt="Atten icon" loading="lazy">
-          </div>
-          <div class="app-meta">
-            <h2>Atten</h2>
-            <p class="kind">Game · iPhone &amp; iPad</p>
-            <p class="tag">Drop. Merge. Eighteen.</p>
-          </div>
-          <span class="open">Open <span aria-hidden="true">&rarr;</span></span>
-        </a>
-
-        <a class="app-card" href="/tenfall/" style="--app-accent:#5CABEB; --app-accent-soft:rgba(92,171,235,0.18);">
-          <div class="app-icon mono mono-tenfall" aria-hidden="true">
-            <span>10</span>
-          </div>
-          <div class="app-meta">
-            <h2>Tenfall</h2>
-            <p class="kind">Game · iPhone &amp; iPad</p>
-            <p class="tag">Drop. Match. Survive.</p>
-          </div>
-          <span class="open">Open <span aria-hidden="true">&rarr;</span></span>
-        </a>
-
-        <a class="app-card" href="/Regrocer/" style="--app-accent:#66A953; --app-accent-soft:rgba(102,169,83,0.18);">
-          <div class="app-icon">
-            <img src="/Regrocer/assets/icon.png" alt="Regrocer icon" loading="lazy">
-          </div>
-          <div class="app-meta">
-            <h2>Regrocer</h2>
-            <p class="kind">App · iPhone, iPad &amp; Mac</p>
-            <p class="tag">Shop together, stock up together.</p>
-          </div>
-          <span class="open">Open <span aria-hidden="true">&rarr;</span></span>
-        </a>
-
-        <a class="app-card" href="/100percent/" style="--app-accent:#2600FF; --app-accent-soft:rgba(38,0,255,0.14);">
-          <div class="app-icon">
-            <img src="/100percent/assets/icon.png" alt="100 Percent Calculator icon" loading="lazy">
-          </div>
-          <div class="app-meta">
-            <h2>100 Percent Calculator</h2>
-            <p class="kind">App · iPhone &amp; iPad</p>
-            <p class="tag">Every percent question, answered.</p>
-          </div>
-          <span class="open">Open <span aria-hidden="true">&rarr;</span></span>
-        </a>
-
-        <a class="app-card" href="/tinyknots/" style="--app-accent:#E96B9F; --app-accent-soft:rgba(233,107,159,0.16);">
-          <div class="app-icon">
-            <img src="/tinyknots/assets/icon-512.png" alt="Little Knots icon" loading="lazy">
-          </div>
-          <div class="app-meta">
-            <h2>Little Knots</h2>
-            <p class="kind">App · iPhone</p>
-            <p class="tag">Firsts, lasts, and the things they say.</p>
-          </div>
-          <span class="open">Open <span aria-hidden="true">&rarr;</span></span>
-        </a>
-
-        <div class="app-card placeholder" aria-hidden="true">
-          <div class="app-icon mono mono-soon">
-            <span>+</span>
-          </div>
-          <div class="app-meta">
-            <h2>Something new</h2>
-            <p class="kind">In progress</p>
-            <p class="tag">More coming soon.</p>
-          </div>
-        </div>
-
+    <!-- The aurora is mixed from the five apps' accent colours. -->
+    <div class="atmosphere" aria-hidden="true">
+      <div class="aurora">
+        <span class="a1"></span>
+        <span class="a2"></span>
+        <span class="a3"></span>
+        <span class="a4"></span>
+        <span class="a5"></span>
       </div>
+    </div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="container">
+        <a href="/" class="brand">thomas<em>aj</em></a>
+        <nav aria-label="Primary">
+          <ul class="nav-links">
+            <li><a href="#index">Apps</a></li>
+            <li><a href="mailto:hello@thomasaj.com">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="masthead">
+      <div class="container">
+        <p class="kicker reveal" style="--d:.05s">Independent developer &middot; Oslo</p>
+        <h1 class="reveal" style="--d:.14s">Small apps, made <em>one at a time</em>.</h1>
+        <p class="lede reveal" style="--d:.26s">
+          I'm <strong>Thomas</strong> — I design, build, and ship apps and games for
+          iPhone, iPad, and Mac. No team, no roadmap deck. Here's everything so far.
+        </p>
+      </div>
+    </section>
+
+  </div><!-- /.sky -->
+
+  <main id="index" class="index">
+    <div class="container">
+
+      <div class="index-head reveal" style="--d:.36s">
+        <h2>The work</h2>
+        <p>Five, and counting</p>
+      </div>
+
+      <ul class="index-list">
+
+        <li class="reveal" style="--d:.44s">
+          <a class="entry" href="/tinyknots/" style="--icon-zoom:1.13; --app-accent:var(--knots)">
+            <span class="num" aria-hidden="true">01</span>
+            <span class="icon">
+              <img src="/tinyknots/assets/icon-512.png" alt="" loading="lazy" width="64" height="64">
+            </span>
+            <div class="title">
+              <h3>Little Knots</h3>
+              <span class="kind">App &middot; iPhone</span>
+            </div>
+            <span class="tag">Firsts, lasts, and the things they say.</span>
+            <span class="go" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+
+        <li class="reveal" style="--d:.51s">
+          <a class="entry" href="/100percent/" style="--icon-zoom:1.00; --app-accent:var(--percent)">
+            <span class="num" aria-hidden="true">02</span>
+            <span class="icon">
+              <img src="/100percent/assets/icon.png" alt="" loading="lazy" width="64" height="64">
+            </span>
+            <div class="title">
+              <h3>100 Percent Calculator</h3>
+              <span class="kind">App &middot; iPhone &amp; iPad</span>
+            </div>
+            <span class="tag">Every percent question, answered.</span>
+            <span class="go" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+
+        <li class="reveal" style="--d:.58s">
+          <a class="entry" href="/Regrocer/" style="--icon-zoom:1.29; --app-accent:var(--regrocer)">
+            <span class="num" aria-hidden="true">03</span>
+            <span class="icon">
+              <img src="/Regrocer/assets/icon.png" alt="" loading="lazy" width="64" height="64">
+            </span>
+            <div class="title">
+              <h3>Regrocer</h3>
+              <span class="kind">App &middot; iPhone, iPad &amp; Mac</span>
+            </div>
+            <span class="tag">Shop together, stock up together.</span>
+            <span class="go" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+
+        <li class="reveal" style="--d:.65s">
+          <a class="entry" href="/tenfall/" style="--app-accent:var(--tenfall)">
+            <span class="num" aria-hidden="true">04</span>
+            <span class="icon mark" aria-hidden="true"><span>10</span></span>
+            <div class="title">
+              <h3>Tenfall</h3>
+              <span class="kind">Game &middot; iPhone &amp; iPad</span>
+            </div>
+            <span class="tag">Drop. Match. Survive.</span>
+            <span class="go" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+
+        <li class="reveal" style="--d:.72s">
+          <a class="entry" href="/Atten/" style="--icon-zoom:1.09; --app-accent:var(--atten)">
+            <span class="num" aria-hidden="true">05</span>
+            <span class="icon">
+              <img src="/Atten/assets/icon-512.png" alt="" loading="lazy" width="64" height="64">
+            </span>
+            <div class="title">
+              <h3>Atten</h3>
+              <span class="kind">Game &middot; iPhone &amp; iPad</span>
+            </div>
+            <span class="tag">Drop. Merge. Eighteen.</span>
+            <span class="go" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+
+        <li class="reveal" style="--d:.79s">
+          <div class="entry soon">
+            <span class="num" aria-hidden="true">06</span>
+            <span class="icon mark soon" aria-hidden="true"><span>+</span></span>
+            <div class="title">
+              <h3>Something new</h3>
+              <span class="kind">In progress</span>
+            </div>
+            <span class="tag">Being built right now.</span>
+            <span class="go" aria-hidden="true"></span>
+          </div>
+        </li>
+
+      </ul>
     </div>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>
-        Made by <strong>Thomas A Johansen</strong> in Oslo &middot;
-        <a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a>
-      </p>
+      <p class="sig">Made in Oslo by <em>Thomas A Johansen</em></p>
+      <p><a href="mailto:hello@thomasaj.com">hello@thomasaj.com</a></p>
       <p class="copyright">&copy; 2026 Thomas AJ. All rights reserved.</p>
     </div>
   </footer>
