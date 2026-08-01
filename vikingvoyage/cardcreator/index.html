@@ -730,31 +730,31 @@ function seedDB(){
     anatomy:{...DEFAULT_ANATOMY},
     specialists:[
       {id:'sp-bersi', name:'Bersi Adze-Hand', role:'Shipwright', area:'Hull', level:3,
-       portrait:'', ability:'Caulk the Breach', cardId:null},
+       portrait:'art/crew-shipwright.jpg', ability:'Caulk the Breach', cardId:null},
       {id:'sp-hjalmar', name:'Hjalmar Grey-Eye', role:'Navigator', area:'Sail', level:2,
-       portrait:'', ability:'Read the Water', cardId:'c-read'},
+       portrait:'art/crew-navigator.jpg', ability:'Read the Water', cardId:'c-read'},
       {id:'sp-sigrun', name:'Sigrún Bow-Hand', role:'Bowmaster', area:'Weapons', level:2,
-       portrait:'', ability:'Sigrún’s Volley', cardId:'c-volley'},
+       portrait:'art/crew-sigrun-bow-hand.jpg', ability:'Sigrún’s Volley', cardId:'c-volley'},
       {id:'sp-ragna', name:'Ragna Keys', role:'Quartermaster', area:'Cargo', level:1,
-       portrait:'', ability:'Trim the Hold', cardId:null}
+       portrait:'art/crew-quartermaster.jpg', ability:'Trim the Hold', cardId:null}
     ],
     cards:[
       {id:'c-rake', kind:'tactic', title:'Rake the Oar-Bank', sub:'Oar Work', cost:2, stat:'STR',
-       type:'Tactic', art:'art/card-rake-the-oar-bank.svg',
+       type:'Tactic', art:'art/card-rake-the-oar-bank.jpg',
        bands:{far:false,normal:true,close:true}, best:'close', shiftTo:'close',
        sure:'Close one band. Deal <b>6</b> to enemy <b>Sail</b>.', thr:9,
        bonus:'The enemy cannot change range next turn.', greater:'Also deal <b>3</b> to enemy <b>Crew</b>.',
        odds:{miss:40,bonus:45,greater:15}, targets:['Sail'],
        flav:'Oars are cheaper than men.<br>Take the oars.'},
       {id:'c-lash', kind:'tactic', title:'Lash the Hulls', sub:'Seamanship', cost:1, stat:'CON',
-       type:'Tactic', art:'art/card-lash-the-hulls.svg',
+       type:'Tactic', art:'art/card-lash-the-hulls.jpg',
        bands:{far:true,normal:true,close:true}, best:null, shiftTo:null,
        sure:'Repair <b>4</b> to one area. Until your next turn the range cannot change.', thr:7,
        bonus:'Incoming area damage &minus;<b>2</b> this round.', greater:'Also destroy a negative card.',
        odds:{miss:30,bonus:60,greater:10}, targets:['Hull','Sail','Weapons','Cargo','Crew'],
        flav:'Now it is one deck,<br>and one of us leaves it.'},
       {id:'c-volley', kind:'crew', ownerId:'sp-sigrun', title:'Sigrún’s Volley', sub:'Bowmaster',
-       cost:2, stat:'DEX', type:'Crew — Sigrún Bow-Hand', art:'art/card-sigruns-volley.svg',
+       cost:2, stat:'DEX', type:'Crew — Sigrún Bow-Hand', art:'art/card-sigruns-volley.jpg',
        bands:{far:true,normal:true,close:false}, best:'far', shiftTo:null,
        sure:'Strike a chosen area for <b>5</b>. At far, for <b>8</b>.', thr:8,
        bonus:'That area cannot be repaired next turn.', greater:'Also strike a second area for <b>3</b>.',
@@ -780,7 +780,7 @@ function seedDB(){
     leaders:[
       {id:'l-ingrith', name:'Ingrith', epithet:'Scale-Hand',
        quote:'Weigh-master at Hedeby for nineteen years. She did not become a raider because she wanted more. She became one because she was owed.',
-       portrait:'art/leader-ingrith-scale-hand.svg',
+       portrait:'art/leader-ingrith-scale-hand.jpg',
        stats:{STR:2,DEX:3,CON:3,CHA:5,LUK:2},
        passiveName:'Weighed and Written',
        passiveText:'You see the goods and prices of ports <b>one node further ahead</b>, and every surrender you accept pays <b>tribute</b> instead of salvage.',
@@ -801,6 +801,15 @@ try{
 }catch(e){ DB = seedDB(); }
 /* forward-migrate anatomies saved before a token existed */
 DB.anatomy = Object.assign({}, DEFAULT_ANATOMY, DB.anatomy || {});
+/* early chests were seeded with SVG placeholder art — repoint them at the real art */
+{
+  const swap = p => (p && p.startsWith('art/') && p.endsWith('.svg')) ? p.replace(/\.svg$/,'.jpg') : p;
+  (DB.cards||[]).forEach(c=>{ c.art = swap(c.art); });
+  (DB.leaders||[]).forEach(l=>{ l.portrait = swap(l.portrait); });
+  const SEED_FACES = {'sp-bersi':'art/crew-shipwright.jpg','sp-hjalmar':'art/crew-navigator.jpg',
+    'sp-sigrun':'art/crew-sigrun-bow-hand.jpg','sp-ragna':'art/crew-quartermaster.jpg'};
+  (DB.specialists||[]).forEach(sp=>{ if(!sp.portrait && SEED_FACES[sp.id]) sp.portrait = SEED_FACES[sp.id]; });
+}
 
 let sel = null;                       // {type:'card'|'leader'|'spec'|'consumable', id}
 let previewOpts = {scale:1, injured:false};
