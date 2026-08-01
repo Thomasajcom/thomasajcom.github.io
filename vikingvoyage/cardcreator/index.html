@@ -113,6 +113,7 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 .savestate{font-family:var(--font-small);font-weight:700;font-size:9.5px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--save-ok);white-space:nowrap}
 .savestate.err{color:#c85c52}
+.savestate.warn{color:var(--warn)}
 .bbtn{
   font-family:var(--font-small);font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   padding:9px 14px;border:1px solid var(--line);border-radius:3px;color:var(--tx);
@@ -602,9 +603,8 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   <button class="bbtn" id="themeBtn" title="Switch between the daylight and lamplight workshop">Light ☀</button>
   <button class="bbtn" id="btnHelp">How saving works</button>
   <button class="bbtn" id="btnCopyJS" title="Copy all cards as a CARDS = {...} javascript object">Copy as game JS</button>
-  <button class="bbtn" id="btnImport">Import</button>
   <input type="file" id="importFile" accept=".json,application/json" style="display:none">
-  <button class="bbtn primary isdirty" id="btnExport">Export JSON<span class="dirty"></span></button>
+  <button class="bbtn primary" id="btnSave" title="Commit the chest to the shared repo">Save<span class="dirty"></span></button>
 </header>
 
 <!-- ═══════════ CARD CREATOR ═══════════ -->
@@ -612,7 +612,7 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   <aside class="lib">
     <div class="search"><input id="libSearch" placeholder="Search the chest…"></div>
     <div class="libscroll" id="libScroll"></div>
-    <div class="foot">Autosaves to this browser · share by <a id="footExport">exporting</a></div>
+    <div class="foot">Draft autosaves here · <a id="footSave">Save</a> publishes to the shared chest</div>
   </aside>
   <section class="editor" id="editor"></section>
   <aside class="stage">
@@ -713,15 +713,37 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
     style="flex:1;width:100%;border:0;background:#12100c"></iframe>
 </main>
 
+<div class="helpbox" id="tokenDlg">
+  <button class="close" id="tokenClose">✕</button>
+  <h4>Save access — one-time setup</h4>
+  <p>Saving commits straight to the shared chest
+     (<b>github.com/Thomasajcom/viking-voyage-cards</b>). Paste a fine-grained
+     GitHub token scoped to <b>only that repo</b>, Contents read &amp; write —
+     <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener"
+        style="color:var(--madder)">create one here</a> (steps in the repo's README).</p>
+  <p style="margin-top:8px"><input id="tokenInput" type="password" placeholder="github_pat_…"></p>
+  <p id="tokenErr" style="color:#c85c52;display:none">That token was refused — check its repo and Contents permissions.</p>
+  <p style="margin-top:8px"><button class="bbtn primary" id="tokenSave">Keep in this browser &amp; save</button></p>
+</div>
+
 <div class="helpbox" id="helpBox">
   <button class="close" id="helpClose">✕</button>
   <h4>Where the data lives</h4>
-  <p>Everything autosaves to <b>this browser</b> (localStorage). Nothing leaves your machine
-     until you export.</p>
-  <h4>Sharing between designers</h4>
-  <p><b>Export JSON</b> downloads the whole chest — anatomy and all cards — as one file.
-     A colleague uses <b>Import</b> to merge it into theirs (same ids update, new ids add).
-     The exported file is also the handoff artifact into the game repo.</p>
+  <p>The chest lives in a shared repo. <b>Opening the Forge always pulls the latest</b> —
+     a new designer just opens this page. <b>Save</b> commits your work back. One designer
+     at a time; if two ever collide, the second save is refused, never silently lost.
+     Edits autosave to this browser between saves, and survive a reload unpublished.</p>
+  <h4>Save access</h4>
+  <p>Reading needs nothing. The first Save asks once for a GitHub token scoped to the
+     chest repo only — setup steps live in
+     <a href="https://github.com/Thomasajcom/viking-voyage-cards#getting-save-access-one-time-2-minutes"
+        target="_blank" rel="noopener" style="color:var(--madder)">the repo README</a>.
+     <span class="wipe" id="tokenForget">Forget this browser's token</span>.</p>
+  <h4>Safety hatches</h4>
+  <p><span class="wipe" id="btnBackup">Download a backup file</span> ·
+     <span class="wipe" id="btnRestore">Restore from a file</span> ·
+     <span class="wipe" id="btnReloadChest">Discard local, reload latest chest</span>.
+     Every save is also a commit, so the repo history is itself a backup.</p>
   <h4>The Smithy</h4>
   <p>The layout bench — drag pieces onto a card, watch the density gauge, save
      layout designs. Its library and Export are <b>separate</b> from the chest:
@@ -861,18 +883,20 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const uid = p => p + '-' + Math.random().toString(36).slice(2,7);
 
+function setSync(msg, cls){
+  const el = $('#saveState');
+  el.textContent = msg; el.classList.remove('err','warn');
+  if(cls) el.classList.add(cls);
+}
+function persistLocal(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }
+  catch(e){ setSync('Browser storage full — trim art', 'err'); }
+  $('#btnSave').classList.toggle('isdirty', !!DB.meta.dirty);
+}
 function save(){
-  DB.meta.dirty = true; DB.meta.savedAt = new Date().toISOString();
-  try{
-    localStorage.setItem(LS_KEY, JSON.stringify(DB));
-    const t = new Date();
-    $('#saveState').textContent = 'Saved · ' + t.toTimeString().slice(0,5);
-    $('#saveState').classList.remove('err');
-  }catch(e){
-    $('#saveState').textContent = 'Storage full — export & trim art';
-    $('#saveState').classList.add('err');
-  }
-  $('#btnExport').classList.toggle('isdirty', !!DB.meta.dirty);
+  DB.meta.dirty = true;
+  persistLocal();
+  setSync('Unsaved changes — Save to publish', 'warn');
 }
 let saveT; const saveSoon = () => { clearTimeout(saveT); saveT = setTimeout(save, 300); };
 
@@ -1566,49 +1590,146 @@ $('#anaReset').onclick = ()=>{
   applyAnatomy(); buildAnatomyControls(); save();
 };
 
-/* ═══════════════════ IMPORT / EXPORT ═══════════════════ */
-$('#btnExport').onclick = ()=>{
-  DB.meta.dirty = false;
+/* ═══════════════════ THE SHARED CHEST — direct save to the repo ═══════════════════
+   The chest is a JSON file in github.com/Thomasajcom/viking-voyage-cards.
+   Boot pulls the latest (readers need nothing); Save commits it back with a
+   token pasted once. Single-writer by agreement; Git's sha check makes a
+   collision a refusal, never a silent overwrite. */
+const GH = {owner:'Thomasajcom', repo:'viking-voyage-cards', file:'chest.json'};
+const TOKEN_KEY = 'vv-forge-gh-token';
+let chestSha = null;
+const getToken = () => { try{ return localStorage.getItem(TOKEN_KEY)||''; }catch(e){ return ''; } };
+const ghHdr = (raw, tok) => {
+  const h = {'Accept': raw ? 'application/vnd.github.raw' : 'application/vnd.github+json',
+             'X-GitHub-Api-Version':'2022-11-28'};
+  const t = tok===undefined ? getToken() : tok;
+  if(t) h['Authorization'] = 'Bearer ' + t;
+  return h;
+};
+const ghUrl = p => `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${p}`;
+function b64(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin=''; const CH=0x8000;
+  for(let i=0;i<bytes.length;i+=CH) bin += String.fromCharCode.apply(null, bytes.subarray(i,i+CH));
+  return btoa(bin);
+}
+const hhmm = () => new Date().toTimeString().slice(0,5);
+
+async function chestFetchSha(){
+  const res = await fetch(ghUrl('')+`?t=${Date.now()}`, {headers:ghHdr(false), cache:'no-store'});
+  if(!res.ok) throw new Error('list '+res.status);
+  const f = (await res.json()).find(x=>x.name===GH.file);
+  return f ? f.sha : null;
+}
+function adoptRemote(remote){
+  DB = remote;
+  DB.meta = DB.meta || {}; DB.meta.dirty = false;
+  DB.anatomy = Object.assign({}, DEFAULT_ANATOMY, DB.anatomy||{});
+  persistLocal();
+  if(sel && !selectedObj()) sel = null;
+  applyAnatomy(); buildAnatomyControls(); buildAnatomyStage();
+  buildLib(); buildEditor();
+}
+async function syncFromChest(){
+  setSync('Opening the chest…');
+  try{
+    chestSha = await chestFetchSha();
+    if(chestSha === null){ setSync('Chest is empty — Save publishes the first version'); return; }
+    if(DB.meta && DB.meta.dirty){ setSync('Unsaved changes — Save to publish', 'warn'); return; }
+    const res = await fetch(ghUrl(GH.file)+`?t=${Date.now()}`, {headers:ghHdr(true), cache:'no-store'});
+    if(!res.ok) throw new Error('read '+res.status);
+    const remote = JSON.parse(await res.text());
+    if(!remote.v || !remote.cards) throw new Error('bad shape');
+    adoptRemote(remote);
+    setSync('Chest · latest ✓');
+  }catch(e){
+    setSync('Offline — this browser’s draft', 'err');
+  }
+}
+async function saveToChest(){
+  const tok = getToken();
+  if(!tok){ openTokenDlg(false); return; }
+  setSync('Saving to the chest…');
+  try{ if(chestSha===null) chestSha = await chestFetchSha(); }catch(e){}
+  DB.meta.dirty = false; DB.meta.savedAt = new Date().toISOString();
+  const body = {message:'chest: save from the Card Forge', content:b64(JSON.stringify(DB,null,1))};
+  if(chestSha) body.sha = chestSha;
+  let res;
+  try{
+    res = await fetch(ghUrl(GH.file), {method:'PUT', headers:ghHdr(false), body:JSON.stringify(body)});
+  }catch(e){ DB.meta.dirty = true; persistLocal(); setSync('Offline — could not reach the chest','err'); return; }
+  if(res.ok){
+    const j = await res.json();
+    chestSha = j.content.sha;
+    persistLocal();
+    setSync('Saved to the chest · ' + hhmm());
+  }else if(res.status===401 || res.status===403){
+    DB.meta.dirty = true; persistLocal();
+    setSync('Token refused', 'err'); openTokenDlg(true);
+  }else if(res.status===409 || res.status===422){
+    DB.meta.dirty = true; persistLocal();
+    setSync('Chest changed since you loaded', 'err');
+    alert('Someone saved after you loaded. Download a backup from Help, use “reload latest chest”, then re-apply your change.');
+  }else{
+    DB.meta.dirty = true; persistLocal();
+    setSync('Save failed · HTTP '+res.status, 'err');
+  }
+}
+$('#btnSave').onclick = saveToChest;
+$('#footSave').onclick = saveToChest;
+
+/* token dialog */
+function openTokenDlg(wasBad){
+  $('#tokenErr').style.display = wasBad ? 'block' : 'none';
+  $('#tokenDlg').classList.add('show');
+  $('#tokenInput').focus();
+}
+$('#tokenClose').onclick = ()=> $('#tokenDlg').classList.remove('show');
+$('#tokenSave').onclick = ()=>{
+  const v = $('#tokenInput').value.trim();
+  if(!v) return;
+  try{ localStorage.setItem(TOKEN_KEY, v); }catch(e){}
+  $('#tokenInput').value='';
+  $('#tokenDlg').classList.remove('show');
+  saveToChest();
+};
+$('#tokenForget').onclick = ()=>{
+  try{ localStorage.removeItem(TOKEN_KEY); }catch(e){}
+  alert('Token forgotten. The next Save will ask again.');
+};
+
+/* safety hatches — a chest this small deserves an escape rope */
+$('#btnBackup').onclick = ()=>{
   const blob = new Blob([JSON.stringify(DB,null,1)],{type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'viking-voyage-cards-' + new Date().toISOString().slice(0,10) + '.json';
+  a.download = 'viking-voyage-chest-backup-' + new Date().toISOString().slice(0,10) + '.json';
   a.click(); URL.revokeObjectURL(a.href);
-  save(); DB.meta.dirty=false; localStorage.setItem(LS_KEY, JSON.stringify(DB));
-  $('#btnExport').classList.remove('isdirty');
 };
-$('#footExport').onclick = ()=> $('#btnExport').click();
-$('#btnImport').onclick = ()=> $('#importFile').click();
+$('#btnRestore').onclick = ()=> $('#importFile').click();
 $('#importFile').onchange = ()=>{
   const f = $('#importFile').files[0]; if(!f) return;
   const rd = new FileReader();
   rd.onload = ()=>{
     try{
       const inc = JSON.parse(rd.result);
-      if(!inc.v || !inc.cards) throw new Error('not a Card Forge file');
-      const replace = confirm('OK = MERGE into your chest (same ids update, new ids add).\nCancel = choose replace…')
-        ? false
-        : confirm('REPLACE EVERYTHING with the imported file? Your current chest is overwritten.');
-      if(replace){ DB = inc; }
-      else{
-        const mergeList = (mine, theirs)=>{
-          theirs.forEach(t=>{
-            const i = mine.findIndex(m=>m.id===t.id);
-            i>=0 ? mine[i]=t : mine.push(t);
-          });
-        };
-        mergeList(DB.cards, inc.cards||[]);
-        mergeList(DB.consumables, inc.consumables||[]);
-        mergeList(DB.specialists, inc.specialists||[]);
-        mergeList(DB.leaders, inc.leaders||[]);
-        if(inc.anatomy && confirm('Also take the imported file’s anatomy (template design)?')) DB.anatomy = inc.anatomy;
-      }
-      sel = null; save(); applyAnatomy(); buildAnatomyControls(); buildAnatomyStage(); buildLib(); buildEditor();
-      alert('Imported.');
-    }catch(err){ alert('Could not import: ' + err.message); }
+      if(!inc.v || !inc.cards) throw new Error('not a chest file');
+      if(!confirm('Replace everything in this browser with the backup? (Unpublished until you Save.)')) return;
+      inc.meta = inc.meta||{}; inc.meta.dirty = true;
+      DB = inc;
+      DB.anatomy = Object.assign({}, DEFAULT_ANATOMY, DB.anatomy||{});
+      sel = null; persistLocal();
+      applyAnatomy(); buildAnatomyControls(); buildAnatomyStage(); buildLib(); buildEditor();
+      setSync('Backup restored — Save to publish', 'warn');
+    }catch(err){ alert('Could not restore: ' + err.message); }
     $('#importFile').value='';
   };
   rd.readAsText(f);
+};
+$('#btnReloadChest').onclick = ()=>{
+  if(!confirm('Discard this browser’s unpublished changes and reload the latest chest?')) return;
+  DB.meta.dirty = false; persistLocal();
+  syncFromChest();
 };
 
 /* copy as the CARDS = {...} object combat-screen.html uses */
@@ -1674,7 +1795,8 @@ buildLib();
 sel = {type:'card', id:'c-rake'};
 if(!cardById('c-rake')) sel = null;
 buildLib(); buildEditor();
-$('#btnExport').classList.toggle('isdirty', !!DB.meta.dirty);
+$('#btnSave').classList.toggle('isdirty', !!DB.meta.dirty);
+syncFromChest();   /* local paints first; the chest replaces it unless there is unsaved work */
 </script>
 </body>
 </html>

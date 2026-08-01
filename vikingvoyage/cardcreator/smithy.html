@@ -358,10 +358,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:99;
   <div class="scrim" id="scrim"></div>
   <div class="panel lib" id="lib">
     <div class="ph">Library<span class="sp"></span>
-      <button class="pbtn" id="exportBtn" title="Download every saved card as JSON">Export</button>
-      <button class="pbtn" id="importBtn" title="Load cards from a JSON file">Import</button>
+      <span id="syncState" style="font-size:8px;letter-spacing:.1em;color:#8d8168;font-weight:700"></span>
       <button class="pbtn" id="libClose" title="Close">✕</button>
-      <input type="file" id="importFile" accept=".json" style="display:none">
     </div>
     <div id="accord"></div>
   </div>
@@ -638,7 +636,7 @@ const STARTERS = {
 const LS_CARDS='vv-smithy-cards', LS_DRAFT='vv-smithy-draft', LS_SHELF='vv-smithy-shelf';
 function shelfCollapsed(){ try{return JSON.parse(localStorage.getItem(LS_SHELF))||{}}catch(e){return {}} }
 function loadSaved(){ try{return JSON.parse(localStorage.getItem(LS_CARDS))||[]}catch(e){return []} }
-function persistSaved(list){ try{localStorage.setItem(LS_CARDS, JSON.stringify(list))}catch(e){} }
+function persistSaved(list){ try{localStorage.setItem(LS_CARDS, JSON.stringify(list))}catch(e){} pushLibrarySoon(); }
 function autosaveDraft(){ try{localStorage.setItem(LS_DRAFT, JSON.stringify({card:state.card, savedId:state.savedId}))}catch(e){} }
 
 /* ═══════════════════ CARD RENDER ═══════════════════ */
@@ -1075,33 +1073,54 @@ function closeLib(){ $('#lib').classList.remove('open'); $('#scrim').classList.r
 $('#libBtn').onclick=()=>$('#lib').classList.contains('open')?closeLib():openLib();
 $('#libClose').onclick=closeLib;
 $('#scrim').onclick=closeLib;
-$('#exportBtn').onclick=()=>{
-  const blob=new Blob([JSON.stringify({app:'viking-voyage-smithy',version:1,cards:loadSaved()},null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='viking-voyage-cards.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
+/* ── the shared library: smithy.json in the chest repo. Boot pulls the latest;
+   every library change pushes back with the same token the Forge keeps. ── */
+const GH = {owner:'Thomasajcom', repo:'viking-voyage-cards', file:'smithy.json'};
+const ghToken = () => { try{ return localStorage.getItem('vv-forge-gh-token')||''; }catch(e){ return ''; } };
+const ghHdr = raw => {
+  const h = {'Accept': raw ? 'application/vnd.github.raw' : 'application/vnd.github+json',
+             'X-GitHub-Api-Version':'2022-11-28'};
+  const t = ghToken(); if(t) h['Authorization']='Bearer '+t;
+  return h;
 };
-$('#importBtn').onclick=()=>$('#importFile').click();
-$('#importFile').onchange=e=>{
-  const f=e.target.files[0]; if(!f)return;
-  const r=new FileReader();
-  r.onload=()=>{
-    try{
-      const data=JSON.parse(r.result);
-      const incoming=data.cards||data;
-      if(!Array.isArray(incoming)) throw 0;
-      const list=loadSaved();
-      const have=new Set(list.map(x=>x.id));
-      incoming.forEach(c=>{ if(!c.id||have.has(c.id)) c.id=uid(); list.push(c); });
-      persistSaved(list);
-      renderLibrary();
-    }catch(err){ alert('That file did not look like a Smithy export.'); }
-  };
-  r.readAsText(f);
-  e.target.value='';
-};
+const ghUrl = p => `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${p}`;
+function b64u(str){
+  const bytes=new TextEncoder().encode(str); let bin=''; const CH=0x8000;
+  for(let i=0;i<bytes.length;i+=CH) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH));
+  return btoa(bin);
+}
+const setShare = (t,color) => { const el=$('#syncState'); if(el){el.textContent=t; el.style.color=color||'#8d8168';} };
+
+let pushT=null;
+function pushLibrarySoon(){ clearTimeout(pushT); pushT=setTimeout(pushLibrary, 900); }
+async function pushLibrary(){
+  if(!ghToken()){ setShare('LOCAL ONLY — SAVE IN THE FORGE TAB ONCE TO ADD THE TOKEN','#d8836f'); return; }
+  setShare('SHARING…');
+  try{
+    const list = await fetch(ghUrl('')+`?t=${Date.now()}`,{headers:ghHdr(false),cache:'no-store'});
+    const sha = list.ok ? ((await list.json()).find(x=>x.name===GH.file)||{}).sha : undefined;
+    const body = {message:'smithy: library save', content:b64u(JSON.stringify({app:'viking-voyage-smithy',version:1,cards:loadSaved()},null,1))};
+    if(sha) body.sha = sha;
+    const res = await fetch(ghUrl(GH.file),{method:'PUT',headers:ghHdr(false),body:JSON.stringify(body)});
+    if(res.ok) setShare('SHARED ✓ '+new Date().toTimeString().slice(0,5),'#8fb6ac');
+    else if(res.status===401||res.status===403) setShare('TOKEN REFUSED — RE-ENTER IT IN THE FORGE','#d8836f');
+    else setShare('SHARE FAILED · HTTP '+res.status,'#d8836f');
+  }catch(e){ setShare('OFFLINE — KEPT LOCALLY','#d8836f'); }
+}
+async function pullLibrary(){
+  setShare('FETCHING…');
+  try{
+    const res = await fetch(ghUrl(GH.file)+`?t=${Date.now()}`,{headers:ghHdr(true),cache:'no-store'});
+    if(res.status===404){ setShare('NOTHING SHARED YET'); return; }
+    if(!res.ok) throw 0;
+    const data = JSON.parse(await res.text());
+    const incoming = data.cards||data;
+    if(!Array.isArray(incoming)) throw 0;
+    try{ localStorage.setItem(LS_CARDS, JSON.stringify(incoming)); }catch(e){}
+    renderLibrary();
+    setShare('SHARED LIBRARY ✓','#8fb6ac');
+  }catch(e){ setShare('OFFLINE — THIS BROWSER’S LIBRARY','#d8836f'); }
+}
 
 /* ═══════════════════ BOOT ═══════════════════ */
 (function boot(){
@@ -1112,6 +1131,7 @@ $('#importFile').onchange=e=>{
   openKind=state.card.kind;
   renderAll();
   histBtns();
+  pullLibrary();   /* the shared library replaces this browser's copy */
 })();
 </script>
 </body>
