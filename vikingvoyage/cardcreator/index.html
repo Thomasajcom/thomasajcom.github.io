@@ -1,0 +1,1498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Viking Voyage — Card Forge</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2314100c'/%3E%3Cpath d='M8 22 Q16 25 24 22 L21 26 Q16 28 11 26 Z' fill='%23e3d8be'/%3E%3Cpath d='M16 6 L16 21 M16 8 L23 12 L16 16 Z' stroke='%239e2b25' stroke-width='2' fill='%239e2b25'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Alegreya+Sans+SC:wght@400;500;700;800&family=Grenze+Gotisch:wght@400;500&family=Cormorant+SC:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ═════════════════════════════════════════════════════════════════
+   VIKING VOYAGE — CARD FORGE
+   One file, two rooms:
+     · Card Creator  — designers author leaders, specialists, cards
+     · Card Anatomy  — the shared template every card is struck from
+   Data lives in localStorage; the handoff artifact is the exported
+   JSON file. Nothing here talks to a server.
+   ═════════════════════════════════════════════════════════════════ */
+
+/* the anatomy sets these at runtime — defaults mirror card-preview.html */
+:root{
+  --ink:#14100c; --ink-soft:#3b332a;
+  --madder:#9e2b25; --seagreen:#3e6b63;
+  --vellum:#e3d8be; --vellum-hi:#efe6d1; --vellum-lo:#cabd9d; --vellum-crew:#e7dcc0;
+  --iron:#33302a; --iron-hi:#6c675c;
+  --stat-str:#9e2b25; --stat-dex:#3e6b63; --stat-con:#3d4a55; --stat-cha:#96662a; --stat-luk:#6b3a4a;
+  --card-radius:11px; --title-size:22px; --sure-size:14.4px; --roll-size:13.4px;
+  --font-display:'IM Fell English SC',serif;
+  --font-flav:'IM Fell English',serif;
+  --font-body:'Alegreya',serif;
+  --font-small:'Alegreya Sans SC',sans-serif;
+
+  --chest:#12100c; --panel:#191510; --panel2:#1f1a13; --line:#39332a; --line-soft:#2b261e;
+  --tx:#c9bda2; --tx-dim:#8d8168; --tx-bright:#eee3c8;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:radial-gradient(120% 90% at 50% -20%, #241e16 0%, transparent 60%), var(--chest);
+  color:var(--tx); font-family:var(--font-body); font-size:15px;
+  overflow:hidden;
+}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:200;
+  background-image:var(--grain);opacity:.14;mix-blend-mode:overlay}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{
+  font-family:var(--font-body);font-size:14px;color:var(--tx-bright);
+  background:#141109;border:1px solid var(--line);border-radius:3px;padding:7px 9px;
+  width:100%;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#6b5b3a;background:#171309}
+textarea{resize:vertical;min-height:58px;line-height:1.45}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#8d8168 50%),linear-gradient(135deg,#8d8168 50%,transparent 50%);
+  background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
+input[type=color]{padding:2px;height:34px;cursor:pointer;background:#141109}
+input[type=range]{padding:0;accent-color:var(--madder);background:transparent;border:none}
+input[type=checkbox]{width:auto;accent-color:var(--madder)}
+::placeholder{color:#5d5545;font-style:italic}
+
+/* ───────── top bar ───────── */
+.bar{
+  height:56px;display:flex;align-items:center;gap:22px;padding:0 20px;
+  background:linear-gradient(180deg,#1b1610,#151109);border-bottom:1px solid var(--line);
+  position:relative;z-index:20;
+}
+.brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+.brand .b1{font-family:var(--font-display);font-size:21px;color:var(--tx-bright);letter-spacing:.01em}
+.brand .b2{font-family:var(--font-small);font-weight:800;font-size:9px;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--madder)}
+.tabs{display:flex;gap:4px;margin-left:8px}
+.tab{
+  font-family:var(--font-small);font-weight:800;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--tx-dim);padding:9px 16px 8px;border:1px solid transparent;
+  border-radius:3px;
+}
+.tab.on{color:var(--tx-bright);background:#221c12;border-color:var(--line)}
+.tab:hover:not(.on){color:var(--tx)}
+.bar .sp{flex:1}
+.savestate{font-family:var(--font-small);font-weight:700;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:#5f7a5f;white-space:nowrap}
+.savestate.err{color:#c85c52}
+.bbtn{
+  font-family:var(--font-small);font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  padding:9px 14px;border:1px solid var(--line);border-radius:3px;color:var(--tx);
+  background:#1d1811;white-space:nowrap;position:relative;
+}
+.bbtn:hover{border-color:#6b5b3a;color:var(--tx-bright)}
+.bbtn.primary{background:var(--madder);border-color:#7c221d;color:#f7eeda}
+.bbtn.primary:hover{background:#b23830}
+.bbtn .dirty{position:absolute;top:-4px;right:-4px;width:9px;height:9px;border-radius:50%;
+  background:#d09a4a;border:2px solid #151109;display:none}
+.bbtn.isdirty .dirty{display:block}
+
+/* ───────── layout ───────── */
+.view{display:none;height:calc(100vh - 56px)}
+.view.on{display:flex}
+
+/* library rail */
+.lib{
+  flex:0 0 268px;border-right:1px solid var(--line-soft);background:var(--panel);
+  display:flex;flex-direction:column;min-height:0;
+}
+.lib .search{padding:12px 12px 8px}
+.lib .search input{font-size:13px;padding:6px 9px}
+.libscroll{flex:1;overflow-y:auto;padding:0 0 30px}
+.lgroup{margin-top:14px}
+.lgroup .gh{
+  display:flex;align-items:center;gap:8px;padding:0 12px;margin-bottom:5px;
+  font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--tx-dim);
+}
+.lgroup .gh .n{color:#57503f}
+.lgroup .gh .add{margin-left:auto;color:var(--madder);font-size:13px;line-height:1;padding:2px 6px;border-radius:3px}
+.lgroup .gh .add:hover{background:#241c12;color:#d0564a}
+.lrow{
+  display:flex;align-items:center;gap:9px;padding:6px 12px;cursor:pointer;
+  border-left:2px solid transparent;
+}
+.lrow:hover{background:#1e1911}
+.lrow.on{background:#241d12;border-left-color:var(--madder)}
+.lrow .chip{
+  flex:0 0 auto;width:20px;height:20px;border-radius:3px;display:grid;place-items:center;
+  font-family:var(--font-small);font-weight:800;font-size:9px;color:#f5ecd6;
+  background:var(--iron);
+}
+.lrow .t{flex:1;min-width:0;font-size:13.6px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lrow.on .t{color:var(--tx-bright)}
+.lrow .m{font-family:var(--font-small);font-weight:700;font-size:9px;letter-spacing:.06em;color:#57503f}
+.lib .foot{
+  padding:10px 12px;border-top:1px solid var(--line-soft);
+  font-family:var(--font-small);font-weight:700;font-size:9px;letter-spacing:.13em;
+  text-transform:uppercase;color:#57503f;
+}
+.lib .foot a{color:#7a6f58;cursor:pointer;text-decoration:underline dotted}
+
+/* editor column */
+.editor{flex:1 1 460px;min-width:380px;overflow-y:auto;padding:22px 26px 80px;background:var(--panel2)}
+.ehead{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.ehead h2{font-family:var(--font-display);font-size:26px;color:var(--tx-bright);font-weight:400}
+.ehead .kind{font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--madder)}
+.ehead .sp{flex:1}
+.ebtn{font-family:var(--font-small);font-weight:700;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--tx-dim);border:1px solid var(--line);border-radius:3px;padding:5px 10px}
+.ebtn:hover{color:var(--tx-bright);border-color:#6b5b3a}
+.ebtn.danger:hover{color:#e88; border-color:#7c2a24}
+.esub{font-size:13.5px;color:var(--tx-dim);font-style:italic;margin-bottom:18px}
+
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px 16px}
+.fgrid .wide{grid-column:1 / -1}
+.f label{
+  display:block;font-family:var(--font-small);font-weight:800;font-size:9px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--tx-dim);margin-bottom:5px;
+}
+.f label small{color:#57503f;letter-spacing:.08em;text-transform:none;font-size:9px}
+.fsep{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:10px 0 2px;
+  font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.24em;
+  text-transform:uppercase;color:#6f6046}
+.fsep::after{content:'';flex:1;height:1px;background:var(--line-soft)}
+.fsep .hint{font-size:9px;letter-spacing:.05em;text-transform:none;color:#57503f;font-weight:700}
+
+/* band + target pickers */
+.bandpick{display:flex;gap:6px}
+.bandpick .bp{
+  flex:1;text-align:center;padding:7px 0;border:1px dashed var(--line);border-radius:3px;
+  font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:#5d5545;cursor:pointer;user-select:none;
+}
+.bandpick .bp.on{border-style:solid;color:var(--tx-bright);background:#221c12;border-color:#6b5b3a}
+.bandpick .bp.best{background:var(--madder);border-color:transparent;color:#f7eeda}
+.tgts{display:flex;flex-wrap:wrap;gap:5px}
+.tgts .tg{
+  padding:5px 10px;border:1px solid var(--line);border-radius:3px;cursor:pointer;user-select:none;
+  font-family:var(--font-small);font-weight:700;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#5d5545;
+}
+.tgts .tg.on{color:var(--tx-bright);background:#221c12;border-color:#6b5b3a}
+
+/* odds widget */
+.odds3{display:flex;gap:8px;align-items:center}
+.odds3 input{width:64px;text-align:center}
+.odds3 .lab{font-family:var(--font-small);font-weight:700;font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--tx-dim)}
+.oddsbad{margin-top:6px;display:none;font-family:var(--font-small);font-weight:700;font-size:10px;
+  letter-spacing:.08em;color:#d09a4a;cursor:pointer}
+.oddsbad.show{display:inline-block}
+
+/* art uploader */
+.artbox{display:flex;gap:10px;align-items:center}
+.artbox .thumb{
+  flex:0 0 auto;width:86px;height:52px;border:1px solid var(--line);background:#141109;
+  background-size:cover;background-position:center;border-radius:2px;
+}
+.artbox .acts{display:flex;flex-direction:column;gap:5px}
+.artbox input[type=file]{display:none}
+
+/* deck builder */
+.deckt{width:100%;border-collapse:collapse;margin-top:4px}
+.deckt td{padding:4px 6px 4px 0}
+.deckt select{font-size:13px;padding:5px 26px 5px 8px}
+.deckt input{width:52px;text-align:center;padding:5px 4px}
+.deckt .x{color:#7a4a40;font-size:15px;padding:2px 7px}
+.deckt .x:hover{color:#e88}
+.decktotal{margin-top:7px;font-family:var(--font-small);font-weight:700;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--tx-dim)}
+
+/* stage (preview) */
+.stage{
+  flex:0 0 460px;border-left:1px solid var(--line-soft);overflow-y:auto;
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+  padding:30px 20px 60px;position:relative;
+  background:
+    radial-gradient(100% 60% at 50% 0%, #221c13 0%, transparent 70%),
+    repeating-linear-gradient(90deg, transparent 0 118px, rgba(0,0,0,.5) 118px 120px, rgba(255,235,190,.02) 120px 122px),
+    var(--chest);
+}
+.stagebar{display:flex;gap:14px;align-items:center;width:100%;justify-content:center;
+  font-family:var(--font-small);font-weight:700;font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:#6f6046}
+.stagebar label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.stagebar select{width:auto;font-size:12px;padding:3px 24px 3px 8px}
+.stageinner{transform-origin:top center}
+
+/* ═══════════ THE CARD — ported from card-preview.html, tokenised ═══════════ */
+.card{
+  --plate:var(--stat-str);
+  width:376px;height:526px;position:relative;flex:0 0 auto;
+  border-radius:var(--card-radius);
+  background:radial-gradient(88% 66% at 50% 32%, var(--vellum-hi) 0%, var(--vellum) 46%, var(--vellum-lo) 100%);
+  box-shadow:0 2px 0 rgba(255,244,220,.5) inset, 0 -22px 46px -20px rgba(92,72,38,.5) inset,
+    0 26px 44px -14px rgba(0,0,0,.82), 0 3px 8px rgba(0,0,0,.6);
+  font-family:var(--font-body);color:var(--ink);padding:15px;
+}
+.card::before{content:'';position:absolute;inset:0;border-radius:var(--card-radius);pointer-events:none;
+  background-image:var(--grain);opacity:.3;mix-blend-mode:multiply}
+.a-nograin .card::before{display:none}
+.card::after{content:'';position:absolute;inset:9px;border-radius:calc(var(--card-radius) - 6px);pointer-events:none;
+  border:2px solid rgba(20,16,12,.82);
+  box-shadow:0 0 0 1.5px var(--vellum), 0 0 0 3px rgba(20,16,12,.42)}
+.card.is-crew{background:radial-gradient(88% 66% at 50% 32%, var(--vellum-hi) 0%, var(--vellum-crew) 46%, var(--vellum-lo) 100%)}
+.rivet{position:absolute;width:10px;height:10px;border-radius:50%;z-index:6;
+  background:radial-gradient(circle at 34% 30%, var(--iron-hi), var(--iron) 62%, #100e0b);
+  box-shadow:0 1px 1px rgba(255,250,235,.55), inset 0 -1px 1px rgba(0,0,0,.6)}
+.rivet.tl{top:15px;left:15px}.rivet.tr{top:15px;right:15px}
+.rivet.bl{bottom:15px;left:15px}.rivet.br{bottom:15px;right:15px}
+.a-norivets .rivet{display:none}
+.cinner{position:relative;z-index:5;height:100%;display:flex;flex-direction:column;padding:14px 15px 11px}
+.chead{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px}
+.ccost{flex:0 0 auto;width:39px;height:39px;border-radius:50%;
+  background:radial-gradient(circle at 33% 28%, #565043, var(--iron) 58%, #0c0a08);
+  box-shadow:0 2px 3px rgba(0,0,0,.55), inset 0 -2px 3px rgba(0,0,0,.65), inset 0 2px 2px rgba(255,245,225,.22);
+  display:grid;place-items:center;font-family:var(--font-small);font-weight:800;font-size:19px;
+  color:#f3ead4;text-shadow:0 1px 2px rgba(0,0,0,.9);margin-top:1px}
+.ctitles{flex:1;min-width:0}
+.ctitle{font-family:var(--font-display);font-size:var(--title-size);line-height:1.06;color:var(--ink)}
+.ctitle.long{font-size:calc(var(--title-size) * .87)}
+.csub{font-family:var(--font-small);font-size:9.5px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-soft);margin-top:3px;opacity:.82}
+.cstat{flex:0 0 auto;width:35px;height:39px;display:grid;place-items:center;background:var(--plate);
+  clip-path:polygon(50% 0,100% 22%,100% 78%,50% 100%,0 78%,0 22%);box-shadow:0 2px 4px rgba(0,0,0,.4)}
+.cstat span{font-family:var(--font-small);font-weight:800;font-size:10.5px;letter-spacing:.06em;
+  color:#f5ecd6;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+.cart{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;
+  border:1.5px solid rgba(20,16,12,.85);background:#cdc0a2;flex:0 0 auto}
+.cart img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.05)}
+.a-woodcut .cart img{filter:sepia(.28) contrast(1.1) saturate(.8)}
+.cart::after{content:'';position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 22px rgba(60,44,20,.42), inset 0 2px 5px rgba(0,0,0,.3)}
+.cart .noart{position:absolute;inset:0;display:grid;place-items:center;
+  background:repeating-linear-gradient(45deg, transparent 0 9px, rgba(20,16,12,.06) 9px 10px);
+  font-family:var(--font-small);font-weight:700;font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(20,16,12,.4)}
+.crange{display:flex;gap:2px;margin-top:8px;border:1px solid rgba(20,16,12,.5);padding:2px}
+.a-norange .crange{display:none}
+.cband{flex:1;text-align:center;padding:3px 0 2px;position:relative;
+  font-family:var(--font-small);font-weight:700;font-size:8.5px;letter-spacing:.17em;
+  text-transform:uppercase;color:rgba(20,16,12,.34);border:1px dashed rgba(20,16,12,.2)}
+.cband.on{color:rgba(20,16,12,.9);border:1px solid rgba(20,16,12,.42);background:rgba(20,16,12,.055)}
+.cband.best{background:var(--plate);color:#f5ecd6;border-color:transparent}
+.cband.shift::before{content:'';position:absolute;left:5px;top:50%;transform:translateY(-50%);
+  border-left:5px solid currentColor;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent}
+.crules{flex:1;display:flex;flex-direction:column;margin-top:8px;min-height:0}
+.clbl{font-family:var(--font-small);font-weight:800;font-size:8.5px;letter-spacing:.26em;
+  text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:7px}
+.clbl::after{content:'';flex:1;height:1px;background:currentColor;opacity:.28}
+.csure .clbl{color:var(--ink)}
+.csure p{font-size:var(--sure-size);line-height:1.34}
+.csplit{display:flex;align-items:center;gap:9px;margin:8px 0 7px}
+.csplit i{flex:1;height:1px;background:rgba(20,16,12,.32)}
+.cd20{width:19px;height:21px;flex:0 0 auto;display:grid;place-items:center;background:var(--ink);
+  clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);
+  font-family:var(--font-small);font-weight:800;font-size:8px;color:var(--vellum-hi)}
+.croll .clbl{color:var(--plate);margin-bottom:4px}
+.croll .clbl .tgt{background:var(--plate);color:#f5ecd6;padding:1.5px 6px;letter-spacing:.1em}
+.croll p{font-size:var(--roll-size);line-height:1.32;color:var(--ink-soft)}
+.croll p + p{margin-top:3px}
+.croll .grt{position:relative;padding-left:13px}
+.croll .grt::before{content:'';position:absolute;left:2px;top:6px;width:5px;height:5px;
+  transform:rotate(45deg);background:var(--plate)}
+.codds{margin-top:auto;padding-top:8px}
+.a-noodds .codds{display:none}
+.cmeter{display:flex;height:7px;border:1px solid rgba(20,16,12,.55);background:rgba(20,16,12,.06)}
+.cmeter i{display:block;height:100%}
+.cmeter .m-miss{background:repeating-linear-gradient(45deg,transparent 0 2px,rgba(20,16,12,.24) 2px 4px)}
+.cmeter .m-bon{background:var(--plate);opacity:.55}
+.cmeter .m-grt{background:var(--plate)}
+.cokeys{display:flex;justify-content:space-between;margin-top:3.5px;
+  font-family:var(--font-small);font-weight:700;font-size:8px;letter-spacing:.13em;
+  text-transform:uppercase;color:rgba(20,16,12,.62)}
+.cokeys b{color:var(--plate)}
+.cfoot{margin-top:8px;padding-top:6px;border-top:1px solid rgba(20,16,12,.28);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.ctype{font-family:var(--font-small);font-weight:700;font-size:8.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink-soft);flex:0 0 auto;max-width:52%;line-height:1.3}
+.cflav{font-family:var(--font-flav);font-style:italic;font-size:12.2px;
+  color:rgba(20,16,12,.6);text-align:right;line-height:1.2;flex:1}
+.a-noflav .cflav{visibility:hidden}
+.cseal{position:absolute;right:26px;top:198px;z-index:7;width:56px;height:56px;border-radius:50%;
+  border:2.5px solid var(--madder);
+  box-shadow:0 3px 8px rgba(0,0,0,.55),0 0 0 1.5px rgba(20,16,12,.6),inset 0 0 12px rgba(60,30,10,.4);
+  background-size:cover;background-position:50% 12%;filter:sepia(.22) contrast(1.08)}
+.cseal.mono{display:grid;place-items:center;background:var(--vellum-lo);
+  font-family:var(--font-display);font-size:24px;color:var(--madder)}
+/* injured overlay — mirrors the combat mock */
+.card.injured{filter:grayscale(.55) contrast(.92)}
+.deadstamp{position:absolute;inset:0;z-index:9;display:grid;place-items:center;pointer-events:none}
+.deadstamp span{
+  transform:rotate(-14deg);border:3px solid var(--madder);color:var(--madder);
+  font-family:var(--font-small);font-weight:800;font-size:26px;letter-spacing:.24em;
+  text-transform:uppercase;padding:8px 22px 7px;background:rgba(227,216,190,.86);
+  box-shadow:0 4px 14px rgba(0,0,0,.4);text-align:center;
+}
+.deadstamp small{display:block;font-size:9px;letter-spacing:.16em;margin-top:5px;color:var(--ink-soft)}
+
+/* ═══════════ NEGATIVE SCRAP ═══════════ */
+.scrap{
+  width:322px;min-height:360px;position:relative;padding:26px 26px 20px;
+  background:
+    radial-gradient(60% 40% at 20% 10%, rgba(96,74,40,.35), transparent 60%),
+    radial-gradient(50% 30% at 85% 80%, rgba(70,52,30,.4), transparent 60%),
+    linear-gradient(160deg,#cfc3a0,#b6a984 70%,#a2946e);
+  clip-path:polygon(2% 4%, 12% 0%, 34% 3%, 55% 0%, 79% 4%, 97% 1%, 100% 22%, 97% 40%, 100% 62%, 96% 84%, 99% 96%, 76% 100%, 52% 96%, 28% 100%, 8% 97%, 0% 88%, 3% 64%, 0% 38%, 2% 18%);
+  color:var(--ink);font-family:var(--font-body);
+  filter:drop-shadow(0 16px 22px rgba(0,0,0,.65));
+  transform:rotate(-1.6deg);
+}
+.scrap::before{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.4;mix-blend-mode:multiply;pointer-events:none}
+.scrap .sband{
+  margin:-6px -10px 14px;padding:7px 12px 6px;background:rgba(122,32,24,.9);color:#f4e6da;
+  font-family:var(--font-small);font-weight:800;font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  transform:rotate(.8deg);box-shadow:0 2px 6px rgba(0,0,0,.3);
+}
+.scrap h3{font-family:var(--font-display);font-weight:400;font-size:25px;line-height:1.05;margin-bottom:12px}
+.scrap p{font-size:14px;line-height:1.45;color:#3b3021}
+.scrap p b{color:var(--ink)}
+.scrap .srule{margin:13px 0;height:1px;background:repeating-linear-gradient(90deg,rgba(20,16,12,.4) 0 7px,transparent 7px 12px)}
+.scrap .sfoot{margin-top:16px;display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase}
+.scrap .sfoot .destroy{border:1.5px solid var(--madder);color:var(--madder);padding:5px 11px 4px}
+
+/* ═══════════ CONSUMABLE POUCH ═══════════ */
+.pouch{
+  width:300px;position:relative;padding:20px 22px 18px;border-radius:6px;
+  background:radial-gradient(90% 80% at 50% 20%, var(--vellum-hi), var(--vellum) 60%, var(--vellum-lo));
+  border:1.5px solid rgba(20,16,12,.7);box-shadow:0 14px 26px -8px rgba(0,0,0,.7);
+  color:var(--ink);font-family:var(--font-body);
+}
+.pouch::before{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.28;mix-blend-mode:multiply;border-radius:6px;pointer-events:none}
+.pouch .ph{display:flex;align-items:center;gap:13px;margin-bottom:10px}
+.pouch .glyph{
+  flex:0 0 auto;width:46px;height:46px;display:grid;place-items:center;font-size:24px;color:#f3ead4;
+  background:radial-gradient(circle at 33% 28%, #565043, var(--iron) 58%, #0c0a08);
+  clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);
+}
+.pouch .pn{font-family:var(--font-display);font-size:22px;line-height:1}
+.pouch .pk{font-family:var(--font-small);font-weight:800;font-size:8.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+.pouch .pcost{margin-left:auto;font-family:var(--font-small);font-weight:800;font-size:12px;
+  background:var(--ink);color:var(--vellum-hi);padding:4px 9px}
+.pouch p{font-size:14.2px;line-height:1.42}
+.pouch .pfoot{margin-top:12px;padding-top:8px;border-top:1px solid rgba(20,16,12,.3);
+  font-family:var(--font-small);font-weight:700;font-size:8.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(20,16,12,.55)}
+
+/* ═══════════ SPECIALIST TILE ═══════════ */
+.spectile{
+  width:250px;position:relative;border-radius:7px;padding:14px 15px 13px;
+  background:radial-gradient(90% 70% at 50% 20%, var(--vellum-hi), var(--vellum-crew) 60%, var(--vellum-lo));
+  border:1.5px solid rgba(20,16,12,.75);box-shadow:0 14px 26px -10px rgba(0,0,0,.7);
+  color:var(--ink);font-family:var(--font-body);
+}
+.spectile::before{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.26;mix-blend-mode:multiply;border-radius:7px;pointer-events:none}
+.spectile .badges{display:flex;justify-content:space-between;margin-bottom:9px;
+  font-family:var(--font-small);font-weight:800;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase}
+.spectile .area{background:var(--seagreen);color:#f0f5ef;padding:3px 8px}
+.spectile .lv{background:var(--ink);color:var(--vellum-hi);padding:3px 8px}
+.spectile .face{
+  width:104px;height:104px;border-radius:50%;margin:2px auto 10px;position:relative;z-index:2;
+  border:3px solid var(--madder);background-size:cover;background-position:50% 10%;
+  box-shadow:0 4px 10px rgba(0,0,0,.4), inset 0 0 14px rgba(60,30,10,.35);
+  filter:sepia(.2) contrast(1.06);
+  display:grid;place-items:center;font-family:var(--font-display);font-size:38px;color:var(--madder);
+}
+.spectile .nm{text-align:center;font-family:var(--font-display);font-size:20.5px;line-height:1.05}
+.spectile .rl{text-align:center;font-family:var(--font-small);font-weight:800;font-size:9px;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+.spectile .sig{
+  margin-top:11px;padding-top:9px;border-top:1px solid rgba(20,16,12,.3);text-align:center;
+  font-family:var(--font-flav);font-style:italic;font-size:13.5px;color:rgba(20,16,12,.75);
+}
+.spectile .sig b{font-style:normal;color:var(--madder);font-family:var(--font-small);
+  font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase}
+
+/* ═══════════ LEADER SPREAD — ported from card-preview.html ═══════════ */
+.leader{
+  width:100%;max-width:760px;display:flex;flex-wrap:wrap;
+  background:linear-gradient(180deg,rgba(46,39,29,.9),rgba(26,22,16,.94));
+  border:1px solid #3d372c;border-radius:4px;overflow:hidden;
+  box-shadow:0 30px 60px -20px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,240,210,.07);
+}
+.lportrait{flex:0 0 auto;width:252px;aspect-ratio:3/4;position:relative;overflow:hidden;
+  border-right:1px solid #3d372c;background:#241e15}
+.lportrait img{width:100%;height:100%;object-fit:cover;display:block}
+.lportrait .mono{position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--font-display);font-size:84px;color:#4a4132}
+.lportrait::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 62%,rgba(20,16,12,.55) 100%),
+    radial-gradient(70% 60% at 50% 40%,transparent,rgba(20,16,12,.4))}
+.lbody{flex:1;min-width:300px;padding:26px 30px 24px}
+.lrank{font-family:var(--font-small);font-weight:800;font-size:10px;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--madder);margin-bottom:9px}
+.lname{font-family:var(--font-display);font-size:34px;line-height:1;color:#f1e7cf}
+.lbyname{font-family:var(--font-flav);font-style:italic;font-size:19px;color:var(--seagreen);margin-top:4px}
+.lquote{font-family:var(--font-flav);font-style:italic;font-size:14.5px;color:#8d8168;
+  margin:14px 0 18px;padding-left:13px;border-left:2px solid rgba(158,43,37,.55);line-height:1.5}
+.trait{margin-bottom:15px}
+.trait .th{font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.24em;
+  text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:9px}
+.trait .th::after{content:'';flex:1;height:1px;background:currentColor;opacity:.2}
+.trait.passive .th{color:var(--seagreen)}
+.trait.ability .th{color:var(--stat-cha)}
+.trait .tn{font-family:var(--font-display);font-size:17.5px;color:#e8dcc0;margin-bottom:3px}
+.trait p{font-size:14.2px;line-height:1.5;color:#a4977c}
+.trait p b{color:#dccfb2;font-weight:500}
+.cost-tag{display:inline-block;vertical-align:middle;font-family:var(--font-small);font-weight:800;
+  font-size:10px;letter-spacing:.1em;background:var(--stat-cha);color:#1a1208;padding:2px 7px;margin-left:8px}
+.lstats{display:flex;margin-top:16px;border-top:1px solid #3a342a;padding-top:14px}
+.lstat{flex:1;text-align:center;position:relative}
+.lstat + .lstat::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:1px;background:#332e25}
+.lstat .sv{font-family:var(--font-display);font-size:25px;line-height:1}
+.lstat .sn{font-family:var(--font-small);font-weight:700;font-size:8.5px;letter-spacing:.19em;
+  text-transform:uppercase;margin-top:4px}
+.ldeck{width:100%;max-width:760px}
+.ldeck h4{font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.24em;
+  text-transform:uppercase;color:#6f6046;margin:16px 0 8px;display:flex;gap:10px;align-items:center}
+.ldeck h4::after{content:'';flex:1;height:1px;background:var(--line-soft)}
+.ldeck .drow{display:flex;gap:9px;align-items:baseline;padding:5px 2px;border-bottom:1px dashed var(--line-soft);font-size:14px}
+.ldeck .drow .ct{font-family:var(--font-small);font-weight:800;font-size:11px;color:var(--madder);flex:0 0 30px}
+.ldeck .drow .cn{color:var(--tx)}
+.ldeck .drow .cs{margin-left:auto;font-family:var(--font-small);font-weight:700;font-size:9px;
+  letter-spacing:.1em;text-transform:uppercase;color:#57503f}
+
+/* ═══════════ ANATOMY VIEW ═══════════ */
+.aview{display:flex;width:100%;height:100%}
+.acontrols{flex:0 0 330px;border-right:1px solid var(--line-soft);background:var(--panel);
+  overflow-y:auto;padding:20px 20px 60px}
+.acontrols h3{font-family:var(--font-display);font-size:21px;font-weight:400;color:var(--tx-bright);margin-bottom:2px}
+.acontrols .lead{font-size:13px;color:var(--tx-dim);font-style:italic;margin-bottom:16px;line-height:1.5}
+.agroup{margin-bottom:6px;border:1px solid var(--line-soft);border-radius:4px;background:#171208}
+.agroup summary{cursor:pointer;list-style:none;padding:10px 12px;
+  font-family:var(--font-small);font-weight:800;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--tx);display:flex;align-items:center}
+.agroup summary::after{content:'▾';margin-left:auto;color:#57503f;transition:transform .15s}
+.agroup:not([open]) summary::after{transform:rotate(-90deg)}
+.agroup .abody{padding:4px 12px 14px;display:grid;gap:11px}
+.arow{display:flex;align-items:center;gap:10px}
+.arow label{flex:1;font-family:var(--font-small);font-weight:700;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--tx-dim)}
+.arow input[type=color]{flex:0 0 52px}
+.arow input[type=range]{flex:0 0 110px}
+.arow .val{flex:0 0 34px;text-align:right;font-family:var(--font-small);font-weight:700;
+  font-size:10.5px;color:var(--tx)}
+.arow input[type=checkbox]{flex:0 0 auto}
+.arow select{flex:0 0 150px;width:150px;font-size:12.5px;padding:5px 26px 5px 8px}
+.areset{margin-top:14px;width:100%;text-align:center;padding:9px;border:1px solid var(--line);
+  border-radius:3px;font-family:var(--font-small);font-weight:800;font-size:9.5px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--tx-dim)}
+.areset:hover{color:#e88;border-color:#7c2a24}
+.astage{flex:1;overflow:auto;display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start;
+  justify-content:center;padding:44px 30px 80px;
+  background:radial-gradient(100% 60% at 50% 0%, #221c13 0%, transparent 70%),
+    repeating-linear-gradient(90deg, transparent 0 158px, rgba(0,0,0,.5) 158px 160px, rgba(255,235,190,.02) 160px 163px),
+    var(--chest)}
+.asample{display:flex;flex-direction:column;gap:12px;align-items:center}
+.asample .cap{font-family:var(--font-small);font-weight:800;font-size:9px;letter-spacing:.3em;
+  text-transform:uppercase;color:#6f6046}
+
+/* help / empty states */
+.empty{max-width:430px;margin:60px auto;text-align:center;color:var(--tx-dim)}
+.empty h2{font-family:var(--font-display);font-weight:400;font-size:26px;color:var(--tx);margin-bottom:10px}
+.empty p{font-size:14.5px;line-height:1.6;font-style:italic}
+.helpbox{
+  position:fixed;right:18px;bottom:16px;z-index:60;width:330px;background:#1d1811;
+  border:1px solid var(--line);border-radius:5px;padding:16px 18px;box-shadow:0 20px 40px rgba(0,0,0,.7);
+  display:none;font-size:13.5px;line-height:1.55;color:var(--tx);
+}
+.helpbox.show{display:block}
+.helpbox h4{font-family:var(--font-small);font-weight:800;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--madder);margin:10px 0 4px}
+.helpbox h4:first-child{margin-top:0}
+.helpbox p{margin-bottom:4px}
+.helpbox b{color:var(--tx-bright);font-weight:500}
+.helpbox .close{position:absolute;top:8px;right:11px;color:#57503f;font-size:15px}
+.helpbox .wipe{color:#7a4a40;text-decoration:underline dotted;cursor:pointer}
+
+@media (max-width:1180px){ .stage{flex-basis:420px} .lib{flex-basis:230px} }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand"><span class="b1">Card Forge</span><span class="b2">Viking Voyage</span></div>
+  <nav class="tabs">
+    <button class="tab on" data-view="cards">Card Creator</button>
+    <button class="tab" data-view="anatomy">Card Anatomy</button>
+  </nav>
+  <span class="sp"></span>
+  <span class="savestate" id="saveState">Local draft</span>
+  <button class="bbtn" id="btnHelp">How saving works</button>
+  <button class="bbtn" id="btnCopyJS" title="Copy all cards as a CARDS = {...} javascript object">Copy as game JS</button>
+  <button class="bbtn" id="btnImport">Import</button>
+  <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+  <button class="bbtn primary isdirty" id="btnExport">Export JSON<span class="dirty"></span></button>
+</header>
+
+<!-- ═══════════ CARD CREATOR ═══════════ -->
+<main class="view on" id="view-cards">
+  <aside class="lib">
+    <div class="search"><input id="libSearch" placeholder="Search the chest…"></div>
+    <div class="libscroll" id="libScroll"></div>
+    <div class="foot">Autosaves to this browser · share by <a id="footExport">exporting</a></div>
+  </aside>
+  <section class="editor" id="editor"></section>
+  <aside class="stage">
+    <div class="stagebar" id="stageBar"></div>
+    <div class="stageinner" id="stageInner"></div>
+  </aside>
+</main>
+
+<!-- ═══════════ CARD ANATOMY ═══════════ -->
+<main class="view" id="view-anatomy">
+  <div class="aview">
+    <aside class="acontrols">
+      <h3>Card Anatomy</h3>
+      <p class="lead">The shared template every card is struck from. Change it here once —
+        every card in the chest follows. Card authors never touch this.</p>
+
+      <details class="agroup" open><summary>The three inks &amp; stock</summary>
+        <div class="abody">
+          <div class="arow"><label>Ink</label><input type="color" data-ana="ink"></div>
+          <div class="arow"><label>Madder (plate 2)</label><input type="color" data-ana="madder"></div>
+          <div class="arow"><label>Sea-green (plate 3)</label><input type="color" data-ana="seagreen"></div>
+          <div class="arow"><label>Vellum stock</label><input type="color" data-ana="vellum"></div>
+          <div class="arow"><label>Ironmongery</label><input type="color" data-ana="iron"></div>
+        </div>
+      </details>
+
+      <details class="agroup"><summary>Statistic plates</summary>
+        <div class="abody">
+          <div class="arow"><label>Strength</label><input type="color" data-ana="statSTR"></div>
+          <div class="arow"><label>Dexterity</label><input type="color" data-ana="statDEX"></div>
+          <div class="arow"><label>Constitution</label><input type="color" data-ana="statCON"></div>
+          <div class="arow"><label>Charisma</label><input type="color" data-ana="statCHA"></div>
+          <div class="arow"><label>Luck</label><input type="color" data-ana="statLUK"></div>
+        </div>
+      </details>
+
+      <details class="agroup"><summary>Frame &amp; type</summary>
+        <div class="abody">
+          <div class="arow"><label>Corner radius</label><input type="range" min="0" max="22" data-ana="radius"><span class="val" id="vRadius"></span></div>
+          <div class="arow"><label>Title size</label><input type="range" min="17" max="27" data-ana="titleSize"><span class="val" id="vTitle"></span></div>
+          <div class="arow"><label>Sure-text size</label><input type="range" min="12" max="17" step=".2" data-ana="sureSize"><span class="val" id="vSure"></span></div>
+          <div class="arow"><label>Roll-text size</label><input type="range" min="11" max="16" step=".2" data-ana="rollSize"><span class="val" id="vRoll"></span></div>
+          <div class="arow"><label>Display face</label>
+            <select data-ana="displayFont">
+              <option value="'IM Fell English SC',serif">IM Fell English SC</option>
+              <option value="'Grenze Gotisch',serif">Grenze Gotisch</option>
+              <option value="'Cormorant SC',serif">Cormorant SC</option>
+            </select></div>
+        </div>
+      </details>
+
+      <details class="agroup"><summary>Fittings</summary>
+        <div class="abody">
+          <div class="arow"><label>Corner rivets</label><input type="checkbox" data-ana="rivets"></div>
+          <div class="arow"><label>Range strip</label><input type="checkbox" data-ana="showRange"></div>
+          <div class="arow"><label>Odds readout</label><input type="checkbox" data-ana="showOdds"></div>
+          <div class="arow"><label>Flavour line</label><input type="checkbox" data-ana="showFlav"></div>
+          <div class="arow"><label>Paper grain</label><input type="checkbox" data-ana="grain"></div>
+          <div class="arow"><label>Woodcut art filter</label><input type="checkbox" data-ana="woodcut"></div>
+        </div>
+      </details>
+
+      <button class="areset" id="anaReset">Reset to Vellum &amp; Iron</button>
+    </aside>
+
+    <div class="astage" id="anaStage"></div>
+  </div>
+</main>
+
+<div class="helpbox" id="helpBox">
+  <button class="close" id="helpClose">✕</button>
+  <h4>Where the data lives</h4>
+  <p>Everything autosaves to <b>this browser</b> (localStorage). Nothing leaves your machine
+     until you export.</p>
+  <h4>Sharing between designers</h4>
+  <p><b>Export JSON</b> downloads the whole chest — anatomy and all cards — as one file.
+     A colleague uses <b>Import</b> to merge it into theirs (same ids update, new ids add).
+     The exported file is also the handoff artifact into the game repo.</p>
+  <h4>Formatting</h4>
+  <p>Rules and flavour text allow simple HTML: <b>&lt;b&gt;6&lt;/b&gt;</b> for bold numbers,
+     <b>&lt;br&gt;</b> for a line break.</p>
+  <h4>Danger</h4>
+  <p><span class="wipe" id="wipeAll">Reset the whole tool</span> — wipes this browser's data
+     and restores the samples.</p>
+</div>
+
+<script>
+/* ═══════════════════ CONSTANTS ═══════════════════ */
+const STATS = ['STR','DEX','CON','CHA','LUK'];
+const STAT_LABEL = {STR:'Str',DEX:'Dex',CON:'Con',CHA:'Cha',LUK:'Luck'};
+const STAT_TINT = {STR:'#c85c52',DEX:'#6ba295',CON:'#7b8b96',CHA:'#d09a4a',LUK:'#a4788a'};
+const AREAS = ['Hull','Sail','Weapons','Cargo','Crew'];
+const BANDS = ['far','normal','close'];
+const LS_KEY = 'vv-forge-v1';
+
+const DEFAULT_ANATOMY = {
+  ink:'#14100c', madder:'#9e2b25', seagreen:'#3e6b63', vellum:'#e3d8be', iron:'#33302a',
+  statSTR:'#9e2b25', statDEX:'#3e6b63', statCON:'#3d4a55', statCHA:'#96662a', statLUK:'#6b3a4a',
+  radius:11, titleSize:22, sureSize:14.4, rollSize:13.4,
+  displayFont:"'IM Fell English SC',serif",
+  rivets:true, showRange:true, showOdds:true, showFlav:true, grain:true, woodcut:false
+};
+
+/* ═══════════════════ SEED DATA ═══════════════════ */
+function seedDB(){
+  return {
+    v:1,
+    anatomy:{...DEFAULT_ANATOMY},
+    specialists:[
+      {id:'sp-bersi', name:'Bersi Adze-Hand', role:'Shipwright', area:'Hull', level:3,
+       portrait:'', ability:'Caulk the Breach', cardId:null},
+      {id:'sp-hjalmar', name:'Hjalmar Grey-Eye', role:'Navigator', area:'Sail', level:2,
+       portrait:'', ability:'Read the Water', cardId:'c-read'},
+      {id:'sp-sigrun', name:'Sigrún Bow-Hand', role:'Bowmaster', area:'Weapons', level:2,
+       portrait:'', ability:'Sigrún’s Volley', cardId:'c-volley'},
+      {id:'sp-ragna', name:'Ragna Keys', role:'Quartermaster', area:'Cargo', level:1,
+       portrait:'', ability:'Trim the Hold', cardId:null}
+    ],
+    cards:[
+      {id:'c-rake', kind:'tactic', title:'Rake the Oar-Bank', sub:'Oar Work', cost:2, stat:'STR',
+       type:'Tactic', art:'art/card-rake-the-oar-bank.svg',
+       bands:{far:false,normal:true,close:true}, best:'close', shiftTo:'close',
+       sure:'Close one band. Deal <b>6</b> to enemy <b>Sail</b>.', thr:9,
+       bonus:'The enemy cannot change range next turn.', greater:'Also deal <b>3</b> to enemy <b>Crew</b>.',
+       odds:{miss:40,bonus:45,greater:15}, targets:['Sail'],
+       flav:'Oars are cheaper than men.<br>Take the oars.'},
+      {id:'c-lash', kind:'tactic', title:'Lash the Hulls', sub:'Seamanship', cost:1, stat:'CON',
+       type:'Tactic', art:'art/card-lash-the-hulls.svg',
+       bands:{far:true,normal:true,close:true}, best:null, shiftTo:null,
+       sure:'Repair <b>4</b> to one area. Until your next turn the range cannot change.', thr:7,
+       bonus:'Incoming area damage &minus;<b>2</b> this round.', greater:'Also destroy a negative card.',
+       odds:{miss:30,bonus:60,greater:10}, targets:['Hull','Sail','Weapons','Cargo','Crew'],
+       flav:'Now it is one deck,<br>and one of us leaves it.'},
+      {id:'c-volley', kind:'crew', ownerId:'sp-sigrun', title:'Sigrún’s Volley', sub:'Bowmaster',
+       cost:2, stat:'DEX', type:'Crew — Sigrún Bow-Hand', art:'art/card-sigruns-volley.svg',
+       bands:{far:true,normal:true,close:false}, best:'far', shiftTo:null,
+       sure:'Strike a chosen area for <b>5</b>. At far, for <b>8</b>.', thr:8,
+       bonus:'That area cannot be repaired next turn.', greater:'Also strike a second area for <b>3</b>.',
+       odds:{miss:35,bonus:45,greater:20}, targets:['Hull','Sail','Weapons','Cargo','Crew'],
+       flav:'She counts the swell,<br>not the men.'},
+      {id:'c-read', kind:'crew', ownerId:'sp-hjalmar', title:'Read the Water', sub:'Navigator',
+       cost:1, stat:'CON', type:'Crew — Hjalmar Grey-Eye', art:'',
+       bands:{far:true,normal:true,close:true}, best:null, shiftTo:null,
+       sure:'See the exact area and number of every enemy action next turn.', thr:7,
+       bonus:'Resist the next enemy range change.', greater:'Also draw a card.',
+       odds:{miss:35,bonus:50,greater:15}, targets:[],
+       flav:'He has drowned twice,<br>he says. He is in no hurry.'},
+      {id:'c-scream', kind:'negative', title:'Screaming in the Rigging',
+       source:'Jammed into your deck by a Screamer',
+       text:'Occupies a hand slot. <b>Cannot be played.</b> Stays in your deck across turns and across fights until you remove it.',
+       destroy:1}
+    ],
+    consumables:[
+      {id:'k-pitch', glyph:'🜂', name:'Pitch Flask', cost:1, text:'Deal <b>4</b> to one enemy area.'},
+      {id:'k-bark', glyph:'🜁', name:'Bark Draught', cost:1, text:'Repair <b>3</b> to one area.'},
+      {id:'k-salt', glyph:'🜃', name:'Salt Charm', cost:2, text:'Lift one <b>curse</b>.'}
+    ],
+    leaders:[
+      {id:'l-ingrith', name:'Ingrith', epithet:'Scale-Hand',
+       quote:'Weigh-master at Hedeby for nineteen years. She did not become a raider because she wanted more. She became one because she was owed.',
+       portrait:'art/leader-ingrith-scale-hand.svg',
+       stats:{STR:2,DEX:3,CON:3,CHA:5,LUK:2},
+       passiveName:'Weighed and Written',
+       passiveText:'You see the goods and prices of ports <b>one node further ahead</b>, and every surrender you accept pays <b>tribute</b> instead of salvage.',
+       abilityName:'Name Your Price', abilityCost:3,
+       abilityText:'Break the enemy’s nerve by <b>4</b>. <b>CHA 10+</b> — if their nerve is already below half, they strike their sail and offer terms at once.',
+       deck:[{cardId:'c-rake',count:2},{cardId:'c-lash',count:2},{cardId:'c-volley',count:1}]}
+    ],
+    meta:{dirty:false, savedAt:null}
+  };
+}
+
+/* ═══════════════════ STATE ═══════════════════ */
+let DB;
+try{
+  const raw = localStorage.getItem(LS_KEY);
+  DB = raw ? JSON.parse(raw) : seedDB();
+  if(!DB.v) throw 0;
+}catch(e){ DB = seedDB(); }
+
+let sel = null;                       // {type:'card'|'leader'|'spec'|'consumable', id}
+let previewOpts = {scale:1, injured:false};
+const $ = s => document.querySelector(s);
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const uid = p => p + '-' + Math.random().toString(36).slice(2,7);
+
+function save(){
+  DB.meta.dirty = true; DB.meta.savedAt = new Date().toISOString();
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify(DB));
+    const t = new Date();
+    $('#saveState').textContent = 'Saved · ' + t.toTimeString().slice(0,5);
+    $('#saveState').classList.remove('err');
+  }catch(e){
+    $('#saveState').textContent = 'Storage full — export & trim art';
+    $('#saveState').classList.add('err');
+  }
+  $('#btnExport').classList.toggle('isdirty', !!DB.meta.dirty);
+}
+let saveT; const saveSoon = () => { clearTimeout(saveT); saveT = setTimeout(save, 300); };
+
+const cardById = id => DB.cards.find(c=>c.id===id);
+const specById = id => DB.specialists.find(s=>s.id===id);
+
+/* ═══════════════════ ANATOMY → CSS ═══════════════════ */
+function mix(a,b,t){
+  const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+  const [r1,g1,b1]=p(a),[r2,g2,b2]=p(b);
+  const c=v=>Math.round(v).toString(16).padStart(2,'0');
+  return '#'+c(r1+(r2-r1)*t)+c(g1+(g2-g1)*t)+c(b1+(b2-b1)*t);
+}
+function applyAnatomy(){
+  const a = DB.anatomy, r = document.documentElement.style;
+  r.setProperty('--ink',a.ink);
+  r.setProperty('--ink-soft', mix(a.ink,'#8a7f6d',.35));
+  r.setProperty('--madder',a.madder);
+  r.setProperty('--seagreen',a.seagreen);
+  r.setProperty('--vellum',a.vellum);
+  r.setProperty('--vellum-hi', mix(a.vellum,'#ffffff',.38));
+  r.setProperty('--vellum-lo', mix(a.vellum,'#6d5a35',.28));
+  r.setProperty('--vellum-crew', mix(a.vellum,'#f8ecc8',.5));
+  r.setProperty('--iron',a.iron);
+  r.setProperty('--iron-hi', mix(a.iron,'#c9c2b4',.42));
+  STATS.forEach(s=>r.setProperty('--stat-'+s.toLowerCase(), a['stat'+s]));
+  r.setProperty('--card-radius',a.radius+'px');
+  r.setProperty('--title-size',a.titleSize+'px');
+  r.setProperty('--sure-size',a.sureSize+'px');
+  r.setProperty('--roll-size',a.rollSize+'px');
+  r.setProperty('--font-display',a.displayFont);
+  const b = document.body.classList;
+  b.toggle('a-norivets',!a.rivets); b.toggle('a-norange',!a.showRange);
+  b.toggle('a-noodds',!a.showOdds); b.toggle('a-noflav',!a.showFlav);
+  b.toggle('a-nograin',!a.grain);   b.toggle('a-woodcut',!!a.woodcut);
+}
+
+/* ═══════════════════ RENDERERS ═══════════════════ */
+function statVar(s){ return `var(--stat-${s.toLowerCase()})`; }
+
+function renderCardEl(c, opts={}){
+  const el = document.createElement('article');
+  el.className = 'card' + (c.kind==='crew' ? ' is-crew':'') + (opts.injured ? ' injured':'');
+  el.style.setProperty('--plate', statVar(c.stat));
+  const bands = BANDS.map(b=>{
+    const cls=['cband']; if(c.bands[b])cls.push('on');
+    if(c.best===b)cls.push('best'); if(c.shiftTo===b)cls.push('shift');
+    return `<div class="${cls.join(' ')}">${b==='normal'?'Norm':b}</div>`;
+  }).join('');
+  const owner = c.kind==='crew' ? specById(c.ownerId) : null;
+  const seal = owner ? (owner.portrait
+      ? `<div class="cseal" style="background-image:url('${owner.portrait}')"></div>`
+      : `<div class="cseal mono">${esc(owner.name[0]||'?')}</div>`) : '';
+  const art = c.art
+      ? `<img src="${c.art}" alt="">`
+      : `<div class="noart">No art yet</div>`;
+  el.innerHTML = `
+    <span class="rivet tl"></span><span class="rivet tr"></span>
+    <span class="rivet bl"></span><span class="rivet br"></span>
+    ${seal}
+    <div class="cinner">
+      <div class="chead">
+        <div class="ccost">${c.cost}</div>
+        <div class="ctitles">
+          <div class="ctitle${(c.title||'').length>17?' long':''}">${esc(c.title)}</div>
+          <div class="csub">${esc(c.sub)}</div>
+        </div>
+        <div class="cstat"><span>${c.stat}</span></div>
+      </div>
+      <div class="cart">${art}</div>
+      <div class="crange">${bands}</div>
+      <div class="crules">
+        <div class="csure"><div class="clbl">Sure</div><p>${c.sure||''}</p></div>
+        <div class="csplit"><i></i><span class="cd20">d20</span><i></i></div>
+        <div class="croll">
+          <div class="clbl"><span class="tgt">${c.stat} ${c.thr}+</span></div>
+          <p>${c.bonus||''}</p>
+          <p class="grt">${c.greater||''}</p>
+        </div>
+        <div class="codds">
+          <div class="cmeter">
+            <i class="m-miss" style="width:${c.odds.miss}%"></i>
+            <i class="m-bon" style="width:${c.odds.bonus}%"></i>
+            <i class="m-grt" style="width:${c.odds.greater}%"></i>
+          </div>
+          <div class="cokeys">
+            <span>${c.odds.miss}% none</span><span><b>${c.odds.bonus}% bonus</b></span><span><b>${c.odds.greater}% greater</b></span>
+          </div>
+        </div>
+      </div>
+      <div class="cfoot">
+        <div class="ctype">${esc(c.type)}</div>
+        <div class="cflav">${c.flav||''}</div>
+      </div>
+    </div>
+    ${opts.injured?`<div class="deadstamp"><span>Injured<small>Drawn · cannot be played</small></span></div>`:''}`;
+  return el;
+}
+
+function renderScrapEl(c){
+  const el = document.createElement('article');
+  el.className = 'scrap';
+  el.innerHTML = `
+    <div class="sband">Negative card — jammed into your deck</div>
+    <h3>${esc(c.title)}</h3>
+    <p>${c.text||''}</p>
+    <div class="srule"></div>
+    <p style="font-size:12.5px;font-style:italic;color:#4a3e2c">${esc(c.source||'')}</p>
+    <div class="sfoot"><span>Until removed</span><span class="destroy">Destroy now · ${c.destroy} ⚡</span></div>`;
+  return el;
+}
+
+function renderPouchEl(k){
+  const el = document.createElement('article');
+  el.className = 'pouch';
+  el.innerHTML = `
+    <div class="ph">
+      <div class="glyph">${esc(k.glyph)}</div>
+      <div><div class="pn">${esc(k.name)}</div><div class="pk">Consumable · one use</div></div>
+      <div class="pcost">${k.cost} ⚡</div>
+    </div>
+    <p>${k.text||''}</p>
+    <div class="pfoot">Spent forever when used · never drawn, always available</div>`;
+  return el;
+}
+
+function renderSpecEl(s){
+  const el = document.createElement('article');
+  el.className = 'spectile';
+  const sig = s.cardId && cardById(s.cardId);
+  el.innerHTML = `
+    <div class="badges"><span class="area">${esc(s.area)}</span><span class="lv">Lv ${s.level}</span></div>
+    <div class="face" style="${s.portrait?`background-image:url('${s.portrait}')`:''}">${s.portrait?'':esc(s.name[0]||'?')}</div>
+    <div class="nm">${esc(s.name)}</div>
+    <div class="rl">${esc(s.role)}</div>
+    <div class="sig"><b>Signature</b><br>▸ ${sig ? esc(sig.title) : esc(s.ability||'—') + (s.cardId?'':' <span style="opacity:.55">(no card yet)</span>')}</div>`;
+  return el;
+}
+
+function renderLeaderEl(l){
+  const wrap = document.createElement('div');
+  wrap.style.cssText='display:flex;flex-direction:column;gap:0;width:100%;max-width:760px';
+  const el = document.createElement('article');
+  el.className='leader';
+  const stats = STATS.map(s=>`
+    <div class="lstat"><div class="sv" style="color:${STAT_TINT[s]}">${l.stats[s]}</div>
+    <div class="sn" style="color:${STAT_TINT[s]}">${STAT_LABEL[s]}</div></div>`).join('');
+  el.innerHTML = `
+    <div class="lportrait">${l.portrait?`<img src="${l.portrait}" alt="">`:`<div class="mono">${esc(l.name[0]||'?')}</div>`}</div>
+    <div class="lbody">
+      <div class="lrank">Leader · The Captain</div>
+      <div class="lname">${esc(l.name)}</div>
+      <div class="lbyname">${esc(l.epithet)}</div>
+      <p class="lquote">${esc(l.quote)}</p>
+      <div class="trait passive">
+        <div class="th">Always active</div>
+        <div class="tn">${esc(l.passiveName)}</div>
+        <p>${l.passiveText||''}</p>
+      </div>
+      <div class="trait ability">
+        <div class="th">Leader ability · once per turn <span class="cost-tag">${l.abilityCost} energy</span></div>
+        <div class="tn">${esc(l.abilityName)}</div>
+        <p>${l.abilityText||''}</p>
+      </div>
+      <div class="lstats">${stats}</div>
+    </div>`;
+  wrap.appendChild(el);
+  const deck = document.createElement('div');
+  deck.className='ldeck';
+  const rows = (l.deck||[]).map(d=>{
+    const c = cardById(d.cardId);
+    return c?`<div class="drow"><span class="ct">×${d.count}</span><span class="cn">${esc(c.title)}</span><span class="cs">${c.stat} · ${c.cost}⚡ · ${c.kind}</span></div>`:'';
+  }).join('');
+  const total = (l.deck||[]).reduce((n,d)=>n+(cardById(d.cardId)?d.count:0),0);
+  deck.innerHTML = `<h4>Starting deck · ${total} cards</h4>${rows||'<div class="drow"><span class="cn" style="font-style:italic;color:#6f6046">Empty — add cards in the editor</span></div>'}`;
+  wrap.appendChild(deck);
+  return wrap;
+}
+
+/* ═══════════════════ LIBRARY ═══════════════════ */
+const KIND_CHIP = {tactic:['T','var(--iron)'], crew:['C','var(--seagreen)'], negative:['✕','#6e2a20'], consumable:['⚗','#5a4a28'],
+  leader:['L','var(--madder)'], spec:['S','#3d4a55']};
+
+function libRow(type, id, title, meta, chip){
+  const on = sel && sel.type===type && sel.id===id;
+  const [ch,bg] = chip;
+  return `<div class="lrow ${on?'on':''}" data-type="${type}" data-id="${id}">
+    <span class="chip" style="background:${bg}">${ch}</span>
+    <span class="t">${esc(title)}</span><span class="m">${esc(meta||'')}</span></div>`;
+}
+
+function buildLib(){
+  const q = ($('#libSearch').value||'').toLowerCase();
+  const match = s => !q || (s||'').toLowerCase().includes(q);
+  const groups = [];
+
+  groups.push({name:'Leaders', add:'leader',
+    rows: DB.leaders.filter(l=>match(l.name+' '+l.epithet)).map(l=>libRow('leader',l.id,l.name+' '+l.epithet,'', KIND_CHIP.leader))});
+  groups.push({name:'Specialists', add:'spec',
+    rows: DB.specialists.filter(s=>match(s.name+' '+s.role)).map(s=>libRow('spec',s.id,s.name,s.role, KIND_CHIP.spec))});
+  groups.push({name:'Crew cards', add:'crew',
+    rows: DB.cards.filter(c=>c.kind==='crew'&&match(c.title)).map(c=>libRow('card',c.id,c.title,`${c.stat} ${c.cost}⚡`, KIND_CHIP.crew))});
+  groups.push({name:'Tactics', add:'tactic',
+    rows: DB.cards.filter(c=>c.kind==='tactic'&&match(c.title)).map(c=>libRow('card',c.id,c.title,`${c.stat} ${c.cost}⚡`, KIND_CHIP.tactic))});
+  groups.push({name:'Negative cards', add:'negative',
+    rows: DB.cards.filter(c=>c.kind==='negative'&&match(c.title)).map(c=>libRow('card',c.id,c.title,'', KIND_CHIP.negative))});
+  groups.push({name:'Consumables', add:'consumable',
+    rows: DB.consumables.filter(k=>match(k.name)).map(k=>libRow('consumable',k.id,k.name,k.cost+'⚡', KIND_CHIP.consumable))});
+
+  $('#libScroll').innerHTML = groups.map(g=>`
+    <div class="lgroup">
+      <div class="gh">${g.name} <span class="n">${g.rows.length}</span>
+        <button class="add" data-add="${g.add}" title="New ${g.name.replace(/s$/,'')}">＋</button></div>
+      ${g.rows.join('')}
+    </div>`).join('');
+}
+
+/* ═══════════════════ EDITOR FORMS ═══════════════════ */
+function fld(label, inner, wide){
+  return `<div class="f ${wide?'wide':''}"><label>${label}</label>${inner}</div>`;
+}
+const txt   = (k,v,ph) => `<input data-k="${k}" value="${esc(v)}" placeholder="${ph||''}">`;
+const area2 = (k,v,ph) => `<textarea data-k="${k}" placeholder="${ph||''}">${esc(v)}</textarea>`;
+const num   = (k,v,min,max,step) => `<input type="number" data-k="${k}" value="${v}" min="${min}" max="${max}" step="${step||1}">`;
+
+function editorHTML(){
+  if(!sel) return `<div class="empty"><h2>The chest is open</h2>
+    <p>Pick something from the rail, or strike a new card with the ＋ marks.
+    Everything you change is drawn live on the right, exactly as the game will print it.</p></div>`;
+
+  if(sel.type==='card'){
+    const c = cardById(sel.id); if(!c) return '';
+    if(c.kind==='negative') return negForm(c);
+    return cardForm(c);
+  }
+  if(sel.type==='consumable'){ const k = DB.consumables.find(x=>x.id===sel.id); return k?pouchForm(k):''; }
+  if(sel.type==='spec'){ const s = specById(sel.id); return s?specForm(s):''; }
+  if(sel.type==='leader'){ const l = DB.leaders.find(x=>x.id===sel.id); return l?leaderForm(l):''; }
+  return '';
+}
+
+function headBtns(){
+  return `<span class="sp"></span>
+    <button class="ebtn" id="btnDupe">Duplicate</button>
+    <button class="ebtn danger" id="btnDel">Delete</button>`;
+}
+
+function cardForm(c){
+  const isCrew = c.kind==='crew';
+  const specOpts = DB.specialists.map(s=>`<option value="${s.id}" ${c.ownerId===s.id?'selected':''}>${esc(s.name)} — ${esc(s.role)}</option>`).join('');
+  return `
+  <div class="ehead"><span class="kind">${isCrew?'Crew signature card':'Tactic'}</span>
+    <h2>${esc(c.title||'Untitled')}</h2>${headBtns()}</div>
+  <p class="esub">${isCrew?'Shared by every specialist of this type; levels with use. The one exception to flat card power.':'Ink on clean vellum. All tactics are peers — role, range and statistic differ, raw strength never does.'}</p>
+  <div class="fgrid">
+    ${fld('Title', txt('title',c.title))}
+    ${fld('Subtitle <small>· work / school</small>', txt('sub',c.sub))}
+    ${isCrew?fld('Owner specialist', `<select data-k="ownerId">${specOpts}</select>`):''}
+    ${fld('Energy cost <small>0–3</small>', num('cost',c.cost,0,3))}
+    ${fld('Statistic', `<select data-k="stat">${STATS.map(s=>`<option ${c.stat===s?'selected':''}>${s}</option>`).join('')}</select>`)}
+    ${fld('Roll threshold <small>· “'+c.stat+' '+c.thr+'+”</small>', num('thr',c.thr,2,20))}
+    ${fld('Type line', txt('type',c.type))}
+
+    <div class="fsep">Range <span class="hint">click to cycle: off → on → best</span></div>
+    ${fld('Playable bands', bandPicker(c), true)}
+    ${fld('Shifts range to', `<select data-k="shiftTo">
+        <option value="">— stays put —</option>
+        ${BANDS.map(b=>`<option value="${b}" ${c.shiftTo===b?'selected':''}>${b}</option>`).join('')}</select>`)}
+    ${fld('Legal targets <small>· lights the pips in-game</small>', tgtPicker(c))}
+
+    <div class="fsep">Resolution <span class="hint">&lt;b&gt; and &lt;br&gt; allowed</span></div>
+    ${fld('Sure effect — always happens', area2('sure',c.sure), true)}
+    ${fld('Roll bonus — lower threshold', area2('bonus',c.bonus), true)}
+    ${fld('Greater effect — Luck escalates', area2('greater',c.greater), true)}
+    ${fld('Odds shown on the card', oddsWidget(c), true)}
+
+    <div class="fsep">Dressing</div>
+    ${fld('Flavour', area2('flav',c.flav), true)}
+    ${fld('Art', artWidget(c,'art'), true)}
+  </div>`;
+}
+
+function negForm(c){
+  return `
+  <div class="ehead"><span class="kind">Negative card</span><h2>${esc(c.title||'Untitled')}</h2>${headBtns()}</div>
+  <p class="esub">Torn scrap, wrong size, no frame — jammed into the deck by an enemy, unmistakable in a hand.</p>
+  <div class="fgrid">
+    ${fld('Title', txt('title',c.title), true)}
+    ${fld('Rules text', area2('text',c.text), true)}
+    ${fld('Source <small>· which enemy inflicts it</small>', txt('source',c.source), true)}
+    ${fld('Destroy cost <small>⚡ during combat</small>', num('destroy',c.destroy,0,3))}
+  </div>`;
+}
+
+function pouchForm(k){
+  return `
+  <div class="ehead"><span class="kind">Consumable</span><h2>${esc(k.name||'Untitled')}</h2>${headBtns()}</div>
+  <p class="esub">One use, ever. Never drawn, always available, shares the energy pool — and never lifts the prize's drawback.</p>
+  <div class="fgrid">
+    ${fld('Name', txt('name',k.name))}
+    ${fld('Glyph <small>· one character</small>', txt('glyph',k.glyph))}
+    ${fld('Energy cost', num('cost',k.cost,0,3))}
+    ${fld('Effect', area2('text',k.text), true)}
+  </div>`;
+}
+
+function specForm(s){
+  const cardOpts = DB.cards.filter(c=>c.kind==='crew').map(c=>
+    `<option value="${c.id}" ${s.cardId===c.id?'selected':''}>${esc(c.title)}</option>`).join('');
+  return `
+  <div class="ehead"><span class="kind">Specialist</span><h2>${esc(s.name||'Unnamed')}</h2>${headBtns()}</div>
+  <p class="esub">A named individual with light presence. Levels attach to the <b>type</b>; the signature card is shared by everyone of that type.</p>
+  <div class="fgrid">
+    ${fld('Name', txt('name',s.name))}
+    ${fld('Role <small>· the type that levels</small>', txt('role',s.role))}
+    ${fld('Station area', `<select data-k="area">${AREAS.map(a=>`<option ${s.area===a?'selected':''}>${a}</option>`).join('')}</select>`)}
+    ${fld('Type level <small>1–5</small>', num('level',s.level,1,5))}
+    ${fld('Ability line <small>· shows on the roster</small>', txt('ability',s.ability))}
+    ${fld('Signature card', `<select data-k="cardId"><option value="">— none yet —</option>${cardOpts}</select>`)}
+    ${fld('Portrait', artWidget(s,'portrait'), true)}
+  </div>`;
+}
+
+function leaderForm(l){
+  const cardOpts = DB.cards.filter(c=>c.kind!=='negative').map(c=>`<option value="${c.id}">${esc(c.title)}</option>`).join('');
+  const deckRows = (l.deck||[]).map((d,i)=>{
+    const opts = DB.cards.filter(c=>c.kind!=='negative').map(c=>
+      `<option value="${c.id}" ${d.cardId===c.id?'selected':''}>${esc(c.title)}</option>`).join('');
+    return `<tr><td style="width:58%"><select data-deck-card="${i}">${opts}</select></td>
+      <td><input type="number" min="1" max="6" value="${d.count}" data-deck-count="${i}"></td>
+      <td><button class="x" data-deck-del="${i}">✕</button></td></tr>`;
+  }).join('');
+  const total = (l.deck||[]).reduce((n,d)=>n+d.count,0);
+  const statInputs = STATS.map(s=>fld(STAT_LABEL[s], num('stats.'+s, l.stats[s],1,7))).join('');
+  return `
+  <div class="ehead"><span class="kind">Leader</span><h2>${esc(l.name||'Unnamed')}</h2>${headBtns()}</div>
+  <p class="esub">Statistics are fixed forever at leader-select — the weightiest decision in the game. The base deck defines how they play.</p>
+  <div class="fgrid">
+    ${fld('Name', txt('name',l.name))}
+    ${fld('Epithet', txt('epithet',l.epithet))}
+    ${fld('Introduction <small>· the two-line saga</small>', area2('quote',l.quote), true)}
+    ${fld('Portrait', artWidget(l,'portrait'), true)}
+    <div class="fsep">Statistics <span class="hint">total <b id="statTotal">${STATS.reduce((n,s)=>n+l.stats[s],0)}</b></span></div>
+    ${statInputs}
+    <div class="fsep">Passive — always active</div>
+    ${fld('Name', txt('passiveName',l.passiveName))}
+    ${fld('Text', area2('passiveText',l.passiveText), true)}
+    <div class="fsep">Leader ability — once per turn</div>
+    ${fld('Name', txt('abilityName',l.abilityName))}
+    ${fld('Energy cost', num('abilityCost',l.abilityCost,1,5))}
+    ${fld('Text', area2('abilityText',l.abilityText), true)}
+    <div class="fsep">Starting deck <span class="hint">${total} cards</span></div>
+    <div class="f wide">
+      <table class="deckt"><tbody>${deckRows}</tbody></table>
+      <button class="ebtn" id="deckAdd" style="margin-top:8px">＋ Add card</button>
+    </div>
+  </div>`;
+}
+
+function bandPicker(c){
+  return `<div class="bandpick">${BANDS.map(b=>{
+    const cls=['bp']; if(c.bands[b])cls.push('on'); if(c.best===b)cls.push('best');
+    return `<span class="${cls.join(' ')}" data-band="${b}">${b==='normal'?'Norm':b}</span>`;}).join('')}</div>`;
+}
+function tgtPicker(c){
+  return `<div class="tgts">${AREAS.map(a=>
+    `<span class="tg ${ (c.targets||[]).includes(a)?'on':''}" data-tgt="${a}">${a}</span>`).join('')}</div>`;
+}
+function oddsWidget(c){
+  const sum = c.odds.miss + c.odds.bonus + c.odds.greater;
+  return `<div class="odds3">
+      <span class="lab">None</span>${num('odds.miss',c.odds.miss,0,100)}
+      <span class="lab">Bonus</span>${num('odds.bonus',c.odds.bonus,0,100)}
+      <span class="lab">Greater</span>${num('odds.greater',c.odds.greater,0,100)}
+    </div>
+    <span class="oddsbad ${sum!==100?'show':''}" id="oddsFix">sums to ${sum} — click to balance</span>`;
+}
+function artWidget(o,key){
+  const v = o[key];
+  return `<div class="artbox">
+    <div class="thumb" style="${v?`background-image:url('${v}')`:''}"></div>
+    <div class="acts">
+      <button class="ebtn" data-art-up="${key}">Upload…</button>
+      ${v?`<button class="ebtn" data-art-clear="${key}">Remove</button>`:''}
+    </div>
+    <input type="file" accept="image/*" data-art-file="${key}">
+  </div>`;
+}
+
+/* ═══════════════════ PREVIEW ═══════════════════ */
+function buildStagebar(){
+  let extra = '';
+  if(sel && sel.type==='card'){ const c=cardById(sel.id);
+    if(c && c.kind==='crew') extra = `<label><input type="checkbox" id="pvInjured" ${previewOpts.injured?'checked':''}> preview injured</label>`;
+  }
+  $('#stageBar').innerHTML = `
+    <span>Preview</span>
+    <select id="pvScale">
+      ${[0.75,1,1.25].map(s=>`<option value="${s}" ${previewOpts.scale===s?'selected':''}>${s*100}%</option>`).join('')}
+    </select> ${extra}`;
+  $('#pvScale').onchange = e => { previewOpts.scale = +e.target.value; buildPreview(); };
+  const inj = $('#pvInjured'); if(inj) inj.onchange = e => { previewOpts.injured = e.target.checked; buildPreview(); };
+}
+function buildPreview(){
+  const box = $('#stageInner'); box.innerHTML='';
+  box.style.transform = `scale(${previewOpts.scale})`;
+  if(!sel) return;
+  let el = null;
+  if(sel.type==='card'){ const c=cardById(sel.id);
+    if(c) el = c.kind==='negative' ? renderScrapEl(c) : renderCardEl(c,{injured:previewOpts.injured&&c.kind==='crew'});
+  }
+  if(sel.type==='consumable'){ const k=DB.consumables.find(x=>x.id===sel.id); if(k) el = renderPouchEl(k); }
+  if(sel.type==='spec'){ const s=specById(sel.id); if(s){
+    el = document.createElement('div'); el.style.cssText='display:flex;flex-direction:column;gap:26px;align-items:center';
+    el.appendChild(renderSpecEl(s));
+    const sig = s.cardId && cardById(s.cardId);
+    if(sig) el.appendChild(renderCardEl(sig,{}));
+  }}
+  if(sel.type==='leader'){ const l=DB.leaders.find(x=>x.id===sel.id); if(l) el = renderLeaderEl(l); }
+  if(el) box.appendChild(el);
+}
+
+/* ═══════════════════ EDITOR WIRING ═══════════════════ */
+function selectedObj(){
+  if(!sel) return null;
+  if(sel.type==='card') return cardById(sel.id);
+  if(sel.type==='consumable') return DB.consumables.find(x=>x.id===sel.id);
+  if(sel.type==='spec') return specById(sel.id);
+  if(sel.type==='leader') return DB.leaders.find(x=>x.id===sel.id);
+  return null;
+}
+function setPath(o, path, v){
+  const ks = path.split('.'); let t = o;
+  while(ks.length>1) t = t[ks.shift()];
+  t[ks[0]] = v;
+}
+
+function buildEditor(){
+  $('#editor').innerHTML = editorHTML();
+  buildStagebar(); buildPreview();
+  const o = selectedObj(); if(!o) return;
+
+  /* plain fields */
+  $('#editor').querySelectorAll('[data-k]').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      let v = inp.value;
+      if(inp.type==='number') v = +v;
+      setPath(o, inp.dataset.k, v);
+      if(inp.dataset.k==='stat' || inp.dataset.k==='thr') {} /* falls through to preview */
+      saveSoon(); buildPreview();
+      if(sel.type==='leader' && inp.dataset.k.startsWith('stats.')){
+        const t = $('#statTotal'); if(t) t.textContent = STATS.reduce((n,s)=>n+o.stats[s],0);
+      }
+      if(inp.dataset.k==='odds.miss'||inp.dataset.k==='odds.bonus'||inp.dataset.k==='odds.greater'){
+        const sum = o.odds.miss+o.odds.bonus+o.odds.greater;
+        const bad = $('#oddsFix');
+        if(bad){ bad.textContent = `sums to ${sum} — click to balance`; bad.classList.toggle('show', sum!==100); }
+      }
+    });
+    inp.addEventListener('change', ()=>{ buildLib();
+      if(sel.type==='card' && (inp.dataset.k==='ownerId'||inp.dataset.k==='stat')) buildEditor(); });
+  });
+
+  /* band cycle: off -> on -> best */
+  $('#editor').querySelectorAll('[data-band]').forEach(bp=>{
+    bp.onclick = ()=>{
+      const b = bp.dataset.band;
+      if(o.best===b){ o.best=null; o.bands[b]=false; }
+      else if(o.bands[b]){ o.best=b; }
+      else { o.bands[b]=true; }
+      if(o.best && !o.bands[o.best]) o.best=null;
+      saveSoon(); buildEditor();
+    };
+  });
+  /* targets */
+  $('#editor').querySelectorAll('[data-tgt]').forEach(tg=>{
+    tg.onclick = ()=>{
+      const a = tg.dataset.tgt; o.targets = o.targets||[];
+      o.targets.includes(a) ? o.targets = o.targets.filter(x=>x!==a) : o.targets.push(a);
+      saveSoon(); buildEditor();
+    };
+  });
+  /* odds balance */
+  const ob = $('#oddsFix');
+  if(ob) ob.onclick = ()=>{
+    const sum = o.odds.miss+o.odds.bonus+o.odds.greater;
+    if(sum===0){ o.odds={miss:40,bonus:45,greater:15}; }
+    else{
+      o.odds.miss = Math.round(o.odds.miss*100/sum);
+      o.odds.bonus = Math.round(o.odds.bonus*100/sum);
+      o.odds.greater = 100 - o.odds.miss - o.odds.bonus;
+    }
+    saveSoon(); buildEditor();
+  };
+  /* art upload */
+  $('#editor').querySelectorAll('[data-art-up]').forEach(b=>{
+    b.onclick = ()=> $('#editor').querySelector(`[data-art-file="${b.dataset.artUp}"]`).click();
+  });
+  $('#editor').querySelectorAll('[data-art-clear]').forEach(b=>{
+    b.onclick = ()=>{ o[b.dataset.artClear]=''; saveSoon(); buildEditor(); };
+  });
+  $('#editor').querySelectorAll('[data-art-file]').forEach(f=>{
+    f.onchange = ()=> {
+      const file = f.files[0]; if(!file) return;
+      shrinkImage(file, f.dataset.artFile==='portrait'?520:960, url=>{
+        o[f.dataset.artFile] = url; save(); buildEditor();
+      });
+      f.value='';
+    };
+  });
+  /* deck builder */
+  const da = $('#deckAdd');
+  if(da) da.onclick = ()=>{
+    const first = DB.cards.find(c=>c.kind!=='negative');
+    if(!first) return alert('Create a card first.');
+    o.deck = o.deck||[]; o.deck.push({cardId:first.id, count:1});
+    saveSoon(); buildEditor();
+  };
+  $('#editor').querySelectorAll('[data-deck-card]').forEach(s=>{
+    s.onchange = ()=>{ o.deck[+s.dataset.deckCard].cardId = s.value; saveSoon(); buildEditor(); };
+  });
+  $('#editor').querySelectorAll('[data-deck-count]').forEach(s=>{
+    s.oninput = ()=>{ o.deck[+s.dataset.deckCount].count = Math.max(1,+s.value||1); saveSoon(); buildPreview(); };
+  });
+  $('#editor').querySelectorAll('[data-deck-del]').forEach(b=>{
+    b.onclick = ()=>{ o.deck.splice(+b.dataset.deckDel,1); saveSoon(); buildEditor(); };
+  });
+
+  /* duplicate & delete */
+  const bd = $('#btnDupe');
+  if(bd) bd.onclick = ()=>{
+    const copy = JSON.parse(JSON.stringify(o));
+    copy.id = uid(sel.type[0]);
+    if(copy.title) copy.title += ' (copy)';
+    if(copy.name) copy.name += ' (copy)';
+    ({card:DB.cards, consumable:DB.consumables, spec:DB.specialists, leader:DB.leaders})[sel.type].push(copy);
+    sel = {type:sel.type, id:copy.id};
+    save(); buildLib(); buildEditor();
+  };
+  const del = $('#btnDel');
+  if(del) del.onclick = ()=>{
+    const uses = [];
+    if(sel.type==='card'){
+      DB.leaders.forEach(l=>(l.deck||[]).some(d=>d.cardId===sel.id) && uses.push(`deck of ${l.name}`));
+      DB.specialists.forEach(s=>s.cardId===sel.id && uses.push(`signature of ${s.name}`));
+    }
+    if(sel.type==='spec'){
+      DB.cards.forEach(c=>c.ownerId===sel.id && uses.push(`crew card “${c.title}”`));
+    }
+    if(!confirm(`Delete permanently?${uses.length?'\nAlso referenced by: '+uses.join(', ')+' — references will be unlinked.':''}`)) return;
+    if(sel.type==='card'){
+      DB.cards = DB.cards.filter(c=>c.id!==sel.id);
+      DB.leaders.forEach(l=>l.deck = (l.deck||[]).filter(d=>d.cardId!==sel.id));
+      DB.specialists.forEach(s=>{ if(s.cardId===sel.id) s.cardId=null; });
+    }
+    if(sel.type==='consumable') DB.consumables = DB.consumables.filter(k=>k.id!==sel.id);
+    if(sel.type==='spec'){
+      DB.specialists = DB.specialists.filter(s=>s.id!==sel.id);
+      DB.cards.forEach(c=>{ if(c.ownerId===sel.id) c.ownerId=null; });
+    }
+    if(sel.type==='leader') DB.leaders = DB.leaders.filter(l=>l.id!==sel.id);
+    sel = null; save(); buildLib(); buildEditor();
+  };
+}
+
+function shrinkImage(file, maxW, cb){
+  const img = new Image();
+  img.onload = ()=>{
+    const sc = Math.min(1, maxW/img.width);
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(img.width*sc); cv.height = Math.round(img.height*sc);
+    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+    cb(cv.toDataURL('image/jpeg', .85));
+    URL.revokeObjectURL(img.src);
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+/* ═══════════════════ NEW ENTITIES ═══════════════════ */
+function makeNew(kind){
+  if(kind==='tactic'||kind==='crew'){
+    const c = {id:uid('c'), kind, title:'New Tactic', sub:'Seamanship', cost:1, stat:'STR',
+      type: kind==='crew'?'Crew — unnamed':'Tactic', art:'',
+      bands:{far:true,normal:true,close:true}, best:null, shiftTo:null,
+      sure:'Deal <b>4</b> to one enemy area.', thr:8,
+      bonus:'…and a little more.', greater:'…and much more.',
+      odds:{miss:40,bonus:45,greater:15}, targets:[], flav:''};
+    if(kind==='crew'){ c.ownerId = DB.specialists[0]?.id||null; c.title='New Signature'; }
+    DB.cards.push(c); sel={type:'card',id:c.id};
+  }
+  if(kind==='negative'){
+    const c = {id:uid('c'), kind:'negative', title:'New Hindrance',
+      source:'Jammed into your deck by —',
+      text:'Occupies a hand slot. <b>Cannot be played.</b> Stays until removed.', destroy:1};
+    DB.cards.push(c); sel={type:'card',id:c.id};
+  }
+  if(kind==='consumable'){
+    const k = {id:uid('k'), glyph:'🜄', name:'New Consumable', cost:1, text:'One-use effect.'};
+    DB.consumables.push(k); sel={type:'consumable',id:k.id};
+  }
+  if(kind==='spec'){
+    const s = {id:uid('sp'), name:'New Specialist', role:'Role', area:'Hull', level:1,
+      portrait:'', ability:'Signature move', cardId:null};
+    DB.specialists.push(s); sel={type:'spec',id:s.id};
+  }
+  if(kind==='leader'){
+    const l = {id:uid('l'), name:'New Leader', epithet:'the Unproven', quote:'Their saga is unwritten.',
+      portrait:'', stats:{STR:3,DEX:3,CON:3,CHA:3,LUK:3},
+      passiveName:'Passive', passiveText:'Always-on effect that shapes a route.',
+      abilityName:'Ability', abilityCost:3, abilityText:'Once per turn, for most of a turn’s energy.',
+      deck:[]};
+    DB.leaders.push(l); sel={type:'leader',id:l.id};
+  }
+  save(); buildLib(); buildEditor();
+}
+
+/* ═══════════════════ ANATOMY VIEW ═══════════════════ */
+function buildAnatomyControls(){
+  document.querySelectorAll('[data-ana]').forEach(inp=>{
+    const k = inp.dataset.ana, v = DB.anatomy[k];
+    if(inp.type==='checkbox') inp.checked = !!v;
+    else inp.value = v;
+  });
+  syncAnaVals();
+}
+function syncAnaVals(){
+  $('#vRadius').textContent = DB.anatomy.radius+'px';
+  $('#vTitle').textContent = DB.anatomy.titleSize+'px';
+  $('#vSure').textContent = (+DB.anatomy.sureSize).toFixed(1);
+  $('#vRoll').textContent = (+DB.anatomy.rollSize).toFixed(1);
+}
+function buildAnatomyStage(){
+  const st = $('#anaStage'); st.innerHTML='';
+  const mk = (cap, el)=>{ const d=document.createElement('div'); d.className='asample';
+    d.appendChild(el); const c=document.createElement('div'); c.className='cap'; c.textContent=cap;
+    d.prepend(c); st.appendChild(d); };
+  const tactic = DB.cards.find(c=>c.kind==='tactic');
+  const crew = DB.cards.find(c=>c.kind==='crew');
+  const neg = DB.cards.find(c=>c.kind==='negative');
+  if(tactic) mk('Tactic — clean vellum', renderCardEl(tactic));
+  if(crew) mk('Crew — warmer stock, sealed', renderCardEl(crew));
+  if(crew) mk('The same card, injured', renderCardEl(crew,{injured:true}));
+  if(neg) mk('Negative — torn scrap', renderScrapEl(neg));
+}
+document.querySelectorAll('[data-ana]').forEach(inp=>{
+  inp.addEventListener('input', ()=>{
+    const k = inp.dataset.ana;
+    DB.anatomy[k] = inp.type==='checkbox' ? inp.checked
+                  : inp.type==='range' ? +inp.value : inp.value;
+    applyAnatomy(); syncAnaVals(); saveSoon();
+  });
+});
+$('#anaReset').onclick = ()=>{
+  if(!confirm('Reset the anatomy to the Vellum & Iron defaults? Cards are untouched.')) return;
+  DB.anatomy = {...DEFAULT_ANATOMY};
+  applyAnatomy(); buildAnatomyControls(); save();
+};
+
+/* ═══════════════════ IMPORT / EXPORT ═══════════════════ */
+$('#btnExport').onclick = ()=>{
+  DB.meta.dirty = false;
+  const blob = new Blob([JSON.stringify(DB,null,1)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'viking-voyage-cards-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  save(); DB.meta.dirty=false; localStorage.setItem(LS_KEY, JSON.stringify(DB));
+  $('#btnExport').classList.remove('isdirty');
+};
+$('#footExport').onclick = ()=> $('#btnExport').click();
+$('#btnImport').onclick = ()=> $('#importFile').click();
+$('#importFile').onchange = ()=>{
+  const f = $('#importFile').files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    try{
+      const inc = JSON.parse(rd.result);
+      if(!inc.v || !inc.cards) throw new Error('not a Card Forge file');
+      const replace = confirm('OK = MERGE into your chest (same ids update, new ids add).\nCancel = choose replace…')
+        ? false
+        : confirm('REPLACE EVERYTHING with the imported file? Your current chest is overwritten.');
+      if(replace){ DB = inc; }
+      else{
+        const mergeList = (mine, theirs)=>{
+          theirs.forEach(t=>{
+            const i = mine.findIndex(m=>m.id===t.id);
+            i>=0 ? mine[i]=t : mine.push(t);
+          });
+        };
+        mergeList(DB.cards, inc.cards||[]);
+        mergeList(DB.consumables, inc.consumables||[]);
+        mergeList(DB.specialists, inc.specialists||[]);
+        mergeList(DB.leaders, inc.leaders||[]);
+        if(inc.anatomy && confirm('Also take the imported file’s anatomy (template design)?')) DB.anatomy = inc.anatomy;
+      }
+      sel = null; save(); applyAnatomy(); buildAnatomyControls(); buildAnatomyStage(); buildLib(); buildEditor();
+      alert('Imported.');
+    }catch(err){ alert('Could not import: ' + err.message); }
+    $('#importFile').value='';
+  };
+  rd.readAsText(f);
+};
+
+/* copy as the CARDS = {...} object combat-screen.html uses */
+$('#btnCopyJS').onclick = ()=>{
+  const out = {};
+  DB.cards.filter(c=>c.kind==='tactic'||c.kind==='crew').forEach(c=>{
+    out[c.id.replace(/^c-/,'')] = {
+      title:c.title, sub:c.sub, cost:c.cost, stat:c.stat, type:c.type, art:c.art||'',
+      bands:c.bands, best:c.best, shiftTo:c.shiftTo,
+      sure:c.sure, check:`${c.stat} ${c.thr}+`, bonus:c.bonus, greater:c.greater,
+      odds:c.odds, flav:c.flav, targets:c.targets||[], mods:[]
+    };
+  });
+  const js = 'const CARDS = ' + JSON.stringify(out,null,2) + ';';
+  navigator.clipboard.writeText(js).then(
+    ()=>alert('Copied ' + Object.keys(out).length + ' cards as a CARDS object.'),
+    ()=>prompt('Copy manually:', js));
+};
+
+/* ═══════════════════ GLOBAL WIRING ═══════════════════ */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+    $('#view-'+t.dataset.view).classList.add('on');
+    if(t.dataset.view==='anatomy') buildAnatomyStage();
+  };
+});
+$('#libScroll').addEventListener('click', e=>{
+  const add = e.target.closest('[data-add]');
+  if(add){ makeNew(add.dataset.add); return; }
+  const row = e.target.closest('.lrow'); if(!row) return;
+  sel = {type:row.dataset.type, id:row.dataset.id};
+  previewOpts.injured = false;
+  buildLib(); buildEditor();
+});
+$('#libSearch').addEventListener('input', buildLib);
+$('#btnHelp').onclick = ()=> $('#helpBox').classList.toggle('show');
+$('#helpClose').onclick = ()=> $('#helpBox').classList.remove('show');
+$('#wipeAll').onclick = ()=>{
+  if(!confirm('Wipe this browser’s Card Forge data and restore the samples?')) return;
+  if(!confirm('Really? Unexported work is gone forever.')) return;
+  localStorage.removeItem(LS_KEY); location.reload();
+};
+
+/* ═══════════════════ BOOT ═══════════════════ */
+applyAnatomy();
+buildAnatomyControls();
+buildLib();
+sel = {type:'card', id:'c-rake'};
+if(!cardById('c-rake')) sel = null;
+buildLib(); buildEditor();
+$('#btnExport').classList.toggle('isdirty', !!DB.meta.dirty);
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="Two longships seen from above, bound gunwale to gunwale by three cables, carved in stone">
+<defs>
+  <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#d8d2c1"/>
+    <stop offset=".52" stop-color="#c7c1b0"/>
+    <stop offset="1" stop-color="#aea795"/>
+  </linearGradient>
+  <filter id="grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.92" numOctaves="4" seed="9"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <filter id="carve" x="-12%" y="-12%" width="124%" height="124%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="3" seed="21" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="2.6" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feDropShadow in="d" dx="2.2" dy="2.2" stdDeviation="0" flood-color="#f4eee0" flood-opacity=".9"/>
+  </filter>
+</defs>
+
+<rect width="640" height="360" fill="url(#stone)"/>
+
+<g filter="url(#carve)">
+  <!-- ── the sea in the gap between the two hulls ── -->
+  <g stroke="#34302a" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55">
+    <path d="M-14,168 q22,-8 44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0"/>
+    <path d="M-36,182 q22,-8 44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0"/>
+    <path d="M-14,196 q22,-8 44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0"/>
+  </g>
+
+  <!-- ══ SHIP ABOVE — plan view, prow to the right ══ -->
+  <path d="M30,94 C118,52 236,36 330,36 C428,36 540,58 610,94 C540,130 428,152 330,152 C236,152 118,136 30,94 Z"
+        fill="none" stroke="#34302a" stroke-width="6"/>
+  <path d="M30,94 L610,94" stroke="#34302a" stroke-width="3.2" opacity=".7"/>
+  <g stroke="#34302a" stroke-width="3" opacity=".5">
+    <path d="M120,59 L120,130"/><path d="M180,47 L180,141"/><path d="M240,41 L240,147"/>
+    <path d="M300,37 L300,151"/><path d="M360,38 L360,150"/><path d="M420,43 L420,145"/>
+    <path d="M480,53 L480,135"/><path d="M540,68 L540,120"/>
+  </g>
+  <g fill="none" stroke="#34302a" stroke-width="4">
+    <circle cx="150" cy="50" r="13"/><circle cx="210" cy="41" r="13"/><circle cx="270" cy="36" r="13"/>
+    <circle cx="330" cy="35" r="13"/><circle cx="390" cy="38" r="13"/><circle cx="450" cy="46" r="13"/>
+    <circle cx="510" cy="59" r="13"/>
+  </g>
+  <g fill="#a8492f">
+    <circle cx="210" cy="41" r="4.5"/><circle cx="330" cy="35" r="4.5"/><circle cx="450" cy="46" r="4.5"/>
+  </g>
+  <path d="M610,94 C626,90 634,80 631,69 C628,59 617,56 611,63 C606,68 610,75 616,75"
+        stroke="#34302a" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+  <!-- ══ SHIP BELOW ══ -->
+  <path d="M30,266 C118,224 236,208 330,208 C428,208 540,230 610,266 C540,302 428,324 330,324 C236,324 118,308 30,266 Z"
+        fill="none" stroke="#34302a" stroke-width="6"/>
+  <path d="M30,266 L610,266" stroke="#34302a" stroke-width="3.2" opacity=".7"/>
+  <g stroke="#34302a" stroke-width="3" opacity=".5">
+    <path d="M120,231 L120,302"/><path d="M180,219 L180,313"/><path d="M240,213 L240,319"/>
+    <path d="M300,209 L300,323"/><path d="M360,210 L360,322"/><path d="M420,215 L420,317"/>
+    <path d="M480,225 L480,307"/><path d="M540,240 L540,292"/>
+  </g>
+  <g fill="none" stroke="#34302a" stroke-width="4">
+    <circle cx="150" cy="310" r="13"/><circle cx="210" cy="319" r="13"/><circle cx="270" cy="324" r="13"/>
+    <circle cx="330" cy="325" r="13"/><circle cx="390" cy="322" r="13"/><circle cx="450" cy="314" r="13"/>
+    <circle cx="510" cy="301" r="13"/>
+  </g>
+  <g fill="#a8492f">
+    <circle cx="270" cy="324" r="4.5"/><circle cx="390" cy="322" r="4.5"/>
+  </g>
+  <path d="M610,266 C626,262 634,252 631,241 C628,231 617,228 611,235 C606,240 610,247 616,247"
+        stroke="#34302a" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+  <!-- ══ THE LASHINGS ══ -->
+  <g stroke="#34302a" stroke-width="17" stroke-linecap="round" fill="none">
+    <path d="M186,138 C179,164 179,196 186,222"/>
+    <path d="M330,146 C323,168 323,192 330,214"/>
+    <path d="M474,136 C481,162 481,196 474,224"/>
+  </g>
+  <!-- the lay of the strands, cut across each cable -->
+  <g stroke="#cdc7b6" stroke-width="2.8" stroke-linecap="round" opacity=".6">
+    <path d="M176,148 L194,155"/><path d="M174,166 L192,173"/><path d="M174,184 L192,191"/>
+    <path d="M175,202 L193,209"/><path d="M178,216 L196,223"/>
+    <path d="M320,156 L338,163"/><path d="M318,174 L336,181"/><path d="M318,192 L336,199"/>
+    <path d="M321,206 L339,213"/>
+    <path d="M464,148 L482,155"/><path d="M466,166 L484,173"/><path d="M466,184 L484,191"/>
+    <path d="M465,202 L483,209"/><path d="M462,216 L480,223"/>
+  </g>
+  <!-- turns of small stuff whipping each cable down to the sheer -->
+  <g stroke="#34302a" stroke-width="4.5" stroke-linecap="round" fill="none">
+    <path d="M170,140 L202,140"/><path d="M170,220 L202,220"/>
+    <path d="M314,150 L346,150"/><path d="M314,210 L346,210"/>
+    <path d="M458,138 L490,138"/><path d="M458,222 L490,222"/>
+  </g>
+  <!-- the knot on the midships cable, rubbed with pigment -->
+  <path d="M330,166 l18,12 l-18,12 l-18,-12 z" fill="#a8492f"/>
+  <circle cx="330" cy="178" r="5.5" fill="#c7c1b0"/>
+</g>
+
+<rect width="640" height="360" filter="url(#grain)" opacity=".22" style="mix-blend-mode:multiply"/>
+</svg>

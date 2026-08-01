@@ -1,0 +1,3 @@
+# thomasaj.com — everything is crawlable except internal tooling
+User-agent: *
+Disallow: /vikingvoyage/
