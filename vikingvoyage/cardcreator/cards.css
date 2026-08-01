@@ -1,0 +1,642 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   VIKING VOYAGE — the card system.  "Vellum & Iron".
+   Single source of truth for every card surface in the game.
+
+   Seven surfaces:  tactic · crew · junk · card back · injured · leader ·
+   consumable.  Two faces per card: HAND (188×263, played) and FULL
+   (376×526, inspected).  The hand face is laid out natively — it is never
+   a scaled-down full face, because at 50% the odds bar renders at 4px.
+
+   Rest vs hover, everywhere: at rest a surface shows what the player
+   compares and what can change mid-fight; hover shows what is learned
+   once.  Hover extends — it never rearranges.
+
+   Palette is three inks on bone, plus iron.  No fourth colour, ever:
+   that constraint is what keeps assets made a year apart matching.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* the three plates */
+  --ink:      #14100c;
+  --ink-soft: #3b332a;
+  --madder:   #9e2b25;
+  --seagreen: #3e6b63;
+
+  /* stock */
+  --vellum:      #e3d8be;
+  --vellum-hi:   #efe6d1;
+  --vellum-lo:   #cabd9d;
+  --vellum-crew: #e7dcc0;
+  --scrap:       #b9ae90;
+
+  /* ironmongery */
+  --iron:    #33302a;
+  --iron-hi: #6c675c;
+
+  /* statistic plates — colour IS the card's identity at a glance */
+  --stat-str: #9e2b25;
+  --stat-dex: #a8851c;
+  --stat-con: #4e6b30;
+  --stat-cha: #6e4a7a;
+  --stat-luk: #3e6b63;
+
+  --danger: #c4553f;
+
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─────────────────────────────────────────────────────────────
+   1.  SHARED CARD CHROME
+   ───────────────────────────────────────────────────────────── */
+
+.vvc{
+  --plate: var(--stat-str);
+  position:relative;
+  flex:0 0 auto;
+  border-radius:11px;
+  background:radial-gradient(88% 66% at 50% 32%,
+             var(--vellum-hi) 0%, var(--vellum) 46%, var(--vellum-lo) 100%);
+  box-shadow:
+    0 2px 0 rgba(255,244,220,.5) inset,
+    0 -22px 46px -20px rgba(92,72,38,.5) inset,
+    0 26px 44px -14px rgba(0,0,0,.82),
+    0 3px 8px rgba(0,0,0,.6);
+  font-family:'Alegreya',Georgia,serif;
+  color:var(--ink);
+}
+
+/* foxing and age, struck over everything */
+.vvc::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:8;
+  background-image:var(--grain);opacity:.3;mix-blend-mode:multiply;
+}
+
+/* crew print on warmer stock — §12.5, the one card whose power varies */
+.vvc--crew{
+  background:radial-gradient(88% 66% at 50% 32%,
+             #f2e8d0 0%, var(--vellum-crew) 46%, #c9bb99 100%);
+}
+
+/* numbers that grow with a crew type's level print in madder, not ink,
+   so "levels raise numbers only, never rules" (§12.5) is legible. */
+lv{color:var(--madder);font-weight:700;font-style:normal}
+
+.vvc-in{position:relative;z-index:5;height:100%;display:flex;flex-direction:column}
+
+/* the frame is iron and timber, so it is riveted */
+.vvc-rivet{
+  position:absolute;width:10px;height:10px;border-radius:50%;z-index:6;
+  background:radial-gradient(circle at 34% 30%, var(--iron-hi), var(--iron) 62%, #100e0b);
+  box-shadow:0 1px 1px rgba(255,250,235,.55), inset 0 -1px 1px rgba(0,0,0,.6);
+}
+.vvc-rivet.tl{top:15px;left:15px}   .vvc-rivet.tr{top:15px;right:15px}
+.vvc-rivet.bl{bottom:15px;left:15px} .vvc-rivet.br{bottom:15px;right:15px}
+
+/* statistic plate — a stamped lozenge, colour = the stat it checks */
+.vvc-stat{
+  flex:0 0 auto;display:grid;place-items:center;background:var(--plate);
+  clip-path:polygon(50% 0,100% 22%,100% 78%,50% 100%,0 78%,0 22%);
+  box-shadow:0 2px 4px rgba(0,0,0,.4);
+}
+.vvc-stat span{
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;
+  color:#f5ecd6;text-shadow:0 1px 1px rgba(0,0,0,.5);
+}
+
+/* cost — an iron rivet, because energy is the one number nothing can take (§13) */
+.vvc-cost{
+  flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 33% 28%, #565043, var(--iron) 58%, #0c0a08);
+  box-shadow:0 2px 3px rgba(0,0,0,.55), inset 0 -2px 3px rgba(0,0,0,.65),
+             inset 0 2px 2px rgba(255,245,225,.22);
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;
+  color:#f3ead4;text-shadow:0 1px 2px rgba(0,0,0,.9);
+}
+
+.vvc-title{font-family:'IM Fell English SC',serif;line-height:1.06;color:var(--ink)}
+.vvc-art{position:relative;width:100%;overflow:hidden;background:#cdc0a2;flex:0 0 auto;
+  border:1.5px solid rgba(20,16,12,.85)}
+.vvc-art img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.05)}
+.vvc-art::after{content:'';position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 22px rgba(60,44,20,.42), inset 0 2px 5px rgba(0,0,0,.3)}
+
+/* range bands — dashed unplayable · solid playable · filled is best */
+.vvc-range{display:flex;gap:2px;border:1px solid rgba(20,16,12,.5);padding:2px;flex:0 0 auto}
+.vvc-band{
+  flex:1;text-align:center;position:relative;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:700;text-transform:uppercase;
+  color:rgba(20,16,12,.34);border:1px dashed rgba(20,16,12,.2);
+}
+.vvc-band.on{color:rgba(20,16,12,.9);border:1px solid rgba(20,16,12,.42);background:rgba(20,16,12,.055)}
+.vvc-band.best{background:var(--plate);color:#f5ecd6;border-color:transparent}
+/* a card that MOVES the range carries a chevron in its target band */
+.vvc-band.shift::before{
+  content:'';position:absolute;left:4px;top:50%;transform:translateY(-50%);
+  border-left:5px solid currentColor;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;
+}
+
+/* odds — §3.3 requires exact odds before committing, so this is never hidden */
+.vvc-meter{display:flex;border:1px solid rgba(20,16,12,.55);background:rgba(20,16,12,.06)}
+.vvc-meter i{display:block;height:100%}
+.vvc-meter .m-miss{background:repeating-linear-gradient(45deg,transparent 0 2px,rgba(20,16,12,.24) 2px 4px)}
+.vvc-meter .m-bon{background:var(--plate);opacity:.55}
+.vvc-meter .m-grt{background:var(--plate)}
+
+/* ─────────────────────────────────────────────────────────────
+   2.  FULL FACE — 376×526.  Inspect, reward, collection.
+   ───────────────────────────────────────────────────────────── */
+
+.vvc--full{width:376px;height:526px;padding:15px}
+
+/* the printed double rule — a broadside border, not gold filigree */
+.vvc--full::after{
+  content:'';position:absolute;inset:9px;border-radius:5px;pointer-events:none;z-index:7;
+  border:2px solid rgba(20,16,12,.82);
+  box-shadow:0 0 0 1.5px var(--vellum), 0 0 0 3px rgba(20,16,12,.42);
+}
+.vvc--full .vvc-in{padding:14px 15px 11px}
+
+.vvc--full .vvc-head{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px}
+.vvc--full .vvc-cost{width:39px;height:39px;font-size:19px;margin-top:1px}
+.vvc--full .vvc-titles{flex:1;min-width:0}
+.vvc--full .vvc-title{font-size:22px;letter-spacing:.008em}
+.vvc--full .vvc-title.long{font-size:19.5px}
+.vvc--full .vvc-sub{
+  font-family:'Alegreya Sans SC',sans-serif;font-size:9.5px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-top:3px;opacity:.82;
+}
+.vvc--full .vvc-stat{width:35px;height:39px}
+.vvc--full .vvc-stat span{font-size:10.5px;letter-spacing:.06em}
+
+.vvc--full .vvc-art{aspect-ratio:16/9}
+.vvc--full .vvc-range{margin-top:8px}
+.vvc--full .vvc-band{padding:3px 0 2px;font-size:8.5px;letter-spacing:.17em}
+
+.vvc--full .vvc-rules{flex:1;display:flex;flex-direction:column;margin-top:8px;min-height:0}
+.vvc--full .vvc-lbl{
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8.5px;
+  letter-spacing:.26em;text-transform:uppercase;margin-bottom:3px;
+  display:flex;align-items:center;gap:7px;
+}
+.vvc--full .vvc-lbl::after{content:'';flex:1;height:1px;background:currentColor;opacity:.28}
+.vvc--full .vvc-sure .vvc-lbl{color:var(--ink)}
+.vvc--full .vvc-sure p{font-size:14.4px;line-height:1.34}
+
+/* the die divider — a literal seam.  Above it certainty, below it upside only. */
+.vvc--full .vvc-split{display:flex;align-items:center;gap:9px;margin:8px 0 7px}
+.vvc--full .vvc-split i{flex:1;height:1px;background:rgba(20,16,12,.32)}
+.vvc-d20{
+  flex:0 0 auto;display:grid;place-items:center;background:var(--ink);
+  clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;color:var(--vellum-hi);
+}
+.vvc--full .vvc-d20{width:19px;height:21px;font-size:8px}
+
+.vvc--full .vvc-roll .vvc-lbl{color:var(--plate);margin-bottom:4px}
+.vvc-tgt{background:var(--plate);color:#f5ecd6;letter-spacing:.1em}
+.vvc--full .vvc-tgt{padding:1.5px 6px}
+.vvc--full .vvc-roll p{font-size:13.4px;line-height:1.32;color:var(--ink-soft)}
+.vvc--full .vvc-roll p + p{margin-top:3px}
+.vvc--full .vvc-grt{position:relative;padding-left:13px}
+.vvc--full .vvc-grt::before{
+  content:'';position:absolute;left:2px;top:6px;width:5px;height:5px;
+  transform:rotate(45deg);background:var(--plate);
+}
+
+.vvc--full .vvc-odds{margin-top:auto;padding-top:8px}
+.vvc--full .vvc-meter{height:7px}
+.vvc--full .vvc-okeys{
+  display:flex;justify-content:space-between;margin-top:3.5px;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:700;font-size:8px;
+  letter-spacing:.13em;text-transform:uppercase;color:rgba(20,16,12,.62);
+}
+.vvc--full .vvc-okeys b{color:var(--plate)}
+
+.vvc--full .vvc-foot{
+  margin-top:8px;padding-top:6px;border-top:1px solid rgba(20,16,12,.28);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:10px;
+}
+.vvc--full .vvc-type{
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:700;font-size:8.5px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);
+  flex:0 0 auto;max-width:52%;line-height:1.3;
+}
+.vvc--full .vvc-flav{
+  font-family:'IM Fell English',serif;font-style:italic;font-size:12.2px;
+  color:rgba(20,16,12,.6);text-align:right;line-height:1.2;flex:1;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3.  HAND FACE — 188×263.  Laid out natively, never scaled.
+       Drops: subtitle, flavour, type footer, greater-effect line,
+       the "SURE" label, the printed double rule, and the four rivets.
+       Keeps everything a player must compare across five cards.
+   ───────────────────────────────────────────────────────────── */
+
+.vvc--hand{width:188px;height:263px;overflow:hidden}
+.vvc--hand .vvc-in{padding:7px 9px 8px}
+
+/* the load-bearing addition: a full-bleed bar in the statistic's colour.
+   Fan five cards and the shape of your turn is readable before a word is. */
+.vvc-bar{
+  position:absolute;top:0;left:0;right:0;height:6px;z-index:6;
+  background:var(--plate);border-radius:11px 11px 0 0;
+  box-shadow:inset 0 -1px 2px rgba(0,0,0,.28);
+}
+.vvc--hand .vvc-in{padding-top:13px}
+
+.vvc--hand .vvc-head{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;height:28px}
+.vvc--hand .vvc-cost{width:24px;height:24px;font-size:13px}
+.vvc--hand .vvc-titles{flex:1;min-width:0}
+.vvc--hand .vvc-title{
+  font-size:13px;line-height:1.08;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.vvc--hand .vvc-title.long{font-size:11.5px}
+.vvc--hand .vvc-sub{display:none}
+.vvc--hand .vvc-stat{width:22px;height:26px}
+.vvc--hand .vvc-stat span{font-size:8px;letter-spacing:.02em}
+
+.vvc--hand .vvc-art{aspect-ratio:16/7;border-width:1px}
+.vvc--hand .vvc-range{margin-top:5px;padding:1px;gap:1px}
+.vvc--hand .vvc-band{padding:2px 0 1px;font-size:8px;letter-spacing:.08em}
+
+.vvc--hand .vvc-rules{flex:1;display:flex;flex-direction:column;margin-top:5px;min-height:0}
+.vvc--hand .vvc-lbl{display:none}
+.vvc--hand .vvc-sure{flex:1;min-height:0;overflow:hidden}
+.vvc--hand .vvc-sure p{font-size:11.5px;line-height:1.3}
+
+.vvc--hand .vvc-split{display:flex;align-items:center;gap:6px;margin:4px 0 4px}
+.vvc--hand .vvc-split i{flex:1;height:1px;background:rgba(20,16,12,.32)}
+.vvc--hand .vvc-d20{width:14px;height:16px;font-size:6px}
+
+.vvc--hand .vvc-roll{flex:0 0 auto}
+.vvc--hand .vvc-tgt{
+  float:left;margin:1px 5px 0 0;padding:1px 4px;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8px;
+}
+.vvc--hand .vvc-roll p{font-size:10.5px;line-height:1.26;color:var(--ink-soft)}
+.vvc--hand .vvc-grt{display:none}   /* lives on the full face and the inspector */
+
+.vvc--hand .vvc-odds{flex:0 0 auto;margin-top:5px}
+.vvc--hand .vvc-meter{height:6px}
+.vvc--hand .vvc-okeys{
+  display:flex;justify-content:space-between;margin-top:2.5px;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8px;
+  letter-spacing:.06em;text-transform:uppercase;color:rgba(20,16,12,.62);
+}
+.vvc--hand .vvc-okeys b{color:var(--plate)}
+.vvc--hand .vvc-foot{display:none}
+
+/* ─────────────────────────────────────────────────────────────
+   4.  CREW SEAL AND LEVEL NOTCHES
+       §12.5 — crew cards level permanently; levels raise numbers only.
+       The notches are service marks tallied at the base of the token.
+   ───────────────────────────────────────────────────────────── */
+
+.vvc-seal{position:absolute;z-index:7;display:grid;place-items:center}
+.vvc-seal .face{
+  position:absolute;inset:0;margin:auto;border-radius:50%;
+  border:2.5px solid var(--madder);
+  box-shadow:0 3px 8px rgba(0,0,0,.55), 0 0 0 1.5px rgba(20,16,12,.6),
+             inset 0 0 12px rgba(60,30,10,.4);
+  background-size:175%;background-position:50% 6%;
+  filter:sepia(.22) contrast(1.08);
+}
+/* the notch ring is drawn 9px outside the seal, so its box is inset negatively */
+.vvc-seal .notches{position:absolute;inset:-9px}
+.vvc-seal .notches line{stroke-linecap:round}
+.vvc-seal .notches .halo{stroke:var(--vellum-hi);opacity:.9}
+.vvc-seal .notches .mark{stroke:var(--madder)}
+
+/* seated so the whole ring — marks included — clears the range strip below */
+.vvc--full .vvc-seal{right:26px;top:186px;width:56px;height:56px}
+.vvc--full .vvc-seal .face{width:56px;height:56px}
+.vvc--full .vvc-seal .notches .halo{stroke-width:4.6}
+.vvc--full .vvc-seal .notches .mark{stroke-width:2.4}
+
+.vvc--hand .vvc-seal{right:11px;top:78px;width:32px;height:32px}
+.vvc--hand .vvc-seal .face{width:32px;height:32px;border-width:1.5px}
+.vvc--hand .vvc-seal .notches .halo{stroke-width:3.4}
+.vvc--hand .vvc-seal .notches .mark{stroke-width:1.6}
+
+/* the tally spelled out, in the foot beside the specialist's name.
+   The notches carry the glance; this carries the exact number. */
+.vvc-lvl{
+  display:inline-block;margin-left:6px;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;text-transform:uppercase;
+  background:var(--madder);color:#f7eeda;letter-spacing:.12em;
+  font-size:8px;padding:1px 5px;vertical-align:1px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   5.  INJURED — §17.2, drawn but unplayable.
+       Must be unmistakable inside a three-card hand (§21.4).
+   ───────────────────────────────────────────────────────────── */
+
+.vvc.is-injured{filter:grayscale(.72) brightness(.62) contrast(.95)}
+
+/* The stamp is a SIBLING of the greyed card, not a child: a CSS filter
+   applies to every descendant, and desaturating the one element whose
+   whole job is to shout would defeat §21.4. */
+.vvc-shell{position:relative;flex:0 0 auto;display:flex}
+.vvc-stamp{
+  position:absolute;z-index:20;left:50%;top:47%;
+  transform:translate(-50%,-50%) rotate(-9deg);
+  border:3px solid var(--danger);color:#ff9d86;background:rgba(30,8,6,.72);
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;
+  text-transform:uppercase;white-space:nowrap;text-align:center;line-height:1.25;
+  pointer-events:none;
+}
+.vvc-stamp small{display:block;letter-spacing:.08em;opacity:.9;margin-top:3px;font-weight:700}
+.vvc-stamp--full{font-size:17px;letter-spacing:.2em;padding:7px 15px}
+.vvc-stamp--full small{font-size:9.5px}
+.vvc-stamp--hand{font-size:10px;letter-spacing:.14em;padding:4px 8px;border-width:2px}
+.vvc-stamp--hand small{font-size:6.5px;margin-top:2px}
+
+/* ─────────────────────────────────────────────────────────────
+   6.  JUNK — §21.3.  Torn scrap: wrong size, wrong shape, no frame.
+       It should never be mistakable for something you can play.
+   ───────────────────────────────────────────────────────────── */
+
+.vvj{
+  position:relative;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Alegreya',Georgia,serif;
+}
+.vvj--full{width:376px;height:526px}
+.vvj--hand{width:188px;height:263px}
+
+.vvj-in{
+  position:relative;background:var(--scrap);color:#241d12;
+  box-shadow:0 22px 40px -16px rgba(0,0,0,.85);
+  transform:rotate(-2.2deg);
+  clip-path:polygon(3% 2%,29% 0,54% 3%,81% 0,98% 4%,100% 27%,97% 53%,
+                    100% 78%,96% 98%,71% 100%,44% 97%,19% 100%,2% 96%,0 71%,3% 46%,0 24%);
+}
+.vvj-in::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:var(--grain);opacity:.42;mix-blend-mode:multiply;
+}
+.vvj--full .vvj-in{width:300px;padding:26px 22px 30px}
+.vvj--hand .vvj-in{width:158px;padding:14px 13px 16px}
+
+.vvj-k{font-family:'Alegreya Sans SC',sans-serif;font-weight:800;
+  text-transform:uppercase;color:#7d3125}
+.vvj-n{font-family:'IM Fell English SC',serif;line-height:1.06}
+.vvj-d{color:#4a3f2c}
+.vvj-f{border-top:1px dashed rgba(36,29,18,.4);font-style:italic;color:#6b5c40}
+.vvj-clear{
+  width:100%;border:2px solid #7d3125;background:rgba(125,49,37,.12);
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;
+  text-transform:uppercase;color:#7d3125;cursor:pointer;
+}
+.vvj-clear:hover{background:rgba(125,49,37,.28)}
+
+.vvj--full .vvj-k{font-size:9px;letter-spacing:.22em;margin-bottom:9px}
+.vvj--full .vvj-n{font-size:25px;margin-bottom:11px}
+.vvj--full .vvj-d{font-size:14.5px;line-height:1.4}
+.vvj--full .vvj-f{margin-top:16px;padding-top:11px;font-size:12.5px;line-height:1.35}
+.vvj--full .vvj-clear{margin-top:13px;padding:8px;font-size:10px;letter-spacing:.13em}
+
+.vvj--hand .vvj-k{font-size:7.5px;letter-spacing:.16em;margin-bottom:5px}
+.vvj--hand .vvj-n{font-size:16px;margin-bottom:6px}
+.vvj--hand .vvj-d{font-size:10.5px;line-height:1.3}
+.vvj--hand .vvj-f{display:none}
+.vvj--hand .vvj-clear{margin-top:9px;padding:5px;font-size:8px;letter-spacing:.08em}
+
+/* ─────────────────────────────────────────────────────────────
+   7.  CARD BACK — the draw pile (§12.6, reshuffles)
+   ───────────────────────────────────────────────────────────── */
+
+.vvb{
+  position:relative;flex:0 0 auto;border-radius:11px;overflow:hidden;
+  border:1px solid rgba(20,16,12,.75);
+  box-shadow:0 26px 44px -14px rgba(0,0,0,.82), 0 3px 8px rgba(0,0,0,.6);
+}
+.vvb svg{width:100%;height:100%;display:block}
+.vvb--full{width:376px;height:526px}
+.vvb--hand{width:188px;height:263px}
+
+/* ─────────────────────────────────────────────────────────────
+   8.  LEADER — §13.  Face forward: the portrait IS the card.
+       At rest: face, name, byname, the ability in prose, curses
+       pinned to the shoulder.  Hover: full wording, statistics,
+       curse detail, the passive, the story.  Spent strikes the
+       ability panel only — the face never greys.
+       Not paper: the one surface in dark timber and gold.
+   ───────────────────────────────────────────────────────────── */
+
+.vvl{
+  position:relative;flex:0 0 auto;overflow:hidden;
+  border-radius:11px;border:2px solid var(--stat-cha);background:#1a150f;
+  box-shadow:0 0 0 1px rgba(150,102,42,.35), 0 26px 44px -14px rgba(0,0,0,.82);
+  font-family:'Alegreya',Georgia,serif;cursor:pointer;
+  transition:border-color .2s, box-shadow .2s;
+}
+.vvl::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:10;
+  background-image:var(--grain);opacity:.16;mix-blend-mode:overlay;
+}
+.vvl:hover{
+  border-color:#c99244;
+  box-shadow:0 0 0 1px rgba(201,146,68,.5), 0 26px 44px -14px rgba(0,0,0,.85),
+             0 0 34px -8px rgba(201,146,68,.4);
+}
+
+/* ── the rail: full-bleed portrait, panel at the foot ── */
+.vvl--rail{width:252px;height:263px;display:flex;flex-direction:column;justify-content:flex-end}
+.vvl--rail .vvl-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:50% 18%;
+}
+/* the scrim keeps the lower third legible without dimming the face */
+.vvl--rail::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:linear-gradient(180deg,rgba(15,12,8,.28) 0%,transparent 22%,
+             transparent 46%,rgba(15,12,8,.9) 82%);
+}
+
+/* curses never invisible: a pill on the portrait's shoulder (§21.2) */
+.vvl-pill{
+  position:absolute;top:7px;right:7px;z-index:6;
+  display:flex;gap:5px;align-items:center;
+  background:rgba(15,12,8,.72);border:1px solid rgba(158,43,37,.5);
+  border-radius:3px;padding:3px 6px;
+}
+.vvl-pill svg{width:11px;height:11px;display:block}
+
+.vvl-who{position:relative;z-index:3;text-align:center;padding:0 10px 6px}
+.vvl-who .a{
+  font-family:'IM Fell English SC',serif;font-size:20px;color:#f1e7cf;line-height:1;
+  text-shadow:0 1px 4px #000, 0 0 18px rgba(0,0,0,.7);
+}
+.vvl-who .b{
+  font-family:'IM Fell English',serif;font-style:italic;font-size:12.5px;color:#9fc0b3;
+  margin-top:2px;text-shadow:0 1px 3px #000;
+}
+
+/* ── the ability panel — shared by both faces ── */
+.vvl-ab{
+  position:relative;z-index:5;background:rgba(15,12,8,.9);
+  border-top:1px solid rgba(150,102,42,.55);padding:6px 9px 7px;
+}
+.vvl-abhead{display:flex;align-items:center;gap:7px}
+.vvl-ab .vvc-cost{width:20px;height:20px;font-size:10.5px}
+.vvl-abname{
+  flex:1;min-width:0;font-family:'IM Fell English SC',serif;font-size:14.5px;
+  color:#e8c179;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.vvl-once{
+  flex:0 0 auto;font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:6.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:#7d7360;
+  border:1px solid rgba(150,102,42,.45);padding:2px 4px;
+}
+.vvl-abtx{font-size:11px;line-height:1.32;color:#b3a68b;margin-top:4px}
+.vvl-abtx b{color:#e8dcc0;font-weight:700}
+
+/* spent strikes the panel, never the face */
+.vvl.is-spent{cursor:not-allowed}
+.vvl.is-spent .vvl-ab > *:not(.vvl-stamp){opacity:.38;filter:grayscale(.9)}
+.vvl.is-spent .vvl-once{color:#d9b0a4;border-color:var(--madder)}
+.vvl-stamp{
+  position:absolute;right:8px;top:50%;z-index:7;
+  transform:translateY(-50%) rotate(-4deg);
+  border:2px solid var(--danger);color:#ff9d86;background:rgba(30,8,6,.82);
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8px;
+  letter-spacing:.12em;text-transform:uppercase;padding:3px 7px;white-space:nowrap;
+}
+
+/* ── the open face: same order, more depth ── */
+.vvl--open{width:378px;min-height:526px;display:flex;flex-direction:column}
+.vvl--open .vvl-port{
+  position:relative;flex:0 0 auto;height:236px;overflow:hidden;
+  border-bottom:1px solid rgba(150,102,42,.5);
+}
+.vvl--open .vvl-port img{
+  width:100%;height:100%;object-fit:cover;object-position:50% 14%;display:block;
+}
+.vvl--open .vvl-port::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 55%,rgba(15,12,8,.92));
+}
+.vvl--open .vvl-who{position:absolute;left:0;right:0;bottom:6px;z-index:3;padding:0 12px}
+.vvl--open .vvl-who .a{font-size:25px}
+.vvl--open .vvl-who .b{font-size:14px}
+
+.vvl--open .vvl-ab{padding:10px 14px 11px}
+.vvl--open .vvl-ab .vvc-cost{width:24px;height:24px;font-size:12px}
+.vvl--open .vvl-abname{font-size:17px;white-space:normal;overflow:visible;line-height:1.05}
+.vvl--open .vvl-abtx{font-size:12.5px;line-height:1.42;margin-top:6px}
+
+.vvl-ref{flex:1;display:flex;flex-direction:column;gap:11px;padding:11px 14px 8px}
+.vvl-stats{display:flex;border:1px solid rgba(150,102,42,.3);background:rgba(0,0,0,.22)}
+.vvl-stat{flex:1;text-align:center;padding:6px 0 5px;position:relative}
+.vvl-stat + .vvl-stat::before{
+  content:'';position:absolute;left:0;top:5px;bottom:5px;width:1px;
+  background:rgba(150,102,42,.3);
+}
+.vvl-stat .v{font-family:'IM Fell English SC',serif;font-size:20px;line-height:1}
+.vvl-stat .n{
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:700;font-size:7px;
+  letter-spacing:.16em;text-transform:uppercase;margin-top:2px;opacity:.85;
+}
+
+.vvl-sect .th{
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8.5px;
+  letter-spacing:.22em;text-transform:uppercase;margin-bottom:5px;
+  display:flex;align-items:center;gap:8px;
+}
+.vvl-sect .th::after{content:'';flex:1;height:1px;background:currentColor;opacity:.25}
+.vvl-sect .th.passive-th{color:var(--seagreen)}
+.vvl-sect .th.curse-th{color:var(--madder)}
+.vvl-sect .tn{font-family:'IM Fell English SC',serif;font-size:16px;color:#e8dcc0;margin-bottom:3px}
+.vvl-sect p{font-size:12.5px;line-height:1.45;color:#a4977c}
+.vvl-sect p b{color:#dccfb2;font-weight:700}
+
+.vvl-curse{
+  display:flex;gap:8px;align-items:flex-start;padding:5px 8px;margin-bottom:5px;
+  border-left:3px solid var(--madder);background:rgba(158,43,37,.1);
+}
+.vvl-curse.perm{border-left-color:var(--stat-luk);background:rgba(106,58,74,.16)}
+.vvl-curse svg{width:14px;height:14px;flex:0 0 auto;margin-top:1px}
+.vvl-curse .n{
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:#d9b0a4;
+}
+.vvl-curse .e{font-size:11.5px;color:#a4977c;line-height:1.25;margin-top:1px}
+
+.vvl-quote{
+  font-family:'IM Fell English',serif;font-style:italic;font-size:13.5px;color:#8d8168;
+  padding-left:12px;border-left:2px solid rgba(158,43,37,.55);line-height:1.5;
+}
+.vvl-foot{
+  flex:0 0 auto;text-align:center;padding:7px 10px;
+  border-top:1px solid rgba(150,102,42,.3);
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:700;font-size:7px;
+  letter-spacing:.14em;text-transform:uppercase;color:#7d7360;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   9.  CONSUMABLE — §13.1.  Never drawn, so never card-shaped:
+       a vellum tile at half height, sized to the 98px combat column.
+   ───────────────────────────────────────────────────────────── */
+
+.vvk{
+  position:relative;flex:0 0 auto;width:98px;height:138px;
+  display:flex;flex-direction:column;overflow:hidden;cursor:pointer;
+  border-radius:5px;border:1.5px solid rgba(20,16,12,.8);
+  background:radial-gradient(90% 70% at 50% 28%,
+             var(--vellum-hi) 0%, var(--vellum) 52%, var(--vellum-lo) 100%);
+  box-shadow:0 12px 22px -10px rgba(0,0,0,.8), 0 2px 5px rgba(0,0,0,.5);
+  font-family:'Alegreya',Georgia,serif;color:var(--ink);
+  transition:transform .16s cubic-bezier(.2,1,.24,1), box-shadow .16s;
+}
+.vvk::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:6;
+  background-image:var(--grain);opacity:.32;mix-blend-mode:multiply;
+}
+.vvk:not(.is-spent):hover{transform:translateY(-4px);
+  box-shadow:0 18px 30px -10px rgba(0,0,0,.85), 0 0 0 1px rgba(158,43,37,.3)}
+
+/* two rivets, top corners only — kin to a card, but plainly not one */
+.vvk .vvc-rivet{width:6px;height:6px}
+.vvk .vvc-rivet.tl{top:5px;left:5px}
+.vvk .vvc-rivet.tr{top:5px;right:5px}
+
+.vvk-glyph{flex:0 0 auto;height:52px;display:grid;place-items:center;margin-top:14px}
+.vvk-glyph svg{width:42px;height:42px;display:block}
+.vvk-name{
+  flex:1;min-height:0;padding:0 7px;text-align:center;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8px;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--ink);line-height:1.22;
+}
+.vvk-foot{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+  padding:4px 6px;border-top:1px solid rgba(20,16,12,.3);background:rgba(20,16,12,.05);
+}
+.vvk-cost{
+  width:19px;height:19px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 33% 28%, #565043, var(--iron) 58%, #0c0a08);
+  box-shadow:0 1px 2px rgba(0,0,0,.55), inset 0 1px 2px rgba(255,245,225,.2);
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:10px;color:#f3ead4;
+}
+.vvk-once{
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:6.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:rgba(20,16,12,.5);text-align:right;
+  line-height:1.15;
+}
+
+/* the one-use mark: a madder slash across the corner, struck solid when spent */
+.vvk-slash{
+  position:absolute;top:0;right:0;width:34px;height:34px;z-index:5;pointer-events:none;
+  overflow:hidden;
+}
+.vvk-slash::after{
+  content:'';position:absolute;top:6px;right:-14px;width:48px;height:3px;
+  transform:rotate(-45deg);transform-origin:center;
+  background:repeating-linear-gradient(90deg,var(--madder) 0 4px,transparent 4px 7px);
+}
+.vvk.is-spent{cursor:not-allowed;filter:grayscale(.55) brightness(.78)}
+.vvk.is-spent .vvk-slash::after{background:var(--madder);height:4px}
+.vvk.is-spent .vvk-name{text-decoration:line-through;color:rgba(20,16,12,.55)}

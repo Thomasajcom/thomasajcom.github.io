@@ -595,6 +595,7 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   <nav class="tabs">
     <button class="tab on" data-view="cards">Card Creator</button>
     <button class="tab" data-view="anatomy">Card Anatomy</button>
+    <button class="tab" data-view="smithy">The Smithy</button>
   </nav>
   <span class="sp"></span>
   <span class="savestate" id="saveState">Local draft</span>
@@ -627,7 +628,8 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
       <h3>Card Anatomy</h3>
       <p class="lead">The shared template every card is struck from — three physical stocks,
         board-game style: <b>leaders large</b>, <b>crew &amp; tactics on one deck</b>,
-        <b>items small</b>. Change it here once — every card follows. Card authors never touch this.</p>
+        <b>items small</b>. Change it here once — every card follows, <b>The Smithy's bench included</b>.
+        Layout itself — which pieces sit on a card, in what order — is smithed next door.</p>
 
       <details class="agroup" open><summary>The three inks &amp; stock</summary>
         <div class="abody">
@@ -705,6 +707,12 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   </div>
 </main>
 
+<!-- ═══════════ THE SMITHY — layout bench, in its own room ═══════════ -->
+<main class="view" id="view-smithy">
+  <iframe id="smithyFrame" data-src="smithy.html" title="The Smithy — card layout bench"
+    style="flex:1;width:100%;border:0;background:#12100c"></iframe>
+</main>
+
 <div class="helpbox" id="helpBox">
   <button class="close" id="helpClose">✕</button>
   <h4>Where the data lives</h4>
@@ -714,6 +722,10 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   <p><b>Export JSON</b> downloads the whole chest — anatomy and all cards — as one file.
      A colleague uses <b>Import</b> to merge it into theirs (same ids update, new ids add).
      The exported file is also the handoff artifact into the game repo.</p>
+  <h4>The Smithy</h4>
+  <p>The layout bench — drag pieces onto a card, watch the density gauge, save
+     layout designs. Its library and Export are <b>separate</b> from the chest:
+     layouts there, content here. It follows the Card Anatomy's inks and plates.</p>
   <h4>Formatting</h4>
   <p>Rules and flavour text allow simple HTML: <b>&lt;b&gt;6&lt;/b&gt;</b> for bold numbers,
      <b>&lt;br&gt;</b> for a line break.</p>
@@ -1623,6 +1635,10 @@ document.querySelectorAll('.tab').forEach(t=>{
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
     $('#view-'+t.dataset.view).classList.add('on');
     if(t.dataset.view==='anatomy') buildAnatomyStage();
+    if(t.dataset.view==='smithy'){
+      const fr = $('#smithyFrame');
+      if(!fr.src) fr.src = fr.dataset.src;   /* the bench loads on first entry */
+    }
   };
 });
 $('#libScroll').addEventListener('click', e=>{

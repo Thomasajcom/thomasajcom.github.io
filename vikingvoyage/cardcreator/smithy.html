@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Viking Voyage — The Smithy</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Alegreya+Sans+SC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cards.css">
+<script>
+/* ── token bridge: the Card Anatomy governs this bench too. Reads the forge's
+   anatomy from localStorage; re-applies live when the other tab changes it. ── */
+(function(){
+  function mix(a,b,t){const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+    const[r1,g1,b1]=p(a),[r2,g2,b2]=p(b);
+    const c=v=>Math.round(v).toString(16).padStart(2,'0');
+    return'#'+c(r1+(r2-r1)*t)+c(g1+(g2-g1)*t)+c(b1+(b2-b1)*t);}
+  function apply(){
+    let a=null; try{a=(JSON.parse(localStorage.getItem('vv-forge-v1'))||{}).anatomy;}catch(e){}
+    if(!a) return;
+    const r=document.documentElement.style;
+    if(a.ink){r.setProperty('--ink',a.ink);r.setProperty('--ink-soft',mix(a.ink,'#8a7f6d',.35));}
+    if(a.madder)r.setProperty('--madder',a.madder);
+    if(a.seagreen)r.setProperty('--seagreen',a.seagreen);
+    if(a.vellum){r.setProperty('--vellum',a.vellum);
+      r.setProperty('--vellum-hi',mix(a.vellum,'#ffffff',.38));
+      r.setProperty('--vellum-lo',mix(a.vellum,'#6d5a35',.28));
+      r.setProperty('--vellum-crew',mix(a.vellum,'#f8ecc8',.5));}
+    if(a.iron){r.setProperty('--iron',a.iron);r.setProperty('--iron-hi',mix(a.iron,'#c9c2b4',.42));}
+    ['STR','DEX','CON','CHA','LUK'].forEach(k=>{
+      if(a['stat'+k]) r.setProperty('--stat-'+k.toLowerCase(), a['stat'+k]);});
+  }
+  apply();
+  addEventListener('storage', e=>{ if(e.key==='vv-forge-v1') apply(); });
+})();
+</script>
+<style>
+/* ═══════════ THE SMITHY — hand-forge cards from the system's own parts ═══════════
+   The foundry shows what is canon; this bench is where anatomy gets decided.
+   Everything rendered here uses cards.css classes, so a card forged on the
+   bench looks exactly like it will everywhere else. */
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:
+    radial-gradient(120% 80% at 50% -10%, #241e16 0%, transparent 60%),
+    #12100c;
+  color:#c9bda2;font-family:'Alegreya',Georgia,serif;
+  min-height:100vh;padding:26px 22px 40px;
+}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:99;
+  background-image:var(--grain);opacity:.15;mix-blend-mode:overlay}
+
+/* ── masthead ── */
+.mast{display:flex;align-items:baseline;gap:18px;max-width:1560px;margin:0 auto 20px;flex-wrap:wrap}
+.mast .kick{font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:10px;
+  letter-spacing:.34em;text-transform:uppercase;color:var(--madder)}
+.mast h1{font-family:'IM Fell English SC',serif;font-weight:400;font-size:30px;color:#f0e6cf;line-height:1}
+.mast h1 em{font-style:normal;color:var(--madder)}
+.mast .back{margin-left:auto;font-family:'Alegreya Sans SC',sans-serif;font-weight:700;
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8d8168;text-decoration:none;
+  border:1px solid #3a342a;padding:6px 11px}
+.mast .back:hover{color:#e6d9bd;border-color:#6b6252}
+
+/* ── workspace: element shelf · bench (the bench wins the space) ── */
+.work{display:grid;grid-template-columns:344px minmax(0,1fr);gap:18px;
+  max-width:1720px;margin:0 auto;align-items:start}
+/* narrow windows: bench first, shelf below */
+@media (max-width:1180px){
+  .work{grid-template-columns:1fr}
+  .shelf{order:2;position:static;max-height:none}
+  .bench{order:1}
+  .bench-flex{flex-direction:column}
+  .insp-dock{width:100% !important;position:static !important}
+}
+.panel{background:linear-gradient(176deg,rgba(38,32,23,.72),rgba(22,18,13,.85));
+  border:1px solid #332c21;border-radius:5px}
+.panel .ph{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border-bottom:1px solid #332c21;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:9.5px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--madder)}
+.panel .ph .sp{flex:1}
+.pbtn{font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:#b3a68b;background:none;
+  border:1px solid #4a4034;padding:4px 8px;cursor:pointer}
+.pbtn:hover{color:#f0e6cf;border-color:#8d8168}
+.pbtn.gold{color:#e8c179;border-color:#96662a}
+.pbtn.gold:hover{background:rgba(150,102,42,.18)}
+
+/* ── library: a drawer, so the bench keeps the room ── */
+.lib{position:fixed;top:0;left:0;bottom:0;width:352px;z-index:520;overflow-y:auto;
+  border-radius:0;border-top:0;border-bottom:0;border-left:0;
+  transform:translateX(-105%);transition:transform .22s cubic-bezier(.2,1,.24,1);
+  box-shadow:30px 0 70px -24px #000}
+.lib.open{transform:none}
+.lib::-webkit-scrollbar{width:7px}
+.lib::-webkit-scrollbar-thumb{background:#3a3428}
+.scrim{position:fixed;inset:0;z-index:510;background:rgba(8,6,4,.6);display:none}
+.scrim.show{display:block}
+.acc-h{display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px;cursor:pointer;
+  background:none;border:0;border-bottom:1px solid #2c261c;text-align:left}
+.acc-h .car{color:#6b6252;font-size:10px;transition:transform .16s}
+.acc-h.open .car{transform:rotate(90deg)}
+.acc-h .t{font-family:'IM Fell English SC',serif;font-size:16px;color:#e6d9bd;flex:1}
+.acc-h .n{font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8.5px;
+  letter-spacing:.1em;color:#6b6252}
+.acc-b{display:none;padding:10px 10px 14px;border-bottom:1px solid #2c261c}
+.acc-b.open{display:block}
+.lib-g{display:flex;flex-wrap:wrap;gap:9px}
+.lib-k{width:100%;margin:7px 0 2px;font-family:'Alegreya Sans SC',sans-serif;font-weight:800;
+  font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:#6b6252}
+.thumb{position:relative;cursor:pointer;border:1px solid transparent;padding:3px;border-radius:4px}
+.thumb:hover{border-color:#6b6252}
+.thumb.cur{border-color:var(--madder)}
+.thumb .tv{overflow:hidden;pointer-events:none}
+.thumb .tv > *{transform-origin:top left}
+.thumb .tn{max-width:118px;margin-top:4px;font-family:'Alegreya Sans SC',sans-serif;font-weight:700;
+  font-size:7.5px;letter-spacing:.06em;text-transform:uppercase;color:#8d8168;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thumb .del{position:absolute;top:-5px;right:-5px;z-index:5;width:16px;height:16px;border-radius:50%;
+  background:#2c1512;border:1px solid var(--madder);color:#d8836f;font-size:9px;line-height:1;
+  cursor:pointer;display:none;place-items:center}
+.thumb:hover .del{display:grid}
+.forge-new{width:100%;margin-top:9px;padding:7px;border:1px dashed #4a4034;background:none;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:#8d8168;cursor:pointer}
+.forge-new:hover{color:#e8c179;border-color:#96662a}
+
+/* ── bench ── */
+.bench{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 14px 30px;
+  min-height:640px}
+.bench-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.seg{display:flex;border:1px solid #4a4034}
+.seg button{font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:#8d8168;background:none;border:0;
+  padding:5px 9px;cursor:pointer;border-right:1px solid #332c21}
+.seg button:last-child{border-right:0}
+.seg button.on{background:#3a2f1d;color:#e8c179}
+.seg button:hover:not(.on){color:#d5c8ab}
+.seg.plates button.on{background:none}
+.plate-dot{width:13px;height:13px;border-radius:50%;display:block;border:2px solid transparent}
+.seg.plates button.on .plate-dot{border-color:#f0e6cf}
+
+.stage{position:relative;display:flex;align-items:flex-start;justify-content:center;padding:6px}
+/* the holder is sized to the scaled card, so zoom pushes layout honestly
+   instead of overlapping the gauge below */
+.stage .card-holder{position:relative}
+.pbtn:disabled{opacity:.32;cursor:default}
+.pbtn:disabled:hover{color:#b3a68b;border-color:#4a4034;background:none}
+
+/* density readout — the whole point of the bench */
+.gauge{display:flex;align-items:center;gap:9px;font-family:'Alegreya Sans SC',sans-serif;
+  font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase}
+.gauge .ok{color:#8fb6ac}
+.gauge .bad{color:#d8836f}
+.gauge .bar{width:150px;height:5px;border:1px solid #4a4034;position:relative;overflow:hidden}
+.gauge .bar i{position:absolute;inset:0;transform-origin:left;background:#5e7a72}
+.gauge .bar.bad i{background:#a84b38}
+
+/* blocks on the bench: hover ring, selection ring, floating tools */
+.sm-blk{position:relative}
+.sm-blk:hover{outline:1px dashed rgba(158,43,37,.5);outline-offset:1px}
+.sm-blk.sel{outline:2px solid var(--madder);outline-offset:1px}
+.sm-blk .btools{position:absolute;top:0;right:0;z-index:40;display:none;gap:2px}
+.sm-blk:hover .btools,.sm-blk.sel .btools{display:flex}
+.btools b{display:grid;place-items:center;width:15px;height:15px;font-size:9px;line-height:1;
+  background:rgba(20,16,12,.85);color:#c9bda2;cursor:pointer;border:1px solid #4a4034;font-weight:400}
+.btools b:hover{color:#f0e6cf;border-color:#8d8168}
+.btools b.grab{cursor:grab}
+.sm-drop{height:3px;background:var(--madder);box-shadow:0 0 8px rgba(158,43,37,.8);margin:1px 0}
+
+/* pinned overlays get a subtle editable ring on hover of the card frame */
+.pin-hint{position:absolute;z-index:41;font-size:8px;font-family:'Alegreya Sans SC',sans-serif}
+
+/* ── smithy-only block primitives (kept minimal; everything else is cards.css) ── */
+.sm-port{position:relative;width:100%;overflow:hidden;flex:0 0 auto}
+.sm-port img{width:100%;height:100%;object-fit:cover;object-position:50% 14%;display:block}
+.sm-port::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 48%,rgba(15,12,8,.92))}
+.sm-port .vvl-who{position:absolute;left:0;right:0;bottom:4px;z-index:3}
+.sm-text{font-size:12px;line-height:1.4;color:var(--ink-soft)}
+.sm-text.whisper{font-family:'Alegreya Sans SC',sans-serif;font-weight:700;font-size:7.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:rgba(20,16,12,.5);text-align:center}
+.sm-text.kitname{font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8px;
+  letter-spacing:.07em;text-transform:uppercase;text-align:center;line-height:1.22}
+.sm-text.flav{font-family:'IM Fell English',serif;font-style:italic;font-size:12.2px;
+  color:rgba(20,16,12,.6);text-align:center;line-height:1.25}
+.sm-spacer{flex:0 0 auto;position:relative}
+.sm-spacer.flex{flex:1 1 auto}
+.sm-blk:hover .sm-spacer::after,.sm-blk.sel .sm-spacer::after{
+  content:'spacer';position:absolute;inset:0;display:grid;place-items:center;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:7px;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(158,43,37,.55);
+  background:repeating-linear-gradient(45deg,transparent 0 6px,rgba(158,43,37,.07) 6px 12px)}
+/* force-show elements the canon faces hide, so density is explorable */
+.vvc--hand .vvc-sub.force{display:block}
+.vvc--hand .vvc-foot.force{display:flex}
+.vvc--hand .vvc-grt.force{display:block}
+.vvc--hand .vvc-lbl.force{display:flex}
+
+/* ── stocks ── */
+.sm-card{position:relative;font-family:'Alegreya',Georgia,serif}
+.sm-card .sm-in{position:relative;z-index:5;height:100%;display:flex;flex-direction:column}
+/* dark timber: leader material for any card */
+.sm-dark{background:linear-gradient(178deg,#2e2416,#1a150f) !important;
+  border:2px solid var(--stat-cha);border-radius:11px;color:#c9bda2;
+  box-shadow:0 0 0 1px rgba(150,102,42,.35),0 26px 44px -14px rgba(0,0,0,.82)}
+.sm-dark::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  z-index:8;background-image:var(--grain);opacity:.16;mix-blend-mode:overlay}
+.sm-dark .vvc-title{color:#f1e7cf}
+.sm-dark .vvc-sub{color:#9c8f76}
+.sm-dark .vvc-sure p{color:#e8dcc0}
+.sm-dark .vvc-lbl{color:#9c8f76}
+.sm-dark .vvc-roll p{color:#a4977c}
+.sm-dark .vvc-split i{background:rgba(232,220,192,.22)}
+.sm-dark .vvc-d20{background:#ded2b4;color:#14100c}
+.sm-dark .vvc-range{border-color:rgba(232,220,192,.4)}
+.sm-dark .vvc-band{color:rgba(232,220,192,.38);border-color:rgba(232,220,192,.22)}
+.sm-dark .vvc-band.on{color:rgba(232,220,192,.92);border-color:rgba(232,220,192,.45);background:rgba(232,220,192,.06)}
+.sm-dark .vvc-meter{border-color:rgba(232,220,192,.35);background:rgba(232,220,192,.05)}
+.sm-dark .vvc-meter .m-miss{background:repeating-linear-gradient(45deg,transparent 0 2px,rgba(232,220,192,.3) 2px 4px)}
+.sm-dark .vvc-okeys{color:#7d7360}
+.sm-dark .vvc-foot{border-color:rgba(232,220,192,.25)}
+.sm-dark .vvc-type{color:#9c8f76}
+.sm-dark .vvc-flav{color:#8d8168}
+.sm-dark .vvc-art{border-color:rgba(232,220,192,.5)}
+.sm-dark .sm-text{color:#a4977c}
+.sm-dark .sm-text.flav{color:#8d8168}
+.sm-dark .sm-text.whisper{color:#7d7360}
+/* leader parts on light stock */
+.sm-light .vvl-ab{background:rgba(20,16,12,.07);border-top-color:rgba(20,16,12,.4)}
+.sm-light .vvl-abname{color:#7d3125}
+.sm-light .vvl-abtx{color:#4a3f2c}
+.sm-light .vvl-abtx b{color:var(--ink)}
+.sm-light .vvl-once{color:rgba(20,16,12,.55);border-color:rgba(20,16,12,.35)}
+.sm-light .vvl-stats{border-color:rgba(20,16,12,.35);background:rgba(20,16,12,.05)}
+.sm-light .vvl-quote{color:#5c5240}
+.sm-light .vvl-sect p{color:#4a3f2c}
+.sm-light .vvl-sect .tn{color:#241d12}
+.sm-light .vvl-curse .e{color:#4a3f2c}
+/* torn scrap: junk material for any card */
+.sm-scrap{background:var(--scrap) !important;color:#241d12;border:0;border-radius:0;
+  clip-path:polygon(3% 2%,29% 0,54% 3%,81% 0,98% 4%,100% 27%,97% 53%,100% 78%,96% 98%,71% 100%,44% 97%,19% 100%,2% 96%,0 71%,3% 46%,0 24%);
+  box-shadow:none;filter:drop-shadow(0 18px 26px rgba(0,0,0,.7))}
+.sm-scrap::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:8;
+  background-image:var(--grain);opacity:.42;mix-blend-mode:multiply}
+.sm-scrap .sm-in{padding:18px 16px}
+
+/* ── the element shelf: every piece rendered as it will actually look ── */
+.shelf{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow-y:auto;
+  padding:0 0 12px}
+.shelf::-webkit-scrollbar{width:7px}
+.shelf::-webkit-scrollbar-thumb{background:#3a3428}
+.pal{padding:0 10px 4px}
+.pal .pk{display:flex;align-items:center;gap:7px;width:100%;margin:10px 0 7px;
+  padding:4px 2px;background:none;border:0;cursor:pointer;text-align:left;user-select:none;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;
+  font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:#6b6252}
+.pal .pk:hover{color:#9c8f76}
+.pal .pk .car{font-size:8px;color:#6b6252;transition:transform .15s}
+.pal .pk.open .car{transform:rotate(90deg)}
+.pal .pk .cnt{margin-left:auto;letter-spacing:.1em;color:#4f473a}
+.pgroup{display:none}
+.pgroup.open{display:block}
+.el{position:relative;margin-bottom:9px;border:1px solid #332c21;border-radius:4px;
+  background:rgba(0,0,0,.2);cursor:grab;user-select:none;overflow:hidden;
+  transition:border-color .14s}
+.el:hover{border-color:#96662a}
+.el:active{cursor:grabbing}
+.el .prevfit{margin:10px auto 8px;overflow:hidden;pointer-events:none}
+.el .lab{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:5px 9px;border-top:1px solid #2c261c;
+  font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:8px;
+  letter-spacing:.14em;text-transform:uppercase;color:#9c8f76}
+.el:hover .lab{color:#e8c179}
+.el .lab span{color:#6b6252;font-size:9px}
+.el.pin.on{border-color:#96662a;background:rgba(150,102,42,.12)}
+.el.pin.on .lab{color:#e8c179}
+/* a preview is a live slice of card stock, never a full card */
+.prevcard{height:auto !important;box-shadow:none !important;border-radius:3px;
+  clip-path:none !important;padding:8px 9px !important}
+.prevcard.sm-dark{border-width:1px !important}
+.prevcard.vvc--full{padding:12px 13px !important}
+.prevcard.vvc--full::after{display:none}
+.pinprev{position:relative;padding:6px 8px;border-radius:3px}
+.hint{margin:10px 12px 0;font-size:11.5px;line-height:1.45;color:#6f6553;font-style:italic}
+.hint b{color:#9c8f76;font-weight:500}
+
+/* ── bench interior: stage + docked inspector ── */
+.bench-flex{display:flex;gap:18px;align-items:flex-start;width:100%}
+.stagecol{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:14px}
+.insp-dock{width:302px;flex:0 0 auto;position:sticky;top:14px;
+  background:rgba(0,0,0,.2);border:1px solid #2c261c;border-radius:4px;
+  max-height:calc(100vh - 28px);overflow-y:auto}
+.insp-dock::-webkit-scrollbar{width:7px}
+.insp-dock::-webkit-scrollbar-thumb{background:#3a3428}
+
+.insp .fields{padding:11px 12px 14px;display:flex;flex-direction:column;gap:9px}
+.f{display:flex;flex-direction:column;gap:3px}
+.f label{font-family:'Alegreya Sans SC',sans-serif;font-weight:800;font-size:7.5px;
+  letter-spacing:.18em;text-transform:uppercase;color:#8d8168}
+.f input[type=text],.f textarea,.f select,.f input[type=number]{
+  font-family:'Alegreya',serif;font-size:13px;color:#e6d9bd;background:#1a150f;
+  border:1px solid #3a342a;padding:6px 8px;outline:none;width:100%}
+.f textarea{resize:vertical;min-height:52px;line-height:1.35}
+.f input:focus,.f textarea:focus,.f select:focus{border-color:#96662a}
+.frow{display:flex;gap:8px}
+.frow .f{flex:1}
+.f .chkrow{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#b3a68b;cursor:pointer}
+.f .chkrow input{accent-color:#9e2b25}
+.insp .none{padding:16px 12px 18px;font-style:italic;font-size:13px;color:#6f6553}
+.insp .bhead{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #2c261c}
+.insp .bhead .bt{font-family:'IM Fell English SC',serif;font-size:15px;color:#e6d9bd;flex:1}
+</style>
+</head>
+<body>
+  <header class="mast">
+    <span class="kick">Viking Voyage · Card Workshop</span>
+    <h1>The <em>Smithy</em></h1>
+    <button class="back" id="libBtn" style="margin-left:auto;cursor:pointer">☰ Library</button>
+    
+  </header>
+
+  <div class="work">
+
+    <!-- ═══ ELEMENT SHELF — every piece, rendered live ═══ -->
+    <div class="panel shelf">
+      <div class="ph" style="position:sticky;top:0;background:#1f1a12;z-index:5">Elements — drag onto the card</div>
+      <div class="pal" id="palBody"></div>
+      <p class="hint">Previews render in your card's <b>current stock, colour and face</b> —
+        what you see is what drops. Drag into the card or click to add;
+        drag pieces on the card to reorder, <b>✕</b> to remove.
+        A <b>flex spacer</b> pushes everything after it to the card's foot.</p>
+    </div>
+
+    <!-- ═══ BENCH ═══ -->
+    <div class="panel bench">
+      <div class="bench-flex">
+        <div class="stagecol">
+          <div class="bench-bar" id="benchBar"></div>
+          <div class="stage" id="stage"><div class="card-holder" id="holder"></div></div>
+          <div class="gauge" id="gauge"></div>
+          <div class="bench-bar">
+            <button class="pbtn" id="undoBtn" title="Undo (Ctrl/Cmd+Z)">&#8630; Undo</button>
+            <button class="pbtn" id="redoBtn" title="Redo (Ctrl/Cmd+Shift+Z)">&#8631; Redo</button>
+            <button class="pbtn gold" id="saveBtn">Save to library</button>
+            <button class="pbtn" id="dupBtn">Save as copy</button>
+          </div>
+        </div>
+        <div class="insp insp-dock" id="insp"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LIBRARY DRAWER ═══ -->
+  <div class="scrim" id="scrim"></div>
+  <div class="panel lib" id="lib">
+    <div class="ph">Library<span class="sp"></span>
+      <button class="pbtn" id="exportBtn" title="Download every saved card as JSON">Export</button>
+      <button class="pbtn" id="importBtn" title="Load cards from a JSON file">Import</button>
+      <button class="pbtn" id="libClose" title="Close">✕</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
+    </div>
+    <div id="accord"></div>
+  </div>
+
+<script src="cards.js"></script>
+<script>
+/* ═══════════════════════════ STATE ═══════════════════════════ */
+const $ = s => document.querySelector(s);
+const uid = () => 'c_' + Math.random().toString(36).slice(2, 9);
+const deep = o => JSON.parse(JSON.stringify(o));
+
+/* The four footprints are the four places on the combat screen where a
+   card-shaped thing lives.  Keys stay short for saved-card compatibility. */
+const FACES = {
+  hand:{w:188,h:263,cls:'vvc--hand',btn:'Hand',      label:'Hand — a card in your fan · 188×263'},
+  full:{w:376,h:526,cls:'vvc--full',btn:'Full',      label:'Full — inspect, rewards, collection · 376×526'},
+  rail:{w:252,h:263,cls:'vvc--hand',btn:'Leader bay',label:'Leader bay — the captain’s slot on the combat screen · 252×263'},
+  tile:{w:98, h:138,cls:'vvc--hand',btn:'Item slot', label:'Item slot — a consumable in its slot · 98×138'}
+};
+const STOCKS = {vellum:'Vellum', crew:'Crew vellum', dark:'Dark timber', scrap:'Torn scrap'};
+/* plates read the live anatomy vars, so the bench follows the forge's tokens */
+const PLATES = {STR:'var(--stat-str)', DEX:'var(--stat-dex)', CON:'var(--stat-con)', CHA:'var(--stat-cha)', LUK:'var(--stat-luk)'};
+const KINDS  = {leader:'Leader', tactic:'Playing cards', crew:'Crew', junk:'Junk', consumable:'Consumables'};
+const ART = [
+  ['art/card-rake-the-oar-bank.jpg','Oar-bank raid'],
+  ['art/card-lash-the-hulls.jpg','Lashed hulls'],
+  ['art/card-sigruns-volley.jpg','Sigrún’s volley'],
+  ['art/crew-sigrun-bow-hand.jpg','Sigrún portrait'],
+  ['art/leader-ingrith-scale-hand.jpg','Ingrith portrait'],
+  ['art/battlefield-banner.jpg','Banner'],
+  ['art/crew-shipwright.jpg','Shipwright'],
+  ['art/crew-navigator.jpg','Navigator'],
+  ['art/crew-quartermaster.jpg','Quartermaster'],
+  ['art/enemy-elite.jpg','Elite enemy'],
+  ['art/enemy-lesser.jpg','Lesser enemy']
+];
+
+let state = {card:null, savedId:null, sel:null,
+  zoom:+(localStorage.getItem('vv-smithy-zoom'))||1};
+const ZOOMS = [[1,'×1'],[1.5,'×1.5'],[2,'×2']];
+
+/* ── history: every mutation snapshots the bench, so anatomy experiments
+   are free to fail.  Text edits coalesce into one entry per burst. ── */
+let undoStack=[], redoStack=[], histKey=null, histT=0;
+const snapshot = () => deep({card:state.card, savedId:state.savedId});
+function pushHistory(key){
+  const now=Date.now();
+  if(key && key===histKey && now-histT<1200){ histT=now; return; }
+  undoStack.push(snapshot());
+  if(undoStack.length>60) undoStack.shift();
+  redoStack.length=0;
+  histKey=key||null; histT=now;
+  histBtns();
+}
+function restoreSnap(s){
+  state.card=s.card; state.savedId=s.savedId; state.sel=null; histKey=null;
+  autosaveDraft(); renderAll(); histBtns();
+}
+function undo(){ if(undoStack.length){ redoStack.push(snapshot()); restoreSnap(undoStack.pop()); } }
+function redo(){ if(redoStack.length){ undoStack.push(snapshot()); restoreSnap(redoStack.pop()); } }
+function histBtns(){ $('#undoBtn').disabled=!undoStack.length; $('#redoBtn').disabled=!redoStack.length; }
+
+/* ═══════════════════ BLOCK DEFINITIONS ═══════════════════
+   Every block renders with cards.css classes, so the bench IS the system. */
+const artSel = [['','— none —']].concat(ART);
+const BLOCKS = {
+  head:{label:'Title head', group:'Core',
+    d:{cost:'1', title:'New Tactic', sub:'', stat:true},
+    f:[['cost','Cost','text'],['title','Title','text'],['sub','Subtitle','text'],['stat','Show stat plate','chk']],
+    render:(p,c)=>`<div class="vvc-head">
+      ${p.cost!==''?`<div class="vvc-cost">${p.cost}</div>`:''}
+      <div class="vvc-titles"><div class="vvc-title${p.title.length>(c.face==='full'?17:15)?' long':''}">${p.title}</div>
+      ${p.sub?`<div class="vvc-sub force">${p.sub}</div>`:''}</div>
+      ${p.stat?`<div class="vvc-stat"><span>${c.plate}</span></div>`:''}</div>`},
+  art:{label:'Art window', group:'Core',
+    d:{src:'art/card-lash-the-hulls.jpg', ratio:'16/7'},
+    f:[['src','Art','sel',artSel],['ratio','Shape','sel',[['16/9','Wide 16:9'],['16/7','Letterbox 16:7'],['1/1','Square']]]],
+    render:p=>p.src?`<div class="vvc-art" style="aspect-ratio:${p.ratio}"><img src="${p.src}" alt=""></div>`
+      :`<div class="vvc-art" style="aspect-ratio:${p.ratio}"></div>`},
+  range:{label:'Range strip', group:'Core',
+    d:{far:'on', norm:'on', close:'best', shift:''},
+    f:[['far','Far','sel',[['off','Unplayable'],['on','Playable'],['best','Best']]],
+       ['norm','Norm','sel',[['off','Unplayable'],['on','Playable'],['best','Best']]],
+       ['close','Close','sel',[['off','Unplayable'],['on','Playable'],['best','Best']]],
+       ['shift','Chevron (moves range to)','sel',[['','— none —'],['far','Far'],['norm','Norm'],['close','Close']]]],
+    render:p=>{
+      const band=(k,lab)=>{const v=p[k];const cls=['vvc-band'];
+        if(v!=='off')cls.push('on'); if(v==='best')cls.push('best'); if(p.shift===k)cls.push('shift');
+        return `<div class="${cls.join(' ')}">${lab}</div>`;};
+      return `<div class="vvc-range">${band('far','far')}${band('norm','Norm')}${band('close','close')}</div>`}},
+  sure:{label:'Sure effect', group:'Core',
+    d:{text:'Deal <b>4</b> to a chosen area.', lbl:false},
+    f:[['text','Text (b for bold, lv for madder)','ta'],['lbl','Show SURE label','chk']],
+    render:p=>`<div class="vvc-sure">${p.lbl?'<div class="vvc-lbl force">Sure</div>':''}<p>${p.text}</p></div>`},
+  seam:{label:'Die seam', group:'Core', d:{},f:[],
+    render:()=>`<div class="vvc-split"><i></i><span class="vvc-d20">d20</span><i></i></div>`},
+  roll:{label:'Roll effect', group:'Core',
+    d:{check:'STR 8+', bonus:'Something good happens.', greater:'', inline:true},
+    f:[['check','Check','text'],['bonus','On success','ta'],['greater','Greater effect (empty = none)','ta'],
+       ['inline','Chip inline with text','chk']],
+    render:(p,c)=>{
+      if(p.inline) return `<div class="vvc-roll"><p><span class="vvc-tgt">${p.check}</span>${p.bonus}</p>
+        ${p.greater?`<p class="vvc-grt force">${p.greater}</p>`:''}</div>`;
+      return `<div class="vvc-roll"><div class="vvc-lbl force"><span class="vvc-tgt">${p.check}</span></div>
+        <p>${p.bonus}</p>${p.greater?`<p class="vvc-grt force">${p.greater}</p>`:''}</div>`}},
+  odds:{label:'Odds meter', group:'Core',
+    d:{miss:35, bonus:45, greater:20, three:false},
+    f:[['miss','% none','num'],['bonus','% bonus','num'],['greater','% greater','num'],
+       ['three','Three-key readout','chk']],
+    render:p=>`<div class="vvc-odds"><div class="vvc-meter">
+        <i class="m-miss" style="width:${p.miss}%"></i>
+        <i class="m-bon" style="width:${p.bonus}%"></i>
+        <i class="m-grt" style="width:${p.greater}%"></i></div>
+      <div class="vvc-okeys">${p.three
+        ?`<span>${p.miss}% none</span><span><b>${p.bonus}% bonus</b></span><span><b>${p.greater}% greater</b></span>`
+        :`<span><b>${p.bonus}%</b> bonus</span><span><b>${p.greater}%</b> great</span>`}</div></div>`},
+  foot:{label:'Type & flavour foot', group:'Core',
+    d:{type:'Tactic', lvl:'', flav:'Words to sail by.'},
+    f:[['type','Type line','text'],['lvl','Level chip (empty = none)','text'],['flav','Flavour','ta']],
+    render:p=>`<div class="vvc-foot force"><div class="vvc-type">${p.type}${p.lvl?`<span class="vvc-lvl">Lv ${p.lvl}</span>`:''}</div>
+      <div class="vvc-flav">${p.flav}</div></div>`},
+  portrait:{label:'Portrait (full-bleed)', group:'Leader',
+    d:{src:'art/leader-ingrith-scale-hand.jpg', h:150, name:'Ingrith', by:'Scale-Hand'},
+    f:[['src','Portrait','sel',artSel],['h','Height px','num'],['name','Name','text'],['by','Byname','text']],
+    render:p=>`<div class="sm-port" style="height:${p.h}px"><img src="${p.src}" alt="">
+      ${p.name?`<div class="vvl-who"><div class="a">${p.name}</div>${p.by?`<div class="b">${p.by}</div>`:''}</div>`:''}</div>`},
+  ability:{label:'Ability panel', group:'Leader',
+    d:{cost:'3', name:'Name Your Price', once:'1×/turn', text:'Break enemy nerve by <b>4</b>. On <b>CHA 10+</b> a weakened foe strikes sail at once.'},
+    f:[['cost','Cost','text'],['name','Name','text'],['once','Corner chip','text'],['text','Text','ta']],
+    render:p=>`<div class="vvl-ab"><div class="vvl-abhead">
+      ${p.cost!==''?`<span class="vvc-cost">${p.cost}</span>`:''}
+      <span class="vvl-abname">${p.name}</span>
+      ${p.once?`<span class="vvl-once">${p.once}</span>`:''}</div>
+      <p class="vvl-abtx">${p.text}</p></div>`},
+  stats:{label:'Stats row', group:'Leader',
+    d:{str:2, dex:3, con:3, cha:5, luk:2},
+    f:[['str','STR','num'],['dex','DEX','num'],['con','CON','num'],['cha','CHA','num'],['luk','LUCK','num']],
+    render:p=>{
+      const col={str:'#c85c52',dex:'#6ba295',con:'#7b8b96',cha:'#d09a4a',luk:'#a4788a'};
+      return `<div class="vvl-stats">${['str','dex','con','cha','luk'].map(k=>
+        `<div class="vvl-stat"><div class="v" style="color:${col[k]}">${p[k]}</div>
+         <div class="n" style="color:${col[k]}">${k==='luk'?'Luck':k.toUpperCase()}</div></div>`).join('')}</div>`}},
+  quote:{label:'Quote', group:'Leader',
+    d:{text:'She did not become a raider because she wanted more.'},
+    f:[['text','Text','ta']],
+    render:p=>`<p class="vvl-quote">${p.text}</p>`},
+  curses:{label:'Curse rows', group:'Leader',
+    d:{rigging:true, illwind:true},
+    f:[['rigging','Fouled Rigging (decays)','chk'],['illwind','The Prize’s Weight (permanent)','chk']],
+    render:p=>{
+      let h='';
+      if(p.rigging) h+=`<div class="vvl-curse">${CURSE_GLYPH.rigging}<div><div class="n">Fouled Rigging</div><div class="e">Speed &minus;1. Decays after three nodes.</div></div></div>`;
+      if(p.illwind) h+=`<div class="vvl-curse perm">${CURSE_GLYPH.illwind}<div><div class="n">The Prize’s Weight</div><div class="e">Pursuit gains a node each port. Never curable.</div></div></div>`;
+      return h||'<div></div>'}},
+  glyph:{label:'Item glyph', group:'Item & junk',
+    d:{g:'draught', size:42},
+    f:[['g','Glyph','sel',[['draught','Drinking horn'],['charm','Rune amulet'],['purge','Struck page'],['fury','Bearded axe']]],
+       ['size','Size px','num']],
+    render:p=>`<div class="vvk-glyph" style="height:${+p.size+10}px"><span style="width:${p.size}px;height:${p.size}px;display:block">${KIT_GLYPH[p.g]||''}</span></div>`},
+  kitfoot:{label:'One-use foot', group:'Item & junk',
+    d:{cost:'1', lab:'One<br>use'},
+    f:[['cost','Cost','text'],['lab','Label','text']],
+    render:p=>`<div class="vvk-foot"><span class="vvk-cost">${p.cost}</span><span class="vvk-once">${p.lab}</span></div>`},
+  junkbody:{label:'Junk body', group:'Item & junk',
+    d:{kicker:'Junk · jammed into your deck', title:'Scorched Rigging',
+       desc:'Cannot be played. Occupies a hand slot until removed.', flav:'The fire ship left more than smoke.', clear:'1'},
+    f:[['kicker','Kicker','text'],['title','Title','text'],['desc','Body','ta'],['flav','Flavour (empty = none)','ta'],
+       ['clear','Destroy cost (empty = no button)','text']],
+    render:(p,c)=>{const hand=c.face==='hand'||c.face==='tile';
+      return `<div class="vvj-k" style="font-size:${hand?7.5:9}px;letter-spacing:.18em;margin-bottom:${hand?5:9}px">${p.kicker}</div>
+      <div class="vvj-n" style="font-size:${hand?16:25}px;margin-bottom:${hand?6:11}px">${p.title}</div>
+      <div class="vvj-d" style="font-size:${hand?10.5:14.5}px;line-height:1.35">${p.desc}</div>
+      ${p.flav&&!hand?`<div class="vvj-f" style="margin-top:14px;padding-top:10px;font-size:12.5px;line-height:1.35">${p.flav}</div>`:''}
+      ${p.clear!==''?`<button class="vvj-clear" type="button" style="margin-top:${hand?9:13}px;padding:${hand?5:8}px;font-size:${hand?8:10}px;letter-spacing:.1em">Destroy &middot; ${p.clear} energy</button>`:''}`}},
+  text:{label:'Free text', group:'Utility',
+    d:{text:'Anything you like.', style:'body'},
+    f:[['text','Text','ta'],['style','Style','sel',[['body','Body'],['flav','Flavour italic'],['whisper','Whisper caps'],['kitname','Tile name caps']]]],
+    render:p=>`<p class="sm-text ${p.style}">${p.text}</p>`},
+  spacer:{label:'Spacer', group:'Utility',
+    d:{mode:'flex', h:12},
+    f:[['mode','Mode','sel',[['flex','Flex — push the rest to the foot'],['fixed','Fixed height']]],['h','Height px (fixed)','num']],
+    render:p=>`<div class="sm-spacer ${p.mode==='flex'?'flex':''}" style="${p.mode==='fixed'?`height:${p.h}px`:''}"></div>`}
+};
+
+const PINS = {
+  bar:   {label:'Colour bar'},
+  rivets:{label:'Rivets'},
+  seal:  {label:'Crew seal'},
+  pill:  {label:'Curse pill'},
+  slash: {label:'One-use slash'}
+};
+
+/* ═══════════════════ SUGGESTIONS (canon, from cards.js data) ═══════════════════ */
+function b(t,p){return {t, p:Object.assign(deep(BLOCKS[t].d), p||{})}}
+const SUGGEST = [
+  {id:'s_rake_hand', name:'Rake the Oar-Bank · hand', kind:'tactic', face:'hand', stock:'vellum', plate:'STR',
+   pinned:{bar:true},
+   blocks:[ b('head',{cost:'2',title:'Rake the Oar-Bank'}),
+            b('art',{src:'art/card-rake-the-oar-bank.jpg',ratio:'16/7'}),
+            b('range',{far:'off',norm:'on',close:'best',shift:'close'}),
+            b('sure',{text:'Close one band. Deal <b>6</b> to enemy <b>Sail</b>.'}),
+            b('seam'), b('roll',{check:'STR 9+',bonus:'The enemy cannot change range next turn.'}),
+            b('spacer',{mode:'flex'}), b('odds',{miss:40,bonus:45,greater:15}) ]},
+  {id:'s_lash_full', name:'Lash the Hulls · full', kind:'tactic', face:'full', stock:'vellum', plate:'CON',
+   pinned:{rivets:true},
+   blocks:[ b('head',{cost:'1',title:'Lash the Hulls',sub:'Seamanship'}),
+            b('art',{src:'art/card-lash-the-hulls.jpg',ratio:'16/9'}),
+            b('range',{far:'on',norm:'on',close:'on',shift:''}),
+            b('sure',{text:'Repair <b>4</b> to one area. Until your next turn the range cannot change.',lbl:true}),
+            b('seam'), b('roll',{check:'CON 7+',bonus:'Incoming area damage &minus;<b>2</b> this round.',greater:'Also discard a junk card.',inline:false}),
+            b('spacer',{mode:'flex'}), b('odds',{miss:30,bonus:60,greater:10,three:true}),
+            b('foot',{type:'Tactic',flav:'Now it is one deck,<br>and one of us leaves it.'}) ]},
+  {id:'s_volley_hand', name:'Sigrún’s Volley · hand · L3', kind:'crew', face:'hand', stock:'crew', plate:'DEX',
+   pinned:{bar:true, seal:true}, seal:{src:'art/crew-sigrun-bow-hand.jpg', level:3},
+   blocks:[ b('head',{cost:'2',title:'Sigrún’s Volley'}),
+            b('art',{src:'art/card-sigruns-volley.jpg',ratio:'16/7'}),
+            b('range',{far:'best',norm:'on',close:'off',shift:''}),
+            b('sure',{text:'Strike a chosen area for <lv>7</lv>. At far, for <lv>10</lv>.'}),
+            b('seam'), b('roll',{check:'DEX 8+',bonus:'That area cannot be repaired next turn.'}),
+            b('spacer',{mode:'flex'}), b('odds',{miss:35,bonus:45,greater:20}) ]},
+  {id:'s_volley_full', name:'Sigrún’s Volley · full · L5', kind:'crew', face:'full', stock:'crew', plate:'DEX',
+   pinned:{rivets:true, seal:true}, seal:{src:'art/crew-sigrun-bow-hand.jpg', level:5},
+   blocks:[ b('head',{cost:'2',title:'Sigrún’s Volley',sub:'Bowmaster'}),
+            b('art',{src:'art/card-sigruns-volley.jpg',ratio:'16/9'}),
+            b('range',{far:'best',norm:'on',close:'off',shift:''}),
+            b('sure',{text:'Strike a chosen area for <lv>9</lv>. At far, for <lv>12</lv>.',lbl:true}),
+            b('seam'), b('roll',{check:'DEX 8+',bonus:'That area cannot be repaired next turn.',greater:'Also strike a second area for <lv>4</lv>.',inline:false}),
+            b('spacer',{mode:'flex'}), b('odds',{miss:35,bonus:45,greater:20,three:true}),
+            b('foot',{type:'Crew — Sigrún Bow-Hand',lvl:'5',flav:'She counts the swell,<br>not the men.'}) ]},
+  {id:'s_ingrith_rail', name:'Ingrith · rail', kind:'leader', face:'rail', stock:'dark', plate:'CHA',
+   pinned:{pill:true},
+   blocks:[ b('portrait',{src:'art/leader-ingrith-scale-hand.jpg',h:172,name:'Ingrith',by:'Scale-Hand'}),
+            b('spacer',{mode:'flex'}),
+            b('ability',{cost:'3',name:'Name Your Price',once:'1×/turn',
+              text:'Break enemy nerve by <b>4</b>. On <b>CHA 10+</b> a weakened foe strikes sail at once.'}) ]},
+  {id:'s_ingrith_open', name:'Ingrith · hover face', kind:'leader', face:'full', stock:'dark', plate:'CHA',
+   pinned:{},
+   blocks:[ b('portrait',{src:'art/leader-ingrith-scale-hand.jpg',h:196,name:'Ingrith',by:'Scale-Hand'}),
+            b('ability',{cost:'3',name:'Name Your Price',once:'1×/turn',
+              text:'Break the enemy’s nerve by <b>4</b>. <b>CHA 10+</b> — if their nerve is already below half, they strike their sail and offer terms at once.'}),
+            b('stats'), b('curses'),
+            b('quote',{text:'Weigh-master at Hedeby for nineteen years. She became a raider because she was owed.'}),
+            b('spacer',{mode:'flex'}),
+            b('text',{text:'Always available · Never drawn · Once per turn',style:'whisper'}) ]},
+  {id:'s_junk_hand', name:'Scorched Rigging · hand', kind:'junk', face:'hand', stock:'scrap', plate:'STR',
+   pinned:{},
+   blocks:[ b('spacer',{mode:'flex'}),
+            b('junkbody',{flav:''}),
+            b('spacer',{mode:'flex'}) ]},
+  {id:'s_draught', name:'Healing Draught · tile', kind:'consumable', face:'tile', stock:'vellum', plate:'STR',
+   pinned:{rivets:true, slash:true},
+   blocks:[ b('spacer',{mode:'fixed',h:10}),
+            b('glyph',{g:'draught'}),
+            b('text',{text:'Healing Draught',style:'kitname'}),
+            b('spacer',{mode:'flex'}),
+            b('kitfoot',{cost:'1'}) ]}
+];
+
+/* blank starters per kind — construct from the palette, as asked */
+const STARTERS = {
+  tactic:{kind:'tactic', face:'hand', stock:'vellum', plate:'STR', pinned:{bar:true}, blocks:[b('head')]},
+  crew:{kind:'crew', face:'hand', stock:'crew', plate:'DEX', pinned:{bar:true, seal:true},
+        seal:{src:'art/crew-sigrun-bow-hand.jpg', level:1}, blocks:[b('head',{title:'New Crew Card'})]},
+  leader:{kind:'leader', face:'rail', stock:'dark', plate:'CHA', pinned:{},
+        blocks:[b('portrait',{h:170}), b('spacer',{mode:'flex'}), b('ability')]},
+  junk:{kind:'junk', face:'hand', stock:'scrap', plate:'STR', pinned:{},
+        blocks:[b('spacer',{mode:'flex'}), b('junkbody'), b('spacer',{mode:'flex'})]},
+  consumable:{kind:'consumable', face:'tile', stock:'vellum', plate:'STR', pinned:{rivets:true, slash:true},
+        blocks:[b('spacer',{mode:'fixed',h:10}), b('glyph'), b('text',{text:'New Item',style:'kitname'}),
+                b('spacer',{mode:'flex'}), b('kitfoot')]}
+};
+
+/* ═══════════════════ STORAGE ═══════════════════ */
+const LS_CARDS='vv-smithy-cards', LS_DRAFT='vv-smithy-draft', LS_SHELF='vv-smithy-shelf';
+function shelfCollapsed(){ try{return JSON.parse(localStorage.getItem(LS_SHELF))||{}}catch(e){return {}} }
+function loadSaved(){ try{return JSON.parse(localStorage.getItem(LS_CARDS))||[]}catch(e){return []} }
+function persistSaved(list){ try{localStorage.setItem(LS_CARDS, JSON.stringify(list))}catch(e){} }
+function autosaveDraft(){ try{localStorage.setItem(LS_DRAFT, JSON.stringify({card:state.card, savedId:state.savedId}))}catch(e){} }
+
+/* ═══════════════════ CARD RENDER ═══════════════════ */
+function renderCardDOM(card, interactive){
+  const F = FACES[card.face];
+  const el = document.createElement('article');
+  const stockCls = card.stock==='dark' ? 'sm-dark' : card.stock==='scrap' ? 'sm-scrap' : 'sm-light';
+  el.className = `sm-card vvc ${F.cls} ${stockCls}${card.stock==='crew'?' vvc--crew':''}`;
+  el.style.cssText = `width:${F.w}px;height:${F.h}px;--plate:${PLATES[card.plate]||PLATES.STR};`;
+  if(card.stock==='dark'||card.stock==='scrap') el.style.background='';
+  if(card.face==='full'&&(card.stock==='dark'||card.stock==='scrap')) el.classList.add('no-rule');
+
+  /* pinned overlays */
+  let pinHTML='';
+  if(card.pinned.bar) pinHTML += `<span class="vvc-bar"></span>`;
+  if(card.pinned.rivets) pinHTML += ['tl','tr','bl','br'].map(k=>`<span class="vvc-rivet ${k}"></span>`).join('');
+  if(card.pinned.seal){
+    const s = card.seal||{src:ART[3][0],level:1};
+    const size = card.face==='full'?56:32;
+    pinHTML += `<div class="vvc-seal"><span class="face" style="background-image:url('${s.src}')"></span>${sealNotches(s.level,size)}</div>`;
+  }
+  if(card.pinned.pill) pinHTML += `<div class="vvl-pill">${CURSE_GLYPH.rigging}${CURSE_GLYPH.illwind}</div>`;
+  if(card.pinned.slash) pinHTML += `<span class="vvk-slash"></span>`;
+
+  const inner = card.blocks.map((blk,i)=>{
+    const def = BLOCKS[blk.t]; if(!def) return '';
+    const tools = interactive?`<span class="btools"><b class="grab" title="Drag to reorder">⋮⋮</b><b class="x" title="Remove">✕</b></span>`:'';
+    return `<div class="sm-blk${state.sel===i&&interactive?' sel':''}" data-i="${i}" ${interactive?'draggable="true"':''}>${def.render(blk.p,card)}${tools}</div>`;
+  }).join('');
+
+  el.innerHTML = pinHTML + `<div class="sm-in ${card.stock==='scrap'?'':'vvc-in'}">${inner}</div>`;
+  return el;
+}
+
+/* ═══════════════════ BENCH ═══════════════════ */
+function renderBenchBar(){
+  const c = state.card;
+  const seg=(items,cur,cb,plates)=>{
+    const s=document.createElement('div'); s.className='seg'+(plates?' plates':'');
+    items.forEach(([k,lab,tip])=>{
+      const btn=document.createElement('button');
+      btn.className = k===cur?'on':'';
+      btn.innerHTML = plates?`<span class="plate-dot" style="background:${PLATES[k]}"></span>`:lab;
+      btn.title = plates?k:(tip||lab);
+      btn.onclick=()=>{cb(k)};
+      s.appendChild(btn);
+    });
+    return s;
+  };
+  const bar=$('#benchBar'); bar.innerHTML='';
+  bar.appendChild(seg(Object.entries(FACES).map(([k,v])=>[k,v.btn,v.label]), c.face, k=>mutate(()=>{c.face=k})));
+  bar.appendChild(seg(Object.entries(STOCKS), c.stock, k=>mutate(()=>{c.stock=k})));
+  bar.appendChild(seg(Object.keys(PLATES).map(k=>[k,k]), c.plate, k=>mutate(()=>{c.plate=k}), true));
+  /* zoom is a view preference, not card data — no history entry, own storage */
+  bar.appendChild(seg(ZOOMS, state.zoom, z=>{
+    state.zoom=z;
+    try{localStorage.setItem('vv-smithy-zoom',z)}catch(e){}
+    renderBench();
+  }));
+}
+function renderBench(){
+  renderBenchBar();
+  const holder=$('#holder'); holder.innerHTML='';
+  const el = renderCardDOM(state.card, true);
+  holder.appendChild(el);
+  /* scale the card and size the holder to match, so zoom reflows the page
+     instead of painting over the gauge */
+  const F=FACES[state.card.face], z=state.zoom||1;
+  el.style.transformOrigin='top left';
+  el.style.transform = z!==1 ? `scale(${z})` : '';
+  holder.style.width=(F.w*z)+'px';
+  holder.style.height=(F.h*z)+'px';
+  wireBench(el);
+  requestAnimationFrame(measureDensity);
+  measureDensity();
+}
+function measureDensity(){
+  const card=$('#holder .sm-card'); if(!card) return;
+  const inner=card.querySelector('.sm-in');
+  const over = inner.scrollHeight - inner.clientHeight;
+  const g=$('#gauge');
+  if(over>1){
+    g.innerHTML=`<span class="bad">Overflows by ${over}px</span><span class="bar bad"><i></i></span>`;
+  }else{
+    const flexes = state.card.blocks.some(b=>b.t==='spacer'&&b.p.mode==='flex');
+    const slack = flexes?0:-over;
+    g.innerHTML=`<span class="ok">${flexes?'Fits — spacer absorbs the slack':`Fits · ${slack}px to spare`}</span><span class="bar"><i style="transform:scaleX(${Math.min(1,inner.scrollHeight/inner.clientHeight)})"></i></span>`;
+  }
+}
+
+/* bench interactions: select, remove, drag-reorder, drop-from-palette */
+let dropLine=null;
+function clearDrop(){ if(dropLine){dropLine.remove();dropLine=null;} }
+function wireBench(cardEl){
+  const stack = cardEl.querySelector('.sm-in');
+  cardEl.querySelectorAll('.sm-blk').forEach(w=>{
+    w.addEventListener('click',e=>{
+      if(e.target.closest('.x')) return;
+      e.stopPropagation();
+      state.sel=+w.dataset.i; renderAll(false);
+    });
+    w.querySelector('.x')?.addEventListener('click',e=>{
+      e.stopPropagation();
+      mutate(()=>{state.card.blocks.splice(+w.dataset.i,1); state.sel=null;});
+    });
+    w.addEventListener('dragstart',e=>{
+      e.dataTransfer.setData('text/plain','move:'+w.dataset.i);
+      e.dataTransfer.effectAllowed='move';
+    });
+  });
+  stack.addEventListener('dragover',e=>{
+    e.preventDefault(); e.dataTransfer.dropEffect='move';
+    const blocks=[...stack.querySelectorAll('.sm-blk')];
+    clearDrop();
+    dropLine=document.createElement('div'); dropLine.className='sm-drop';
+    const after = blocks.find(b=>e.clientY < b.getBoundingClientRect().top + b.getBoundingClientRect().height/2);
+    if(after) stack.insertBefore(dropLine, after); else stack.appendChild(dropLine);
+  });
+  stack.addEventListener('dragleave',e=>{ if(!stack.contains(e.relatedTarget)) clearDrop(); });
+  stack.addEventListener('drop',e=>{
+    e.preventDefault();
+    const data=e.dataTransfer.getData('text/plain');
+    const blocks=[...stack.querySelectorAll('.sm-blk')];
+    let idx = blocks.findIndex(b=>dropLine && b.compareDocumentPosition(dropLine) & Node.DOCUMENT_POSITION_PRECEDING ? false : dropLine && b.previousSibling===dropLine);
+    /* simpler: count blocks before the drop line */
+    idx = 0;
+    if(dropLine){ let n=dropLine.previousSibling; while(n){ if(n.classList&&n.classList.contains('sm-blk')) idx++; n=n.previousSibling; } }
+    clearDrop();
+    if(data.startsWith('new:')){
+      const t=data.slice(4);
+      mutate(()=>{ state.card.blocks.splice(idx,0,b(t)); state.sel=idx; });
+    }else if(data.startsWith('move:')){
+      const from=+data.slice(5);
+      mutate(()=>{
+        const [m]=state.card.blocks.splice(from,1);
+        state.card.blocks.splice(from<idx?idx-1:idx,0,m);
+        state.sel=from<idx?idx-1:idx;
+      });
+    }
+  });
+  cardEl.addEventListener('click',()=>{ state.sel='card'; renderAll(false); });
+}
+
+/* ═══════════════════ ELEMENT SHELF ═══════════════════
+   Every element previewed live, in the bench card's current face, stock
+   and plate — what you see is exactly what drops.  Rebuilt only when that
+   context changes, never on text keystrokes. */
+const STOCK_BG = {vellum:'var(--vellum)', crew:'var(--vellum-crew)', dark:'#1a150f', scrap:'var(--scrap)'};
+let shelfKey = null;
+function renderPalette(){
+  const c = state.card;
+  const key = [c.face, c.stock, c.plate, JSON.stringify(c.pinned),
+               c.seal ? c.seal.src + ':' + c.seal.level : ''].join('|');
+  if(key === shelfKey) return;
+  shelfKey = key;
+
+  const body=$('#palBody'); body.innerHTML='';
+  const F = FACES[c.face];
+  const stockCls = c.stock==='dark' ? 'sm-dark' : c.stock==='scrap' ? 'sm-scrap' : 'sm-light';
+  const fitW = 296;                      /* shelf inner width the preview scales into */
+  const k = Math.min(1, fitW / F.w);
+
+  /* Collapsible sections.  Everything is BUILT open so preview heights can
+     be measured (display:none reads 0), then the saved collapsed state is
+     applied at the end of the function — no paint happens in between. */
+  const sections=[];
+  function section(name, count){
+    const h=document.createElement('button'); h.type='button'; h.className='pk open';
+    h.innerHTML=`<span class="car">▶</span>${name}<span class="cnt">${count}</span>`;
+    const wrap=document.createElement('div'); wrap.className='pgroup open';
+    h.onclick=()=>{
+      const col=shelfCollapsed();
+      if(col[name]) delete col[name]; else col[name]=true;
+      try{localStorage.setItem(LS_SHELF, JSON.stringify(col))}catch(e){}
+      h.classList.toggle('open'); wrap.classList.toggle('open');
+    };
+    body.appendChild(h); body.appendChild(wrap);
+    sections.push([name,h,wrap]);
+    return wrap;
+  }
+
+  const groups={};
+  Object.entries(BLOCKS).forEach(([t,def])=>{ (groups[def.group]=groups[def.group]||[]).push([t,def]); });
+  Object.entries(groups).forEach(([g,items])=>{
+    const wrap = section(g, items.length);
+    items.forEach(([t,def])=>{
+      const el=document.createElement('div');
+      el.className='el'; el.draggable=true;
+      el.title='Drag onto the card, or click to add at the end';
+      const fit=document.createElement('div'); fit.className='prevfit';
+      const pc=document.createElement('div');
+      pc.className=`prevcard sm-card vvc ${F.cls} ${stockCls}${c.stock==='crew'?' vvc--crew':''}`;
+      pc.style.cssText=`width:${F.w}px;--plate:${PLATES[c.plate]||PLATES.STR}`;
+      if(c.stock==='dark'||c.stock==='scrap') pc.style.background='';
+      pc.innerHTML=def.render(deep(def.d), c);
+      fit.appendChild(pc); el.appendChild(fit);
+      el.insertAdjacentHTML('beforeend',`<div class="lab">${def.label}<span>＋</span></div>`);
+      el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain','new:'+t);e.dataTransfer.effectAllowed='copy'});
+      el.addEventListener('click',()=>mutate(()=>{state.card.blocks.push(b(t)); state.sel=state.card.blocks.length-1;}));
+      wrap.appendChild(el);
+      /* scale the slice into the shelf; offsetHeight ignores transforms */
+      pc.style.transformOrigin='top left';
+      if(k<1){ pc.style.transform=`scale(${k})`; fit.style.width=(F.w*k)+'px'; }
+      fit.style.height=(pc.offsetHeight*k)+'px';
+    });
+  });
+
+  const pinWrap = section('Pinned', Object.keys(PINS).length);
+  const sealSrc=(c.seal&&c.seal.src)||ART[3][0], sealLvl=(c.seal&&c.seal.level)||1;
+  const PIN_PREV = {
+    bar:`<span class="vvc-bar" style="position:relative;display:block;border-radius:2px"></span>`,
+    rivets:`<div style="display:flex;gap:16px;justify-content:center;padding:3px 0">${
+      '<span class="vvc-rivet" style="position:relative;inset:auto"></span>'.repeat(4)}</div>`,
+    seal:`<div class="vvc-seal" style="position:relative;inset:auto;width:34px;height:34px;margin:9px auto">
+      <span class="face" style="background-image:url('${sealSrc}')"></span>${sealNotches(sealLvl,34)}</div>`,
+    pill:`<div class="vvl-pill" style="position:relative;inset:auto;width:max-content;margin:5px auto">${
+      CURSE_GLYPH.rigging}${CURSE_GLYPH.illwind}</div>`,
+    slash:`<div style="position:relative;height:34px"><span class="vvk-slash"></span></div>`
+  };
+  Object.entries(PINS).forEach(([pk,def])=>{
+    const on=!!c.pinned[pk];
+    const el=document.createElement('div');
+    el.className='el pin'+(on?' on':'');
+    el.title='Click to toggle';
+    el.innerHTML=`<div class="prevfit pinprev" style="width:${fitW}px;background:${STOCK_BG[c.stock]};--plate:${PLATES[c.plate]}">${PIN_PREV[pk]}</div>
+      <div class="lab">${def.label}<span>${on?'ON':'OFF'}</span></div>`;
+    el.onclick=()=>mutate(()=>{
+      state.card.pinned[pk]=!state.card.pinned[pk];
+      if(pk==='seal'&&state.card.pinned.seal&&!state.card.seal) state.card.seal={src:ART[3][0],level:1};
+      if(state.card.pinned[pk]&&pk==='seal') state.sel='card';
+    });
+    pinWrap.appendChild(el);
+  });
+
+  /* previews measured — now honour the saved collapsed state */
+  const col=shelfCollapsed();
+  sections.forEach(([name,h,wrap])=>{
+    if(col[name]){ h.classList.remove('open'); wrap.classList.remove('open'); }
+  });
+}
+
+/* ═══════════════════ INSPECTOR ═══════════════════ */
+function field(k,label,kind,opts,val,onch){
+  const f=document.createElement('div'); f.className='f';
+  if(kind==='chk'){
+    f.innerHTML=`<label class="chkrow"><input type="checkbox" ${val?'checked':''}> ${label}</label>`;
+    f.querySelector('input').onchange=e=>onch(e.target.checked);
+    return f;
+  }
+  f.innerHTML=`<label>${label}</label>`;
+  let inp;
+  if(kind==='ta'){ inp=document.createElement('textarea'); inp.value=val; }
+  else if(kind==='sel'){
+    inp=document.createElement('select');
+    opts.forEach(([v,lab])=>{const o=document.createElement('option');o.value=v;o.textContent=lab;if(String(v)===String(val))o.selected=true;inp.appendChild(o);});
+  }
+  else if(kind==='num'){ inp=document.createElement('input'); inp.type='number'; inp.value=val; }
+  else { inp=document.createElement('input'); inp.type='text'; inp.value=val; }
+  inp.addEventListener('input',()=>onch(kind==='num'?+inp.value:inp.value));
+  f.appendChild(inp);
+  return f;
+}
+function renderInspector(){
+  const insp=$('#insp');
+  const c=state.card;
+  insp.innerHTML='<div class="ph">Inspector</div>';
+  const fields=document.createElement('div'); fields.className='fields';
+
+  /* card-level settings always first */
+  fields.appendChild(field('name','Card name','text',null,c.name,v=>{pushHistory('name');c.name=v;autosaveDraft();refreshLibHighlight();}));
+  fields.appendChild(field('kind','Type (library section)','sel',Object.entries(KINDS),c.kind,v=>mutate(()=>{c.kind=v})));
+  if(c.pinned.seal){
+    const s=c.seal||(c.seal={src:ART[3][0],level:1});
+    fields.appendChild(field('sealsrc','Seal portrait','sel',ART,s.src,v=>mutate(()=>{s.src=v})));
+    fields.appendChild(field('seallvl','Seal level (notches)','num',null,s.level,
+      v=>mutate(()=>{s.level=Math.max(0,Math.min(9,v))}, false, 'seal:lvl')));
+  }
+
+  const selBlk = typeof state.sel==='number' ? c.blocks[state.sel] : null;
+  if(selBlk){
+    const def=BLOCKS[selBlk.t];
+    const bh=document.createElement('div'); bh.className='bhead';
+    bh.innerHTML=`<span class="bt">${def.label}</span>`;
+    const up=document.createElement('button');up.className='pbtn';up.textContent='↑';
+    const dn=document.createElement('button');dn.className='pbtn';dn.textContent='↓';
+    const rm=document.createElement('button');rm.className='pbtn';rm.textContent='✕';
+    up.onclick=()=>{const i=state.sel; if(i>0)mutate(()=>{const t=c.blocks[i];c.blocks[i]=c.blocks[i-1];c.blocks[i-1]=t;state.sel=i-1;})};
+    dn.onclick=()=>{const i=state.sel; if(i<c.blocks.length-1)mutate(()=>{const t=c.blocks[i];c.blocks[i]=c.blocks[i+1];c.blocks[i+1]=t;state.sel=i+1;})};
+    rm.onclick=()=>mutate(()=>{c.blocks.splice(state.sel,1);state.sel=null;});
+    bh.append(up,dn,rm);
+    insp.appendChild(fields);
+    insp.appendChild(bh);
+    const bf=document.createElement('div'); bf.className='fields';
+    def.f.forEach(([k,label,kind,opts])=>{
+      bf.appendChild(field(k,label,kind,opts,selBlk.p[k],
+        v=>mutate(()=>{selBlk.p[k]=v}, true, 'p:'+state.sel+':'+k)));
+    });
+    if(!def.f.length) bf.innerHTML='<p class="none" style="padding:0">Nothing to configure — it is what it is.</p>';
+    insp.appendChild(bf);
+  }else{
+    insp.appendChild(fields);
+    insp.insertAdjacentHTML('beforeend','<p class="none">Click a piece on the card to edit its text and numbers.</p>');
+  }
+}
+
+/* ═══════════════════ LIBRARY ═══════════════════ */
+let openKind = 'leader';
+function thumbOf(card, cur){
+  const F=FACES[card.face];
+  const k=118/F.w;
+  const t=document.createElement('div');
+  t.className='thumb'+(cur?' cur':'');
+  const tv=document.createElement('div'); tv.className='tv';
+  tv.style.width='118px'; tv.style.height=(F.h*k)+'px';
+  const c=renderCardDOM(card,false); c.style.transform=`scale(${k})`;
+  tv.appendChild(c); t.appendChild(tv);
+  t.insertAdjacentHTML('beforeend',`<div class="tn">${card.name}</div>`);
+  return t;
+}
+function renderLibrary(){
+  const acc=$('#accord'); acc.innerHTML='';
+  const saved=loadSaved();
+  Object.entries(KINDS).forEach(([kind,label])=>{
+    const sugg=SUGGEST.filter(s=>s.kind===kind);
+    const mine=saved.filter(s=>s.kind===kind);
+    const h=document.createElement('button');
+    h.className='acc-h'+(openKind===kind?' open':'');
+    h.innerHTML=`<span class="car">▶</span><span class="t">${label}</span><span class="n">${sugg.length+mine.length}</span>`;
+    h.onclick=()=>{openKind=openKind===kind?null:kind;renderLibrary();};
+    acc.appendChild(h);
+    const body=document.createElement('div'); body.className='acc-b'+(openKind===kind?' open':'');
+    if(openKind===kind){
+      if(sugg.length){
+        body.insertAdjacentHTML('beforeend','<div class="lib-k">Suggestions — load an editable copy</div>');
+        const g1=document.createElement('div');g1.className='lib-g';
+        sugg.forEach(s=>{
+          const t=thumbOf(s,false);
+          t.onclick=()=>loadCard(deep(s), null, '(fork) '+s.name);
+          g1.appendChild(t);
+        });
+        body.appendChild(g1);
+      }
+      body.insertAdjacentHTML('beforeend','<div class="lib-k">Yours</div>');
+      const g2=document.createElement('div');g2.className='lib-g';
+      if(!mine.length) g2.innerHTML='<span style="font-size:11.5px;font-style:italic;color:#6f6553;padding:2px">Nothing forged yet.</span>';
+      mine.forEach(s=>{
+        const t=thumbOf(s, state.savedId===s.id);
+        t.onclick=e=>{ if(e.target.classList.contains('del'))return; loadCard(deep(s), s.id); };
+        const del=document.createElement('span');del.className='del';del.textContent='✕';del.title='Delete';
+        del.onclick=e=>{e.stopPropagation();
+          if(confirm(`Delete "${s.name}" from the library?`)){
+            persistSaved(loadSaved().filter(x=>x.id!==s.id));
+            if(state.savedId===s.id) state.savedId=null;
+            renderLibrary();
+          }};
+        t.appendChild(del);
+        g2.appendChild(t);
+      });
+      body.appendChild(g2);
+      const fn=document.createElement('button');fn.className='forge-new';
+      fn.textContent=`⚒ Forge new — blank ${label.replace(/s$/,'').toLowerCase()}`;
+      fn.onclick=()=>loadCard(Object.assign(deep(STARTERS[kind]),{}), null, 'New '+label.replace(/s$/,'').toLowerCase());
+      body.appendChild(fn);
+    }
+    acc.appendChild(body);
+  });
+}
+function refreshLibHighlight(){ /* names update on next full library render; cheap noop */ }
+
+/* ═══════════════════ ACTIONS ═══════════════════ */
+function loadCard(card, savedId, name){
+  if(state.card) pushHistory();          /* loading is undoable too */
+  state.card = card;
+  if(name) state.card.name = name;
+  if(!state.card.name) state.card.name = 'Unnamed';
+  state.savedId = savedId||null;
+  state.sel = null;
+  autosaveDraft();
+  renderAll();
+  closeLib();
+}
+function mutate(fn, keepInspector, hkey){
+  pushHistory(hkey);
+  fn();
+  autosaveDraft();
+  renderBench();
+  renderPalette();
+  if(!keepInspector) renderInspector();
+}
+function renderAll(withLib=true){
+  renderBench(); renderPalette(); renderInspector();
+  if(withLib) renderLibrary();
+}
+
+$('#saveBtn').onclick=()=>{
+  const list=loadSaved();
+  const c=deep(state.card);
+  if(state.savedId){
+    const i=list.findIndex(x=>x.id===state.savedId);
+    c.id=state.savedId;
+    if(i>=0) list[i]=c; else list.push(c);
+  }else{
+    c.id=uid(); state.savedId=c.id; list.push(c);
+  }
+  persistSaved(list);
+  openKind=c.kind;
+  renderLibrary();
+};
+$('#dupBtn').onclick=()=>{
+  pushHistory();
+  const list=loadSaved();
+  const c=deep(state.card); c.id=uid(); c.name=state.card.name+' (copy)';
+  list.push(c); persistSaved(list);
+  state.savedId=c.id; state.card.name=c.name;
+  openKind=c.kind;
+  renderAll();
+};
+$('#undoBtn').onclick=undo;
+$('#redoBtn').onclick=redo;
+/* Ctrl/Cmd+Z anywhere outside a field — inside one, the browser's own
+   text undo applies and our input listeners hear the result */
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeLib(); return; }
+  if(e.target instanceof Element && e.target.matches('input,textarea,select')) return;
+  if(!(e.metaKey||e.ctrlKey)) return;
+  const k=e.key.toLowerCase();
+  if(k==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); }
+  else if(k==='y'){ e.preventDefault(); redo(); }
+});
+
+/* ── the library drawer ── */
+function openLib(){ $('#lib').classList.add('open'); $('#scrim').classList.add('show'); renderLibrary(); }
+function closeLib(){ $('#lib').classList.remove('open'); $('#scrim').classList.remove('show'); }
+$('#libBtn').onclick=()=>$('#lib').classList.contains('open')?closeLib():openLib();
+$('#libClose').onclick=closeLib;
+$('#scrim').onclick=closeLib;
+$('#exportBtn').onclick=()=>{
+  const blob=new Blob([JSON.stringify({app:'viking-voyage-smithy',version:1,cards:loadSaved()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='viking-voyage-cards.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+$('#importBtn').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      const incoming=data.cards||data;
+      if(!Array.isArray(incoming)) throw 0;
+      const list=loadSaved();
+      const have=new Set(list.map(x=>x.id));
+      incoming.forEach(c=>{ if(!c.id||have.has(c.id)) c.id=uid(); list.push(c); });
+      persistSaved(list);
+      renderLibrary();
+    }catch(err){ alert('That file did not look like a Smithy export.'); }
+  };
+  r.readAsText(f);
+  e.target.value='';
+};
+
+/* ═══════════════════ BOOT ═══════════════════ */
+(function boot(){
+  let draft=null;
+  try{ draft=JSON.parse(localStorage.getItem(LS_DRAFT)); }catch(e){}
+  if(draft&&draft.card&&draft.card.blocks){ state.card=draft.card; state.savedId=draft.savedId||null; }
+  else{ state.card=deep(SUGGEST[4]); state.card.name='(fork) '+SUGGEST[4].name; }
+  openKind=state.card.kind;
+  renderAll();
+  histBtns();
+})();
+</script>
+</body>
+</html>
