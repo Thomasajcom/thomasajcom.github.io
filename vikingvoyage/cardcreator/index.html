@@ -881,6 +881,30 @@ let sel = null;                       // {type:'card'|'leader'|'spec'|'consumabl
 let previewOpts = {scale:1, injured:false};
 const $ = s => document.querySelector(s);
 const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* rich(): designer text may carry <b>, <i>, <br>, <lv> — and nothing else.
+   The chest is remote input now, so anything renderable must be inert:
+   unknown tags unwrap to their text, dangerous ones vanish, every
+   attribute (onerror, style, href, all of them) is stripped. */
+const RICH_KEEP = new Set(['B','I','EM','STRONG','BR','LV','SMALL','SPAN']);
+const RICH_DROP = new Set(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','LINK','META','FORM','INPUT','BUTTON']);
+function rich(html){
+  const t = document.createElement('template');
+  t.innerHTML = String(html ?? '');
+  (function walk(el){
+    for(const child of [...el.children]){
+      walk(child);
+      if(RICH_DROP.has(child.tagName)){ child.remove(); }
+      else if(RICH_KEEP.has(child.tagName)){
+        for(const a of [...child.attributes]) child.removeAttribute(a.name);
+      }else{
+        const frag = document.createDocumentFragment();
+        while(child.firstChild) frag.appendChild(child.firstChild);
+        child.replaceWith(frag);
+      }
+    }
+  })(t.content);
+  return t.innerHTML;
+}
 const uid = p => p + '-' + Math.random().toString(36).slice(2,7);
 
 function setSync(msg, cls){
@@ -976,12 +1000,12 @@ function renderCardEl(c, opts={}){
       <div class="cart">${art}</div>
       <div class="crange">${bands}</div>
       <div class="crules">
-        <div class="csure"><div class="clbl">Sure</div><p>${c.sure||''}</p></div>
+        <div class="csure"><div class="clbl">Sure</div><p>${rich(c.sure)}</p></div>
         <div class="csplit"><i></i><span class="cd20">d20</span><i></i></div>
         <div class="croll">
           <div class="clbl"><span class="tgt">${c.stat} ${c.thr}+</span></div>
-          <p>${c.bonus||''}</p>
-          <p class="grt">${c.greater||''}</p>
+          <p>${rich(c.bonus)}</p>
+          <p class="grt">${rich(c.greater)}</p>
         </div>
         <div class="codds">
           <div class="cmeter">
@@ -996,7 +1020,7 @@ function renderCardEl(c, opts={}){
       </div>
       <div class="cfoot">
         <div class="ctype">${esc(c.type)}</div>
-        <div class="cflav">${c.flav||''}</div>
+        <div class="cflav">${rich(c.flav)}</div>
       </div>
     </div>
     ${opts.injured?`<div class="deadstamp"><span>Injured<small>Drawn · cannot be played</small></span></div>`:''}`;
@@ -1009,7 +1033,7 @@ function renderScrapEl(c){
   el.innerHTML = `
     <div class="sband">Negative card — jammed into your deck</div>
     <h3>${esc(c.title)}</h3>
-    <p>${c.text||''}</p>
+    <p>${rich(c.text)}</p>
     <div class="srule"></div>
     <p style="font-size:12.5px;font-style:italic;color:#4a3e2c">${esc(c.source||'')}</p>
     <div class="sfoot"><span>Until removed</span><span class="destroy">Destroy now · ${c.destroy} ⚡</span></div>`;
@@ -1029,7 +1053,7 @@ function renderItemEl(k){
         <div><div class="ititle">${esc(k.name)}</div><div class="isub">Consumable · one use</div></div>
       </div>
       <div class="iart">${art}</div>
-      <div class="ibody">${k.text||''}</div>
+      <div class="ibody">${rich(k.text)}</div>
       <div class="ifoot"><span>Never drawn</span><span>Spent forever</span></div>
     </div>`;
   return el;
@@ -1067,13 +1091,13 @@ function renderLeaderCardEl(l){
         <div class="lcpass">
           <div class="clbl">Always active</div>
           <div class="bn">${esc(l.passiveName)}</div>
-          <p>${l.passiveText||''}</p>
+          <p>${rich(l.passiveText)}</p>
         </div>
         <div class="csplit"><i></i><span class="lcdia"></span><i></i></div>
         <div class="lcab">
           <div class="clbl"><span class="tgt">${l.abilityCost} ⚡</span> once per turn</div>
           <div class="bn">${esc(l.abilityName)}</div>
-          <p>${l.abilityText||''}</p>
+          <p>${rich(l.abilityText)}</p>
         </div>
       </div>
       <div class="cfoot">

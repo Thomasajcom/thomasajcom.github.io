@@ -640,6 +640,45 @@ function persistSaved(list){ try{localStorage.setItem(LS_CARDS, JSON.stringify(l
 function autosaveDraft(){ try{localStorage.setItem(LS_DRAFT, JSON.stringify({card:state.card, savedId:state.savedId}))}catch(e){} }
 
 /* ═══════════════════ CARD RENDER ═══════════════════ */
+/* The library is remote input now — block params are cleaned at render time.
+   Rich fields keep <b>/<i>/<br>/<lv>; everything else is inert text; select
+   and free-string params lose quote/angle characters so they can never break
+   out of an attribute. Stored values stay as typed. */
+const RICH_KEEP = new Set(['B','I','EM','STRONG','BR','LV','SMALL','SPAN']);
+const RICH_DROP = new Set(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','LINK','META','FORM','INPUT','BUTTON']);
+function rich(html){
+  const t = document.createElement('template');
+  t.innerHTML = String(html ?? '');
+  (function walk(el){
+    for(const child of [...el.children]){
+      walk(child);
+      if(RICH_DROP.has(child.tagName)){ child.remove(); }
+      else if(RICH_KEEP.has(child.tagName)){
+        for(const a of [...child.attributes]) child.removeAttribute(a.name);
+      }else{
+        const frag = document.createDocumentFragment();
+        while(child.firstChild) frag.appendChild(child.firstChild);
+        child.replaceWith(frag);
+      }
+    }
+  })(t.content);
+  return t.innerHTML;
+}
+const plain = v => String(v ?? '').replace(/[<>"'`()]/g,'');
+const escT = v => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function safeParams(def, p){
+  const out = {};
+  def.f.forEach(([k,,kind])=>{
+    const v = p[k];
+    if(kind==='ta') out[k] = rich(v);
+    else if(kind==='text') out[k] = rich(v);
+    else if(kind==='num') out[k] = +v || 0;
+    else if(kind==='chk') out[k] = !!v;
+    else out[k] = plain(v);                 /* sel and anything else */
+  });
+  Object.keys(p).forEach(k=>{ if(!(k in out)) out[k] = typeof p[k]==='number' ? p[k] : plain(p[k]); });
+  return out;
+}
 function renderCardDOM(card, interactive){
   const F = FACES[card.face];
   const el = document.createElement('article');
@@ -656,7 +695,7 @@ function renderCardDOM(card, interactive){
   if(card.pinned.seal){
     const s = card.seal||{src:ART[3][0],level:1};
     const size = card.face==='full'?56:32;
-    pinHTML += `<div class="vvc-seal"><span class="face" style="background-image:url('${s.src}')"></span>${sealNotches(s.level,size)}</div>`;
+    pinHTML += `<div class="vvc-seal"><span class="face" style="background-image:url('${plain(s.src)}')"></span>${sealNotches(+s.level||0,size)}</div>`;
   }
   if(card.pinned.pill) pinHTML += `<div class="vvl-pill">${CURSE_GLYPH.rigging}${CURSE_GLYPH.illwind}</div>`;
   if(card.pinned.slash) pinHTML += `<span class="vvk-slash"></span>`;
@@ -664,7 +703,7 @@ function renderCardDOM(card, interactive){
   const inner = card.blocks.map((blk,i)=>{
     const def = BLOCKS[blk.t]; if(!def) return '';
     const tools = interactive?`<span class="btools"><b class="grab" title="Drag to reorder">⋮⋮</b><b class="x" title="Remove">✕</b></span>`:'';
-    return `<div class="sm-blk${state.sel===i&&interactive?' sel':''}" data-i="${i}" ${interactive?'draggable="true"':''}>${def.render(blk.p,card)}${tools}</div>`;
+    return `<div class="sm-blk${state.sel===i&&interactive?' sel':''}" data-i="${i}" ${interactive?'draggable="true"':''}>${def.render(safeParams(def, blk.p),card)}${tools}</div>`;
   }).join('');
 
   el.innerHTML = pinHTML + `<div class="sm-in ${card.stock==='scrap'?'':'vvc-in'}">${inner}</div>`;
@@ -953,7 +992,7 @@ function thumbOf(card, cur){
   tv.style.width='118px'; tv.style.height=(F.h*k)+'px';
   const c=renderCardDOM(card,false); c.style.transform=`scale(${k})`;
   tv.appendChild(c); t.appendChild(tv);
-  t.insertAdjacentHTML('beforeend',`<div class="tn">${card.name}</div>`);
+  t.insertAdjacentHTML('beforeend',`<div class="tn">${escT(card.name)}</div>`);
   return t;
 }
 function renderLibrary(){
