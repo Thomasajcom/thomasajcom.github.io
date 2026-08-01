@@ -27,6 +27,10 @@
   --iron:#33302a; --iron-hi:#6c675c;
   --stat-str:#9e2b25; --stat-dex:#3e6b63; --stat-con:#3d4a55; --stat-cha:#96662a; --stat-luk:#6b3a4a;
   --card-radius:11px; --title-size:22px; --sure-size:14.4px; --roll-size:13.4px;
+  /* the three stocks — set from the anatomy's formats at runtime (px = mm × 5.92) */
+  --deck-w:376px; --deck-h:526px;
+  --leader-w:414px; --leader-h:711px;
+  --item-w:243px; --item-h:376px;
   --font-display:'IM Fell English SC',serif;
   --font-flav:'IM Fell English',serif;
   --font-body:'Alegreya',serif;
@@ -226,7 +230,7 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 /* ═══════════ THE CARD — ported from card-preview.html, tokenised ═══════════ */
 .card{
   --plate:var(--stat-str);
-  width:376px;height:526px;position:relative;flex:0 0 auto;
+  width:var(--deck-w);height:var(--deck-h);position:relative;flex:0 0 auto;
   border-radius:var(--card-radius);
   background:radial-gradient(88% 66% at 50% 32%, var(--vellum-hi) 0%, var(--vellum) 46%, var(--vellum-lo) 100%);
   box-shadow:0 2px 0 rgba(255,244,220,.5) inset, 0 -22px 46px -20px rgba(92,72,38,.5) inset,
@@ -334,9 +338,12 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 }
 .deadstamp small{display:block;font-size:9px;letter-spacing:.16em;margin-top:5px;color:var(--ink-soft)}
 
-/* ═══════════ NEGATIVE SCRAP ═══════════ */
+/* ═══════════ NEGATIVE SCRAP ═══════════
+   Physically it is still a deck card — it shuffles into the same deck — printed
+   to look like a torn scrap, so its footprint follows the deck format. */
 .scrap{
-  width:322px;min-height:360px;position:relative;padding:26px 26px 20px;
+  width:calc(var(--deck-w) * .86);min-height:calc(var(--deck-h) * .68);
+  position:relative;padding:26px 26px 20px;
   background:
     radial-gradient(60% 40% at 20% 10%, rgba(96,74,40,.35), transparent 60%),
     radial-gradient(50% 30% at 85% 80%, rgba(70,52,30,.4), transparent 60%),
@@ -360,29 +367,48 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase}
 .scrap .sfoot .destroy{border:1.5px solid var(--madder);color:var(--madder);padding:5px 11px 4px}
 
-/* ═══════════ CONSUMABLE POUCH ═══════════ */
-.pouch{
-  width:300px;position:relative;padding:20px 22px 18px;border-radius:6px;
-  background:radial-gradient(90% 80% at 50% 20%, var(--vellum-hi), var(--vellum) 60%, var(--vellum-lo));
-  border:1.5px solid rgba(20,16,12,.7);box-shadow:0 14px 26px -8px rgba(0,0,0,.7);
-  color:var(--ink);font-family:var(--font-body);
+/* ═══════════ ITEM CARD — mini stock, board-game style ═══════════ */
+.itemcard{
+  width:var(--item-w);height:var(--item-h);position:relative;flex:0 0 auto;
+  border-radius:calc(var(--card-radius) * .72);
+  background:radial-gradient(88% 66% at 50% 32%, var(--vellum-hi) 0%, var(--vellum) 46%, var(--vellum-lo) 100%);
+  box-shadow:0 2px 0 rgba(255,244,220,.5) inset, 0 -16px 34px -16px rgba(92,72,38,.5) inset,
+    0 18px 32px -12px rgba(0,0,0,.8), 0 2px 6px rgba(0,0,0,.55);
+  font-family:var(--font-body);color:var(--ink);padding:10px;
 }
-.pouch::before{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.28;mix-blend-mode:multiply;border-radius:6px;pointer-events:none}
-.pouch .ph{display:flex;align-items:center;gap:13px;margin-bottom:10px}
-.pouch .glyph{
-  flex:0 0 auto;width:46px;height:46px;display:grid;place-items:center;font-size:24px;color:#f3ead4;
+.itemcard::before{content:'';position:absolute;inset:0;border-radius:calc(var(--card-radius) * .72);
+  pointer-events:none;background-image:var(--grain);opacity:.3;mix-blend-mode:multiply}
+.a-nograin .itemcard::before{display:none}
+.itemcard::after{content:'';position:absolute;inset:6px;border-radius:calc(var(--card-radius) * .72 - 4px);
+  pointer-events:none;border:1.5px solid rgba(20,16,12,.82);
+  box-shadow:0 0 0 1px var(--vellum), 0 0 0 2px rgba(20,16,12,.42)}
+.itemcard .rivet{width:7px;height:7px}
+.itemcard .rivet.tl{top:10px;left:10px}.itemcard .rivet.tr{top:10px;right:10px}
+.itemcard .rivet.bl{bottom:10px;left:10px}.itemcard .rivet.br{bottom:10px;right:10px}
+.iinner{position:relative;z-index:5;height:100%;display:flex;flex-direction:column;padding:9px 10px 7px}
+.ihead{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px}
+.icost{flex:0 0 auto;width:29px;height:29px;border-radius:50%;
   background:radial-gradient(circle at 33% 28%, #565043, var(--iron) 58%, #0c0a08);
-  clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);
-}
-.pouch .pn{font-family:var(--font-display);font-size:22px;line-height:1}
-.pouch .pk{font-family:var(--font-small);font-weight:800;font-size:8.5px;letter-spacing:.22em;
-  text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
-.pouch .pcost{margin-left:auto;font-family:var(--font-small);font-weight:800;font-size:12px;
-  background:var(--ink);color:var(--vellum-hi);padding:4px 9px}
-.pouch p{font-size:14.2px;line-height:1.42}
-.pouch .pfoot{margin-top:12px;padding-top:8px;border-top:1px solid rgba(20,16,12,.3);
-  font-family:var(--font-small);font-weight:700;font-size:8.5px;letter-spacing:.16em;
-  text-transform:uppercase;color:rgba(20,16,12,.55)}
+  box-shadow:0 2px 3px rgba(0,0,0,.55), inset 0 -2px 3px rgba(0,0,0,.65), inset 0 2px 2px rgba(255,245,225,.22);
+  display:grid;place-items:center;font-family:var(--font-small);font-weight:800;font-size:13.5px;
+  color:#f3ead4;text-shadow:0 1px 2px rgba(0,0,0,.9)}
+.ititle{font-family:var(--font-display);font-size:calc(var(--title-size) * .78);line-height:1.05;color:var(--ink)}
+.isub{font-family:var(--font-small);font-size:7.5px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-soft);margin-top:2px;opacity:.82}
+.iart{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;flex:0 0 auto;
+  border:1.5px solid rgba(20,16,12,.85);background:#cdc0a2;display:grid;place-items:center}
+.iart img{width:100%;height:100%;object-fit:cover;display:block}
+.a-woodcut .iart img{filter:sepia(.28) contrast(1.1) saturate(.8)}
+.iart::after{content:'';position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 16px rgba(60,44,20,.4), inset 0 2px 4px rgba(0,0,0,.28)}
+.iglyph{width:76px;height:76px;display:grid;place-items:center;font-size:44px;color:var(--ink);
+  border:2.5px solid var(--ink);border-radius:50%;opacity:.85;
+  box-shadow:inset 0 0 12px rgba(20,16,12,.25)}
+.ibody{flex:1;margin-top:8px;font-size:12.6px;line-height:1.38;min-height:0}
+.ibody b{color:var(--ink)}
+.ifoot{padding-top:6px;border-top:1px solid rgba(20,16,12,.28);display:flex;
+  justify-content:space-between;gap:8px;font-family:var(--font-small);font-weight:700;
+  font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft)}
 
 /* ═══════════ SPECIALIST TILE ═══════════ */
 .spectile{
@@ -413,45 +439,56 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 .spectile .sig b{font-style:normal;color:var(--madder);font-family:var(--font-small);
   font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase}
 
-/* ═══════════ LEADER SPREAD — ported from card-preview.html ═══════════ */
-.leader{
-  width:100%;max-width:760px;display:flex;flex-wrap:wrap;
-  background:linear-gradient(180deg,rgba(46,39,29,.9),rgba(26,22,16,.94));
-  border:1px solid #3d372c;border-radius:4px;overflow:hidden;
-  box-shadow:0 30px 60px -20px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,240,210,.07);
+/* ═══════════ LEADER CARD — large stock, board-game style ═══════════
+   The captain is a card too, struck from the same anatomy: tarot-sized,
+   compact when in play, raised to full size on hover. */
+.leadercard{
+  width:var(--leader-w);height:var(--leader-h);position:relative;flex:0 0 auto;
+  border-radius:calc(var(--card-radius) * 1.15);
+  background:radial-gradient(88% 62% at 50% 28%, var(--vellum-hi) 0%, var(--vellum) 48%, var(--vellum-lo) 100%);
+  box-shadow:0 2px 0 rgba(255,244,220,.5) inset, 0 -26px 52px -22px rgba(92,72,38,.55) inset,
+    0 30px 52px -16px rgba(0,0,0,.85), 0 3px 9px rgba(0,0,0,.6);
+  font-family:var(--font-body);color:var(--ink);padding:16px;
 }
-.lportrait{flex:0 0 auto;width:252px;aspect-ratio:3/4;position:relative;overflow:hidden;
-  border-right:1px solid #3d372c;background:#241e15}
-.lportrait img{width:100%;height:100%;object-fit:cover;display:block}
-.lportrait .mono{position:absolute;inset:0;display:grid;place-items:center;
-  font-family:var(--font-display);font-size:84px;color:#4a4132}
-.lportrait::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent 62%,rgba(20,16,12,.55) 100%),
-    radial-gradient(70% 60% at 50% 40%,transparent,rgba(20,16,12,.4))}
-.lbody{flex:1;min-width:300px;padding:26px 30px 24px}
-.lrank{font-family:var(--font-small);font-weight:800;font-size:10px;letter-spacing:.34em;
-  text-transform:uppercase;color:var(--madder);margin-bottom:9px}
-.lname{font-family:var(--font-display);font-size:34px;line-height:1;color:#f1e7cf}
-.lbyname{font-family:var(--font-flav);font-style:italic;font-size:19px;color:var(--seagreen);margin-top:4px}
-.lquote{font-family:var(--font-flav);font-style:italic;font-size:14.5px;color:#8d8168;
-  margin:14px 0 18px;padding-left:13px;border-left:2px solid rgba(158,43,37,.55);line-height:1.5}
-.trait{margin-bottom:15px}
-.trait .th{font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.24em;
-  text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:9px}
-.trait .th::after{content:'';flex:1;height:1px;background:currentColor;opacity:.2}
-.trait.passive .th{color:var(--seagreen)}
-.trait.ability .th{color:var(--stat-cha)}
-.trait .tn{font-family:var(--font-display);font-size:17.5px;color:#e8dcc0;margin-bottom:3px}
-.trait p{font-size:14.2px;line-height:1.5;color:#a4977c}
-.trait p b{color:#dccfb2;font-weight:500}
-.cost-tag{display:inline-block;vertical-align:middle;font-family:var(--font-small);font-weight:800;
-  font-size:10px;letter-spacing:.1em;background:var(--stat-cha);color:#1a1208;padding:2px 7px;margin-left:8px}
-.lstats{display:flex;margin-top:16px;border-top:1px solid #3a342a;padding-top:14px}
-.lstat{flex:1;text-align:center;position:relative}
-.lstat + .lstat::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:1px;background:#332e25}
-.lstat .sv{font-family:var(--font-display);font-size:25px;line-height:1}
-.lstat .sn{font-family:var(--font-small);font-weight:700;font-size:8.5px;letter-spacing:.19em;
-  text-transform:uppercase;margin-top:4px}
+.leadercard::before{content:'';position:absolute;inset:0;border-radius:calc(var(--card-radius) * 1.15);
+  pointer-events:none;background-image:var(--grain);opacity:.3;mix-blend-mode:multiply}
+.a-nograin .leadercard::before{display:none}
+.leadercard::after{content:'';position:absolute;inset:10px;border-radius:calc(var(--card-radius) * 1.15 - 6px);
+  pointer-events:none;border:2px solid rgba(20,16,12,.82);
+  box-shadow:0 0 0 1.5px var(--vellum), 0 0 0 3px rgba(20,16,12,.42)}
+.leadercard .rivet.tl{top:16px;left:16px}.leadercard .rivet.tr{top:16px;right:16px}
+.leadercard .rivet.bl{bottom:16px;left:16px}.leadercard .rivet.br{bottom:16px;right:16px}
+.lcinner{position:relative;z-index:5;height:100%;display:flex;flex-direction:column;padding:15px 16px 12px}
+.lckick{font-family:var(--font-small);font-weight:800;font-size:9px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--madder);display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.lckick::after{content:'';flex:1;height:1px;background:currentColor;opacity:.35}
+.lcname{font-family:var(--font-display);font-size:calc(var(--title-size) * 1.32);line-height:1;color:var(--ink)}
+.lcby{font-family:var(--font-flav);font-style:italic;font-size:16.5px;color:var(--seagreen);margin-top:3px}
+.lcart{position:relative;width:100%;aspect-ratio:5/4;overflow:hidden;margin-top:10px;flex:0 0 auto;
+  border:1.5px solid rgba(20,16,12,.85);background:#cdc0a2}
+.lcart img{width:100%;height:100%;object-fit:cover;display:block}
+.a-woodcut .lcart img{filter:sepia(.28) contrast(1.1) saturate(.8)}
+.lcart::after{content:'';position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 24px rgba(60,44,20,.42), inset 0 2px 5px rgba(0,0,0,.3)}
+.lcart .mono{position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--font-display);font-size:84px;color:rgba(20,16,12,.28)}
+.lcstats{display:flex;gap:5px;margin-top:10px}
+.lcstat{flex:1;text-align:center}
+.lcstat .pl{height:38px;display:grid;place-items:center;background:var(--ps);
+  clip-path:polygon(50% 0,100% 22%,100% 78%,50% 100%,0 78%,0 22%);
+  font-family:var(--font-small);font-weight:800;font-size:15px;color:#f5ecd6;
+  text-shadow:0 1px 1px rgba(0,0,0,.5)}
+.lcstat .pn{font-family:var(--font-small);font-weight:700;font-size:7.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-soft);margin-top:3px}
+.lcrules{flex:1;display:flex;flex-direction:column;margin-top:11px;min-height:0}
+.lcpass .clbl{color:var(--seagreen)}
+.lcpass .bn,.lcab .bn{font-family:var(--font-display);font-size:16.5px;margin-bottom:2px}
+.lcpass p,.lcab p{font-size:12.8px;line-height:1.4;color:var(--ink-soft)}
+.lcpass p b,.lcab p b{color:var(--ink)}
+.lcdia{width:9px;height:9px;flex:0 0 auto;transform:rotate(45deg);background:var(--ink)}
+.lcab{--plate:var(--stat-cha)}
+.lcab .clbl{color:var(--plate)}
+.lcab .clbl .tgt{background:var(--plate);color:#f5ecd6;padding:1.5px 6px;letter-spacing:.1em}
 .ldeck{width:100%;max-width:760px}
 .ldeck h4{font-family:var(--font-small);font-weight:800;font-size:9.5px;letter-spacing:.24em;
   text-transform:uppercase;color:#6f6046;margin:16px 0 8px;display:flex;gap:10px;align-items:center}
@@ -493,9 +530,15 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   background:radial-gradient(100% 60% at 50% 0%, #221c13 0%, transparent 70%),
     repeating-linear-gradient(90deg, transparent 0 158px, rgba(0,0,0,.5) 158px 160px, rgba(255,235,190,.02) 160px 163px),
     var(--chest)}
-.asample{display:flex;flex-direction:column;gap:12px;align-items:center}
+.asample{display:flex;flex-direction:column;gap:12px;align-items:center;position:relative}
+.asample:hover{z-index:8}
 .asample .cap{font-family:var(--font-small);font-weight:800;font-size:9px;letter-spacing:.3em;
   text-transform:uppercase;color:#6f6046}
+/* the leader sample demos the in-game behaviour: compact in play, raised on hover */
+.hoverdemo{height:calc(var(--leader-h) * .62 + 8px);cursor:zoom-in}
+.hoverdemo > *{transform:scale(.62);transform-origin:top center;
+  transition:transform .32s cubic-bezier(.19,1,.22,1)}
+.hoverdemo:hover > *{transform:scale(1)}
 
 /* help / empty states */
 .empty{max-width:430px;margin:60px auto;text-align:center;color:var(--tx-dim)}
@@ -554,8 +597,9 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   <div class="aview">
     <aside class="acontrols">
       <h3>Card Anatomy</h3>
-      <p class="lead">The shared template every card is struck from. Change it here once —
-        every card in the chest follows. Card authors never touch this.</p>
+      <p class="lead">The shared template every card is struck from — three physical stocks,
+        board-game style: <b>leaders large</b>, <b>crew &amp; tactics on one deck</b>,
+        <b>items small</b>. Change it here once — every card follows. Card authors never touch this.</p>
 
       <details class="agroup" open><summary>The three inks &amp; stock</summary>
         <div class="abody">
@@ -574,6 +618,29 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
           <div class="arow"><label>Constitution</label><input type="color" data-ana="statCON"></div>
           <div class="arow"><label>Charisma</label><input type="color" data-ana="statCHA"></div>
           <div class="arow"><label>Luck</label><input type="color" data-ana="statLUK"></div>
+        </div>
+      </details>
+
+      <details class="agroup" open><summary>Formats — the three stocks</summary>
+        <div class="abody">
+          <div class="arow"><label>Leaders</label>
+            <select data-ana="leaderFormat">
+              <option value="tarot">Tarot · 70×120 mm</option>
+              <option value="large">Large · 89×127 mm</option>
+              <option value="poker">Poker · 63.5×89 mm</option>
+            </select></div>
+          <div class="arow"><label>Deck — crew &amp; tactics</label>
+            <select data-ana="deckFormat">
+              <option value="poker">Poker · 63.5×89 mm</option>
+              <option value="bridge">Bridge · 57×89 mm</option>
+              <option value="tarot">Tarot · 70×120 mm</option>
+            </select></div>
+          <div class="arow"><label>Items</label>
+            <select data-ana="itemFormat">
+              <option value="miniUS">Mini · 41×63 mm</option>
+              <option value="miniEU">Mini EU · 44×68 mm</option>
+              <option value="poker">Poker · 63.5×89 mm</option>
+            </select></div>
         </div>
       </details>
 
@@ -636,9 +703,21 @@ const AREAS = ['Hull','Sail','Weapons','Cargo','Crew'];
 const BANDS = ['far','normal','close'];
 const LS_KEY = 'vv-forge-v1';
 
+/* board-game stock, in millimetres; rendered at 5.92 px/mm (poker = 376px wide) */
+const PXMM = 5.92;
+const FORMATS = {
+  poker:[63.5,88.9], bridge:[57,88.9], tarot:[70,120],
+  large:[88.9,127], miniUS:[41,63.5], miniEU:[44,68]
+};
+const FORMAT_LABEL = {
+  poker:'Poker · 63.5×89 mm', bridge:'Bridge · 57×89 mm', tarot:'Tarot · 70×120 mm',
+  large:'Large · 89×127 mm', miniUS:'Mini · 41×63 mm', miniEU:'Mini EU · 44×68 mm'
+};
+
 const DEFAULT_ANATOMY = {
   ink:'#14100c', madder:'#9e2b25', seagreen:'#3e6b63', vellum:'#e3d8be', iron:'#33302a',
   statSTR:'#9e2b25', statDEX:'#3e6b63', statCON:'#3d4a55', statCHA:'#96662a', statLUK:'#6b3a4a',
+  leaderFormat:'tarot', deckFormat:'poker', itemFormat:'miniUS',
   radius:11, titleSize:22, sureSize:14.4, rollSize:13.4,
   displayFont:"'IM Fell English SC',serif",
   rivets:true, showRange:true, showOdds:true, showFlav:true, grain:true, woodcut:false
@@ -720,6 +799,8 @@ try{
   DB = raw ? JSON.parse(raw) : seedDB();
   if(!DB.v) throw 0;
 }catch(e){ DB = seedDB(); }
+/* forward-migrate anatomies saved before a token existed */
+DB.anatomy = Object.assign({}, DEFAULT_ANATOMY, DB.anatomy || {});
 
 let sel = null;                       // {type:'card'|'leader'|'spec'|'consumable', id}
 let previewOpts = {scale:1, injured:false};
@@ -765,6 +846,13 @@ function applyAnatomy(){
   r.setProperty('--iron',a.iron);
   r.setProperty('--iron-hi', mix(a.iron,'#c9c2b4',.42));
   STATS.forEach(s=>r.setProperty('--stat-'+s.toLowerCase(), a['stat'+s]));
+  const px = mm => Math.round(mm*PXMM)+'px';
+  const [dw,dh] = FORMATS[a.deckFormat]||FORMATS.poker;
+  const [lw,lh] = FORMATS[a.leaderFormat]||FORMATS.tarot;
+  const [iw,ih] = FORMATS[a.itemFormat]||FORMATS.miniUS;
+  r.setProperty('--deck-w',px(dw));   r.setProperty('--deck-h',px(dh));
+  r.setProperty('--leader-w',px(lw)); r.setProperty('--leader-h',px(lh));
+  r.setProperty('--item-w',px(iw));   r.setProperty('--item-h',px(ih));
   r.setProperty('--card-radius',a.radius+'px');
   r.setProperty('--title-size',a.titleSize+'px');
   r.setProperty('--sure-size',a.sureSize+'px');
@@ -851,17 +939,22 @@ function renderScrapEl(c){
   return el;
 }
 
-function renderPouchEl(k){
+function renderItemEl(k){
   const el = document.createElement('article');
-  el.className = 'pouch';
+  el.className = 'itemcard';
+  const art = k.art ? `<img src="${k.art}" alt="">` : `<span class="iglyph">${esc(k.glyph)}</span>`;
   el.innerHTML = `
-    <div class="ph">
-      <div class="glyph">${esc(k.glyph)}</div>
-      <div><div class="pn">${esc(k.name)}</div><div class="pk">Consumable · one use</div></div>
-      <div class="pcost">${k.cost} ⚡</div>
-    </div>
-    <p>${k.text||''}</p>
-    <div class="pfoot">Spent forever when used · never drawn, always available</div>`;
+    <span class="rivet tl"></span><span class="rivet tr"></span>
+    <span class="rivet bl"></span><span class="rivet br"></span>
+    <div class="iinner">
+      <div class="ihead">
+        <div class="icost">${k.cost}</div>
+        <div><div class="ititle">${esc(k.name)}</div><div class="isub">Consumable · one use</div></div>
+      </div>
+      <div class="iart">${art}</div>
+      <div class="ibody">${k.text||''}</div>
+      <div class="ifoot"><span>Never drawn</span><span>Spent forever</span></div>
+    </div>`;
   return el;
 }
 
@@ -878,34 +971,43 @@ function renderSpecEl(s){
   return el;
 }
 
-function renderLeaderEl(l){
-  const wrap = document.createElement('div');
-  wrap.style.cssText='display:flex;flex-direction:column;gap:0;width:100%;max-width:760px';
+function renderLeaderCardEl(l){
   const el = document.createElement('article');
-  el.className='leader';
+  el.className = 'leadercard';
   const stats = STATS.map(s=>`
-    <div class="lstat"><div class="sv" style="color:${STAT_TINT[s]}">${l.stats[s]}</div>
-    <div class="sn" style="color:${STAT_TINT[s]}">${STAT_LABEL[s]}</div></div>`).join('');
+    <div class="lcstat"><div class="pl" style="--ps:var(--stat-${s.toLowerCase()})">${l.stats[s]}</div>
+    <div class="pn">${STAT_LABEL[s]}</div></div>`).join('');
   el.innerHTML = `
-    <div class="lportrait">${l.portrait?`<img src="${l.portrait}" alt="">`:`<div class="mono">${esc(l.name[0]||'?')}</div>`}</div>
-    <div class="lbody">
-      <div class="lrank">Leader · The Captain</div>
-      <div class="lname">${esc(l.name)}</div>
-      <div class="lbyname">${esc(l.epithet)}</div>
-      <p class="lquote">${esc(l.quote)}</p>
-      <div class="trait passive">
-        <div class="th">Always active</div>
-        <div class="tn">${esc(l.passiveName)}</div>
-        <p>${l.passiveText||''}</p>
+    <span class="rivet tl"></span><span class="rivet tr"></span>
+    <span class="rivet bl"></span><span class="rivet br"></span>
+    <div class="lcinner">
+      <div class="lckick">Leader · The Captain</div>
+      <div class="lcname">${esc(l.name)}</div>
+      <div class="lcby">${esc(l.epithet)}</div>
+      <div class="lcart">${l.portrait?`<img src="${l.portrait}" alt="">`:`<div class="mono">${esc(l.name[0]||'?')}</div>`}</div>
+      <div class="lcstats">${stats}</div>
+      <div class="lcrules">
+        <div class="lcpass">
+          <div class="clbl">Always active</div>
+          <div class="bn">${esc(l.passiveName)}</div>
+          <p>${l.passiveText||''}</p>
+        </div>
+        <div class="csplit"><i></i><span class="lcdia"></span><i></i></div>
+        <div class="lcab">
+          <div class="clbl"><span class="tgt">${l.abilityCost} ⚡</span> once per turn</div>
+          <div class="bn">${esc(l.abilityName)}</div>
+          <p>${l.abilityText||''}</p>
+        </div>
       </div>
-      <div class="trait ability">
-        <div class="th">Leader ability · once per turn <span class="cost-tag">${l.abilityCost} energy</span></div>
-        <div class="tn">${esc(l.abilityName)}</div>
-        <p>${l.abilityText||''}</p>
+      <div class="cfoot">
+        <div class="ctype">Leader — never drawn</div>
+        <div class="cflav">${esc(l.quote)}</div>
       </div>
-      <div class="lstats">${stats}</div>
     </div>`;
-  wrap.appendChild(el);
+  return el;
+}
+
+function deckListEl(l){
   const deck = document.createElement('div');
   deck.className='ldeck';
   const rows = (l.deck||[]).map(d=>{
@@ -914,8 +1016,7 @@ function renderLeaderEl(l){
   }).join('');
   const total = (l.deck||[]).reduce((n,d)=>n+(cardById(d.cardId)?d.count:0),0);
   deck.innerHTML = `<h4>Starting deck · ${total} cards</h4>${rows||'<div class="drow"><span class="cn" style="font-style:italic;color:#6f6046">Empty — add cards in the editor</span></div>'}`;
-  wrap.appendChild(deck);
-  return wrap;
+  return deck;
 }
 
 /* ═══════════════════ LIBRARY ═══════════════════ */
@@ -1036,12 +1137,13 @@ function negForm(c){
 function pouchForm(k){
   return `
   <div class="ehead"><span class="kind">Consumable</span><h2>${esc(k.name||'Untitled')}</h2>${headBtns()}</div>
-  <p class="esub">One use, ever. Never drawn, always available, shares the energy pool — and never lifts the prize's drawback.</p>
+  <p class="esub">One use, ever. Never drawn, always available, shares the energy pool — and never lifts the prize's drawback. Printed on the small item stock.</p>
   <div class="fgrid">
     ${fld('Name', txt('name',k.name))}
-    ${fld('Glyph <small>· one character</small>', txt('glyph',k.glyph))}
+    ${fld('Glyph <small>· the stamp when there is no art</small>', txt('glyph',k.glyph))}
     ${fld('Energy cost', num('cost',k.cost,0,3))}
     ${fld('Effect', area2('text',k.text), true)}
+    ${fld('Art <small>· optional</small>', artWidget(k,'art'), true)}
   </div>`;
 }
 
@@ -1150,14 +1252,18 @@ function buildPreview(){
   if(sel.type==='card'){ const c=cardById(sel.id);
     if(c) el = c.kind==='negative' ? renderScrapEl(c) : renderCardEl(c,{injured:previewOpts.injured&&c.kind==='crew'});
   }
-  if(sel.type==='consumable'){ const k=DB.consumables.find(x=>x.id===sel.id); if(k) el = renderPouchEl(k); }
+  if(sel.type==='consumable'){ const k=DB.consumables.find(x=>x.id===sel.id); if(k) el = renderItemEl(k); }
   if(sel.type==='spec'){ const s=specById(sel.id); if(s){
     el = document.createElement('div'); el.style.cssText='display:flex;flex-direction:column;gap:26px;align-items:center';
     el.appendChild(renderSpecEl(s));
     const sig = s.cardId && cardById(s.cardId);
     if(sig) el.appendChild(renderCardEl(sig,{}));
   }}
-  if(sel.type==='leader'){ const l=DB.leaders.find(x=>x.id===sel.id); if(l) el = renderLeaderEl(l); }
+  if(sel.type==='leader'){ const l=DB.leaders.find(x=>x.id===sel.id); if(l){
+    el = document.createElement('div'); el.style.cssText='display:flex;flex-direction:column;gap:20px;align-items:center;width:100%';
+    el.appendChild(renderLeaderCardEl(l));
+    el.appendChild(deckListEl(l));
+  }}
   if(el) box.appendChild(el);
 }
 
@@ -1375,13 +1481,22 @@ function buildAnatomyStage(){
   const mk = (cap, el)=>{ const d=document.createElement('div'); d.className='asample';
     d.appendChild(el); const c=document.createElement('div'); c.className='cap'; c.textContent=cap;
     d.prepend(c); st.appendChild(d); };
+  const a = DB.anatomy;
   const tactic = DB.cards.find(c=>c.kind==='tactic');
   const crew = DB.cards.find(c=>c.kind==='crew');
   const neg = DB.cards.find(c=>c.kind==='negative');
-  if(tactic) mk('Tactic — clean vellum', renderCardEl(tactic));
+  const item = DB.consumables[0];
+  const leader = DB.leaders[0];
+  if(leader){
+    const hd = document.createElement('div'); hd.className='hoverdemo';
+    hd.appendChild(renderLeaderCardEl(leader));
+    mk(`Leader — ${FORMAT_LABEL[a.leaderFormat]} · hover to raise`, hd);
+  }
+  if(tactic) mk(`Tactic — ${FORMAT_LABEL[a.deckFormat]}`, renderCardEl(tactic));
   if(crew) mk('Crew — warmer stock, sealed', renderCardEl(crew));
   if(crew) mk('The same card, injured', renderCardEl(crew,{injured:true}));
-  if(neg) mk('Negative — torn scrap', renderScrapEl(neg));
+  if(neg) mk('Negative — torn scrap, deck-sized', renderScrapEl(neg));
+  if(item) mk(`Item — ${FORMAT_LABEL[a.itemFormat]}`, renderItemEl(item));
 }
 document.querySelectorAll('[data-ana]').forEach(inp=>{
   inp.addEventListener('input', ()=>{
@@ -1389,6 +1504,7 @@ document.querySelectorAll('[data-ana]').forEach(inp=>{
     DB.anatomy[k] = inp.type==='checkbox' ? inp.checked
                   : inp.type==='range' ? +inp.value : inp.value;
     applyAnatomy(); syncAnaVals(); saveSoon();
+    if(k.endsWith('Format')) buildAnatomyStage();   /* captions carry the mm */
   });
 });
 $('#anaReset').onclick = ()=>{
