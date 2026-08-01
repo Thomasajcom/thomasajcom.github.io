@@ -28,7 +28,7 @@ catch(e){document.documentElement.setAttribute('data-theme','light');}</script>
   --madder:#9e2b25; --seagreen:#3e6b63;
   --vellum:#e3d8be; --vellum-hi:#efe6d1; --vellum-lo:#cabd9d; --vellum-crew:#e7dcc0;
   --iron:#33302a; --iron-hi:#6c675c;
-  --stat-str:#9e2b25; --stat-dex:#3e6b63; --stat-con:#3d4a55; --stat-cha:#96662a; --stat-luk:#6b3a4a;
+  --stat-str:#9e2b25; --stat-dex:#a8851c; --stat-con:#4e6b30; --stat-cha:#6e4a7a; --stat-luk:#3e6b63;
   --card-radius:11px; --title-size:22px; --sure-size:14.4px; --roll-size:13.4px;
   /* the three stocks — set from the anatomy's formats at runtime (px = mm × 5.92) */
   --deck-w:376px; --deck-h:526px;
@@ -726,7 +726,6 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 /* ═══════════════════ CONSTANTS ═══════════════════ */
 const STATS = ['STR','DEX','CON','CHA','LUK'];
 const STAT_LABEL = {STR:'Str',DEX:'Dex',CON:'Con',CHA:'Cha',LUK:'Luck'};
-const STAT_TINT = {STR:'#c85c52',DEX:'#6ba295',CON:'#7b8b96',CHA:'#d09a4a',LUK:'#a4788a'};
 const AREAS = ['Hull','Sail','Weapons','Cargo','Crew'];
 const BANDS = ['far','normal','close'];
 const LS_KEY = 'vv-forge-v1';
@@ -744,7 +743,7 @@ const FORMAT_LABEL = {
 
 const DEFAULT_ANATOMY = {
   ink:'#14100c', madder:'#9e2b25', seagreen:'#3e6b63', vellum:'#e3d8be', iron:'#33302a',
-  statSTR:'#9e2b25', statDEX:'#3e6b63', statCON:'#3d4a55', statCHA:'#96662a', statLUK:'#6b3a4a',
+  statSTR:'#9e2b25', statDEX:'#a8851c', statCON:'#4e6b30', statCHA:'#6e4a7a', statLUK:'#3e6b63',
   leaderFormat:'tarot', deckFormat:'poker', itemFormat:'miniUS',
   radius:11, titleSize:22, sureSize:14.4, rollSize:13.4,
   displayFont:"'IM Fell English SC',serif",
@@ -837,6 +836,11 @@ DB.anatomy = Object.assign({}, DEFAULT_ANATOMY, DB.anatomy || {});
   const SEED_FACES = {'sp-bersi':'art/crew-shipwright.jpg','sp-hjalmar':'art/crew-navigator.jpg',
     'sp-sigrun':'art/crew-sigrun-bow-hand.jpg','sp-ragna':'art/crew-quartermaster.jpg'};
   (DB.specialists||[]).forEach(sp=>{ if(!sp.portrait && SEED_FACES[sp.id]) sp.portrait = SEED_FACES[sp.id]; });
+  /* the stat palette changed (dex→gold, con→moss, cha→violet, luck→sea-green);
+     chests still carrying an old default follow along — customised values stay */
+  const RECOLOR = {statDEX:['#3e6b63','#a8851c'], statCON:['#3d4a55','#4e6b30'],
+    statCHA:['#96662a','#6e4a7a'], statLUK:['#6b3a4a','#3e6b63']};
+  Object.entries(RECOLOR).forEach(([k,[o,n]])=>{ if(DB.anatomy[k]===o) DB.anatomy[k]=n; });
 }
 
 let sel = null;                       // {type:'card'|'leader'|'spec'|'consumable', id}
