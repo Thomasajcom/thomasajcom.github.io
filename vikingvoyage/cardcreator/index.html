@@ -162,6 +162,17 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 .lrow.on .t{color:var(--tx-bright)}
 .lrow .m{font-family:var(--font-small);font-weight:700;font-size:9px;letter-spacing:.06em;color:var(--faint);
   flex:0 1 auto;max-width:46%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* a class with several people folds into a group */
+.grow{display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;
+  border-left:2px solid transparent;user-select:none}
+.grow:hover{background:var(--hov)}
+.grow .car{width:10px;text-align:center;font-size:8px;color:var(--faint);transition:transform .15s}
+.grow.open .car{transform:rotate(90deg)}
+.grow .gt{font-family:var(--font-small);font-weight:800;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--tx)}
+.grow .gn{font-family:var(--font-small);font-weight:800;font-size:9px;color:var(--faint)}
+.grow.hassel{border-left-color:var(--madder)}
+.lrow.sub{padding-left:36px}
 .lib .foot{
   padding:10px 12px;border-top:1px solid var(--line-soft);
   font-family:var(--font-small);font-weight:700;font-size:9px;letter-spacing:.13em;
@@ -1028,6 +1039,12 @@ function save(){
 }
 let saveT; const saveSoon = () => { clearTimeout(saveT); saveT = setTimeout(save, 300); };
 
+/* which specialist classes are folded shut in the rail */
+const FOLD_KEY = 'vv-forge-specfold';
+const specFold = () => { try{ return JSON.parse(localStorage.getItem(FOLD_KEY))||{}; }catch(e){ return {}; } };
+const setFold = f => { try{ localStorage.setItem(FOLD_KEY, JSON.stringify(f)); }catch(e){} };
+const unfoldRole = r => { const f = specFold(); if(f[r]){ delete f[r]; setFold(f); } };
+
 const cardById = id => DB.cards.find(c=>c.id===id);
 const specById = id => DB.specialists.find(s=>s.id===id);
 
@@ -1243,13 +1260,35 @@ function buildLib(){
 
   groups.push({name:'Leaders', add:'leader',
     rows: DB.leaders.filter(l=>match(l.name+' '+l.epithet)).map(l=>libRow('leader',l.id,l.name+' '+l.epithet,'', KIND_CHIP.leader))});
-  /* class before name: there will be several people of each type, so the rail
-     leads with the role and clusters same-class specialists together */
-  groups.push({name:'Specialists', add:'spec',
-    rows: [...DB.specialists]
-      .sort((a,b)=>(a.role||'').localeCompare(b.role||'') || (a.name||'').localeCompare(b.name||''))
-      .filter(s=>match(s.name+' '+s.role))
-      .map(s=>libRow('spec',s.id,s.role||'—',s.name, KIND_CHIP.spec))});
+  /* Class before name: there will be several people of each type. A class with
+     one member is a plain row; a class with more folds into a group. While a
+     search is active every group is held open so matches can't hide. */
+  const fold = specFold();
+  const byRole = {};
+  [...DB.specialists]
+    .sort((a,b)=>(a.role||'').localeCompare(b.role||'') || (a.name||'').localeCompare(b.name||''))
+    .forEach(sp=>{ const k = sp.role||'—'; (byRole[k]=byRole[k]||[]).push(sp); });
+  const specRows = [];
+  Object.keys(byRole).sort((a,b)=>a.localeCompare(b)).forEach(role=>{
+    const all = byRole[role];
+    const members = all.filter(sp=>match(sp.name+' '+sp.role));
+    if(!members.length) return;
+    if(all.length > 1){
+      const isOpen = q ? true : !fold[role];
+      const hasSel = sel && sel.type==='spec' && all.some(m=>m.id===sel.id);
+      specRows.push(`<div class="grow ${isOpen?'open':''} ${hasSel&&!isOpen?'hassel':''}" data-fold="${esc(role)}">
+        <span class="chip" style="background:#3d4a55">S</span>
+        <span class="car">▶</span><span class="gt">${esc(role)}</span><span class="gn">${all.length}</span></div>`);
+      if(isOpen) members.forEach(m=>{
+        const on = sel && sel.type==='spec' && sel.id===m.id;
+        specRows.push(`<div class="lrow sub ${on?'on':''}" data-type="spec" data-id="${m.id}">
+          <span class="t">${esc(m.name)}</span><span class="m">Lv ${m.level??1}</span></div>`);
+      });
+    }else{
+      members.forEach(m=>specRows.push(libRow('spec',m.id,m.role||'—',m.name, KIND_CHIP.spec)));
+    }
+  });
+  groups.push({name:'Specialists', add:'spec', rows: specRows});
   groups.push({name:'Crew cards', add:'crew',
     rows: DB.cards.filter(c=>c.kind==='crew'&&match(c.title)).map(c=>libRow('card',c.id,c.title,`${c.stat} ${c.cost}⚡`, KIND_CHIP.crew))});
   groups.push({name:'Tactics', add:'tactic',
@@ -1367,7 +1406,12 @@ function specForm(s){
   <p class="esub">A named individual with light presence. Levels attach to the <b>type</b>; the signature card is shared by everyone of that type.</p>
   <div class="fgrid">
     ${fld('Name', txt('name',s.name))}
-    ${fld('Role <small>· the type that levels</small>', txt('role',s.role))}
+    ${fld('Class <small>· the type that levels</small>', (()=>{
+      const roles = [...new Set(DB.specialists.map(x=>x.role).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+      return `<select data-rolepick>${roles.map(r=>
+        `<option value="${esc(r)}" ${s.role===r?'selected':''}>${esc(r)}</option>`).join('')}
+        <option value="__new__">＋ New class…</option></select>`;
+    })())}
     ${fld('Station area', `<select data-k="area">${AREAS.map(a=>`<option ${s.area===a?'selected':''}>${a}</option>`).join('')}</select>`)}
     ${fld('Type level <small>1–5</small>', num('level',s.level,1,5))}
     ${fld('Ability line <small>· shows on the roster</small>', txt('ability',s.ability))}
@@ -1520,6 +1564,20 @@ function buildEditor(){
       if(sel.type==='card' && (inp.dataset.k==='ownerId'||inp.dataset.k==='stat')) buildEditor(); });
   });
 
+  /* the class picker: existing classes, or forge a new one */
+  const rp = $('#editor').querySelector('[data-rolepick]');
+  if(rp) rp.onchange = ()=>{
+    if(rp.value==='__new__'){
+      const v = (prompt('Name the new class (e.g. Healer):')||'').trim();
+      if(!v){ buildEditor(); return; }          /* cancelled — the select resets */
+      o.role = v;
+    }else{
+      o.role = rp.value;
+    }
+    unfoldRole(o.role);
+    save(); buildLib(); buildEditor();
+  };
+
   /* band cycle: off -> on -> best */
   $('#editor').querySelectorAll('[data-band]').forEach(bp=>{
     bp.onclick = ()=>{
@@ -1593,6 +1651,7 @@ function buildEditor(){
     if(copy.title) copy.title += ' (copy)';
     if(copy.name) copy.name += ' (copy)';
     ({card:DB.cards, consumable:DB.consumables, spec:DB.specialists, leader:DB.leaders})[sel.type].push(copy);
+    if(sel.type==='spec') unfoldRole(copy.role);
     sel = {type:sel.type, id:copy.id};
     save(); buildLib(); buildEditor();
   };
@@ -1658,8 +1717,9 @@ function makeNew(kind){
     DB.consumables.push(k); sel={type:'consumable',id:k.id};
   }
   if(kind==='spec'){
-    const s = {id:uid('sp'), name:'New Specialist', role:'Role', area:'Hull', level:1,
+    const s = {id:uid('sp'), name:'New Specialist', role:'Unassigned', area:'Hull', level:1,
       portrait:'', ability:'Signature move', cardId:null};
+    unfoldRole(s.role);
     DB.specialists.push(s); sel={type:'spec',id:s.id};
   }
   if(kind==='leader'){
@@ -1810,6 +1870,13 @@ document.querySelectorAll('.tab').forEach(t=>{
 $('#libScroll').addEventListener('click', e=>{
   const add = e.target.closest('[data-add]');
   if(add){ makeNew(add.dataset.add); return; }
+  const g = e.target.closest('.grow');
+  if(g){
+    if(($('#libSearch').value||'').trim()) return;   /* held open during search */
+    const f = specFold();
+    f[g.dataset.fold] ? delete f[g.dataset.fold] : f[g.dataset.fold]=true;
+    setFold(f); buildLib(); return;
+  }
   const row = e.target.closest('.lrow'); if(!row) return;
   sel = {type:row.dataset.type, id:row.dataset.id};
   previewOpts.injured = false;
