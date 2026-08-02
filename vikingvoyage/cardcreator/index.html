@@ -160,7 +160,8 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 }
 .lrow .t{flex:1;min-width:0;font-size:13.6px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lrow.on .t{color:var(--tx-bright)}
-.lrow .m{font-family:var(--font-small);font-weight:700;font-size:9px;letter-spacing:.06em;color:var(--faint)}
+.lrow .m{font-family:var(--font-small);font-weight:700;font-size:9px;letter-spacing:.06em;color:var(--faint);
+  flex:0 1 auto;max-width:46%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lib .foot{
   padding:10px 12px;border-top:1px solid var(--line-soft);
   font-family:var(--font-small);font-weight:700;font-size:9px;letter-spacing:.13em;
@@ -1242,8 +1243,13 @@ function buildLib(){
 
   groups.push({name:'Leaders', add:'leader',
     rows: DB.leaders.filter(l=>match(l.name+' '+l.epithet)).map(l=>libRow('leader',l.id,l.name+' '+l.epithet,'', KIND_CHIP.leader))});
+  /* class before name: there will be several people of each type, so the rail
+     leads with the role and clusters same-class specialists together */
   groups.push({name:'Specialists', add:'spec',
-    rows: DB.specialists.filter(s=>match(s.name+' '+s.role)).map(s=>libRow('spec',s.id,s.name,s.role, KIND_CHIP.spec))});
+    rows: [...DB.specialists]
+      .sort((a,b)=>(a.role||'').localeCompare(b.role||'') || (a.name||'').localeCompare(b.name||''))
+      .filter(s=>match(s.name+' '+s.role))
+      .map(s=>libRow('spec',s.id,s.role||'—',s.name, KIND_CHIP.spec))});
   groups.push({name:'Crew cards', add:'crew',
     rows: DB.cards.filter(c=>c.kind==='crew'&&match(c.title)).map(c=>libRow('card',c.id,c.title,`${c.stat} ${c.cost}⚡`, KIND_CHIP.crew))});
   groups.push({name:'Tactics', add:'tactic',
@@ -1293,7 +1299,9 @@ function headBtns(){
 
 function cardForm(c){
   const isCrew = c.kind==='crew';
-  const specOpts = DB.specialists.map(s=>`<option value="${s.id}" ${c.ownerId===s.id?'selected':''}>${esc(s.name)} — ${esc(s.role)}</option>`).join('');
+  const specOpts = [...DB.specialists]
+    .sort((a,b)=>(a.role||'').localeCompare(b.role||'') || (a.name||'').localeCompare(b.name||''))
+    .map(s=>`<option value="${s.id}" ${c.ownerId===s.id?'selected':''}>${esc(s.role)} — ${esc(s.name)}</option>`).join('');
   return `
   <div class="ehead"><span class="kind">${isCrew?'Crew signature card':'Tactic'}</span>
     <h2>${esc(c.title||'Untitled')}</h2>${headBtns()}</div>
@@ -1355,7 +1363,7 @@ function specForm(s){
   const cardOpts = DB.cards.filter(c=>c.kind==='crew').map(c=>
     `<option value="${c.id}" ${s.cardId===c.id?'selected':''}>${esc(c.title)}</option>`).join('');
   return `
-  <div class="ehead"><span class="kind">Specialist</span><h2>${esc(s.name||'Unnamed')}</h2>${headBtns()}</div>
+  <div class="ehead"><span class="kind">Specialist — ${esc(s.role||'no class')}</span><h2>${esc(s.name||'Unnamed')}</h2>${headBtns()}</div>
   <p class="esub">A named individual with light presence. Levels attach to the <b>type</b>; the signature card is shared by everyone of that type.</p>
   <div class="fgrid">
     ${fld('Name', txt('name',s.name))}
