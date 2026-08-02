@@ -586,13 +586,46 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 .helpbox .close{position:absolute;top:8px;right:11px;color:var(--faint);font-size:15px}
 .helpbox .wipe{color:#7a4a40;text-decoration:underline dotted;cursor:pointer}
 
+/* ── the decided-list: what the game IS, one click from anywhere ── */
+.brand{cursor:pointer}
+.brand:hover .b2{color:#d0564a}
+.lorescrim{position:fixed;inset:0;z-index:80;background:rgba(8,6,4,.55);display:none}
+.lorescrim.show{display:block}
+.lorebox{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:90;
+  width:min(780px,94vw);max-height:86vh;display:none;flex-direction:column;
+  background:var(--panel2);border:1px solid var(--line);border-radius:6px;
+  box-shadow:0 40px 90px rgba(0,0,0,.75);
+}
+.lorebox.show{display:flex}
+.lorehead{display:flex;align-items:baseline;gap:12px;padding:16px 22px 13px;
+  border-bottom:1px solid var(--line-soft)}
+.lorehead .lt{font-family:var(--font-display);font-size:24px;color:var(--tx-bright)}
+.lorehead .lk{font-family:var(--font-small);font-weight:800;font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--madder)}
+.lorehead .close{margin-left:auto;color:var(--faint);font-size:16px;padding:2px 6px}
+.lorehead .close:hover{color:var(--tx-bright)}
+.lorebody{overflow-y:auto;padding:8px 26px 22px;font-size:14px;line-height:1.5;color:var(--tx)}
+.lorebody .lsub{font-style:italic;color:var(--tx-dim);margin:8px 0 4px}
+.lorebody h4{font-family:var(--font-small);font-weight:800;font-size:10px;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--madder);
+  margin:18px 0 7px;display:flex;align-items:center;gap:10px}
+.lorebody h4::after{content:'';flex:1;height:1px;background:var(--line-soft)}
+.lorebody ul{list-style:none;margin:0;padding:0}
+.lorebody li{position:relative;padding:2px 0 2px 17px}
+.lorebody li::before{content:'';position:absolute;left:2px;top:10px;width:5px;height:5px;
+  transform:rotate(45deg);background:var(--madder);opacity:.8}
+.lorebody b{color:var(--tx-bright);font-weight:500}
+.lorebody .lfoot{margin-top:18px;padding-top:10px;border-top:1px solid var(--line-soft);
+  font-family:var(--font-flav);font-style:italic;font-size:13px;color:var(--tx-dim)}
+
 @media (max-width:1180px){ .stage{flex-basis:420px} .lib{flex-basis:230px} }
 </style>
 </head>
 <body>
 
 <header class="bar">
-  <div class="brand"><span class="b1">Card Forge</span><span class="b2">Viking Voyage</span></div>
+  <div class="brand" id="brandBtn" title="Viking Voyage — what's decided, at a glance"><span class="b1">Card Forge</span><span class="b2">Viking Voyage</span></div>
   <nav class="tabs">
     <button class="tab on" data-view="cards">Card Creator</button>
     <button class="tab" data-view="anatomy">Card Anatomy</button>
@@ -713,6 +746,92 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   <iframe id="smithyFrame" data-src="smithy.html" title="The Smithy — card layout bench"
     style="flex:1;width:100%;border:0;background:#12100c"></iframe>
 </main>
+
+<!-- ═══════════ WHAT'S DECIDED — the game at a glance ═══════════ -->
+<div class="lorescrim" id="loreScrim"></div>
+<div class="lorebox" id="loreBox" role="dialog" aria-label="Viking Voyage — what's decided">
+  <div class="lorehead">
+    <span class="lt">Viking Voyage</span>
+    <span class="lk">What's decided</span>
+    <button class="close" id="loreClose">✕</button>
+  </div>
+  <div class="lorebody">
+    <p class="lsub">The load-bearing decisions, at a glance. The design doc is the source of
+      truth — this is the map, not the territory.</p>
+
+    <h4>The run</h4>
+    <ul>
+      <li>A Viking nautical roguelite: <b>steal a predetermined prize, fight the way home</b>. A full run is 45–60 minutes.</li>
+      <li>Shape: outward voyage (~8 nodes) → <b>the midpoint raid</b> → a 4–5 node <b>sprint home under pursuit</b> → the saga's final battle.</li>
+      <li><b>Three sagas</b>, played in any order, plus a <b>convergence saga</b> once one leader completes all three. The captain always survives; the run doesn't.</li>
+      <li>The prize: a <b>passive boon</b> you see up front; a <b>creeping drawback</b> that emerges on the way home — fixed per saga, never curable, kept in its own protected slot.</li>
+    </ul>
+
+    <h4>Combat, in one breath</h4>
+    <ul>
+      <li><b>Turn-based</b>, unlimited thinking time, the player always acts first.</li>
+      <li>Fights are sharp: <b>2–4 minutes</b> normal, 8–10 for the raid and finale.</li>
+      <li>Every card = <b>a guaranteed effect + a d20 that can only add</b>. There is no failure penalty anywhere in the system.</li>
+      <li>Two thresholds: your stat sets the bonus chance; <b>Luck alone escalates</b> a success into the greater effect. <b>Exact odds are shown before committing.</b></li>
+      <li><b>Enemies never roll.</b> The type of their next action is always visible.</li>
+      <li><b>No escape.</b> The decision to fight is made on the map, and losing a combat ends the run.</li>
+    </ul>
+
+    <h4>Hand &amp; energy</h4>
+    <ul>
+      <li>Draw <b>five</b> at baseline; unplayed cards discard at end of turn.</li>
+      <li><b>One energy pool pays for everything</b> — cards (0–3 ⚡), the leader ability, consumables. Damage and conditions never reduce energy.</li>
+      <li><b>The Speed trade:</b> a faster ship acts more often with a smaller hand and less energy per turn — round totals stay flat. Speed buys timing, never resources.</li>
+      <li>The <b>leader ability</b> is never drawn, always available, once per turn, and eats most of a turn's energy.</li>
+      <li><b>Consumables</b> are one-use forever: always available, energy-costed, never drawn. They lift curses and clear negative cards — <b>never the prize's drawback</b>.</li>
+    </ul>
+
+    <h4>Cards</h4>
+    <ul>
+      <li><b>Flat power: no rarities.</b> All cards are peers — role, range and stat differ, raw strength never does.</li>
+      <li>One exception: <b>crew signature cards</b>, shared per specialist type, which <b>level with use — permanently, across runs</b>.</li>
+      <li>The pool is <b>universal</b> — no saga-specific cards. Decks differ by coherence: range band, captain stat, crew, targeting focus.</li>
+      <li>Cards are never destroyed by playing and replay without limit; the deck reshuffles; a minimum deck size always holds.</li>
+      <li><b>Off-stat cards are never dead:</b> the sure effect always lands in full.</li>
+      <li>Ship upgrades do both jobs: they <b>change the vessel and teach a card</b>.</li>
+    </ul>
+
+    <h4>The ship &amp; the fight</h4>
+    <ul>
+      <li><b>Five areas</b> on every ship, fully symmetric: <b>Hull, Sail, Weapons, Cargo, Crew</b>. Any area can be disabled outright.</li>
+      <li><b>Three range bands</b> — far, normal, close. <b>Facing is not modelled;</b> there is no sideways.</li>
+      <li>Range is contested: shifting costs energy, Sail and Speed push, Constitution resists — and range-shift cards <b>always do something else as well</b>.</li>
+      <li>Your preferred range is <b>a property of your deck</b>, not a rule of the game.</li>
+      <li><b>Sail</b> is deliberately the hardest area to disable. <b>Cargo</b> holds repair supplies and the loot you'd win — a real reason to burn it.</li>
+      <li>Repair is targeted, works even on disabled areas, and every starting deck carries it.</li>
+      <li>Specialists man <b>stations laid out per area</b>. When their area falls they're <b>injured</b> — their cards still draw but can't be played — and lost at combat's end unless the rescue roll (pure upside) saves them.</li>
+      <li>A stripped enemy <b>withdraws with its loot — unless its rigging is gone</b>. Kill the sail to trap the prize; kill the weapons to stop the bleeding.</li>
+      <li>Multi-ship fights have <b>no cap</b>; outnumbered should feel dire. Multi-target cards are uncommon — often the extra target <b>is</b> the roll bonus.</li>
+      <li><b>Surrender</b> exists, driven by nerve and Charisma. Sparing pays cargo, finishing pays salvage — different loot, not less.</li>
+    </ul>
+
+    <h4>Statistics</h4>
+    <ul>
+      <li>Five captain stats — <b>STR, DEX, CON, CHA, LUCK</b> — fixed forever the moment a leader is chosen.</li>
+      <li><b>Five leaders, one championing each stat.</b> Leader choice is the weightiest decision in the game.</li>
+      <li>Luck never makes a thing happen; it only makes a success bigger.</li>
+    </ul>
+
+    <h4>Vocabulary that matters</h4>
+    <ul>
+      <li><b>Drawback</b> = the prize's cost, per saga. <b>Curse</b> = a debuff, never a card. <b>Negative card</b> = junk jammed into the deck that stays until removed — pay energy in combat, silver at port, or spend a consumable.</li>
+    </ul>
+
+    <h4>Cut — do not design for these</h4>
+    <ul>
+      <li><b>No reputation</b> of any kind. <b>No provisions or hunger.</b> <b>No boarding combat.</b></li>
+      <li><b>One difficulty.</b> Veterans get stronger through crew levels and consumables, and the game getting easier over time is intended.</li>
+    </ul>
+
+    <p class="lfoot">All numbers are placeholders — the numbers register lists every quantity as
+      Open. Source of truth: <b>viking-voyage-design-v3.md</b> in the game repo.</p>
+  </div>
+</div>
 
 <div class="helpbox" id="helpBox">
   <button class="close" id="helpClose">✕</button>
@@ -1698,6 +1817,18 @@ function applyTheme(t){
 applyTheme(document.documentElement.getAttribute('data-theme')||'light');
 $('#themeBtn').onclick = ()=>
   applyTheme(document.documentElement.getAttribute('data-theme')==='light' ? 'dark' : 'light');
+/* the decided-list: the brand is the door */
+function loreToggle(on){
+  $('#loreBox').classList.toggle('show', on);
+  $('#loreScrim').classList.toggle('show', on);
+}
+$('#brandBtn').onclick = ()=> loreToggle(true);
+$('#loreClose').onclick = ()=> loreToggle(false);
+$('#loreScrim').onclick = ()=> loreToggle(false);
+addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ loreToggle(false); $('#helpBox').classList.remove('show'); }
+});
+
 $('#btnHelp').onclick = ()=> $('#helpBox').classList.toggle('show');
 $('#helpClose').onclick = ()=> $('#helpBox').classList.remove('show');
 $('#wipeAll').onclick = ()=>{
