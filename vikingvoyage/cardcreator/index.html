@@ -255,6 +255,12 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 .decktotal{margin-top:7px;font-family:var(--font-small);font-weight:700;font-size:10px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--tx-dim)}
 
+/* enemy ability rows: a name, an effect, a knife */
+.abrow{display:grid;grid-template-columns:1fr 30px;gap:6px 8px;margin-bottom:11px;align-items:start}
+.abrow textarea{grid-column:1;min-height:44px}
+.abrow .x{color:#7a4a40;font-size:15px;padding:4px 0}
+.abrow .x:hover{color:var(--danger)}
+
 /* stage (preview) */
 .stage{
   flex:0 0 460px;border-left:1px solid var(--line-soft);overflow-y:auto;
@@ -289,9 +295,6 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
   border:2px solid rgba(20,16,12,.82);
   box-shadow:0 0 0 1.5px var(--vellum), 0 0 0 3px rgba(20,16,12,.42)}
 .card.is-crew{background:radial-gradient(88% 66% at 50% 32%, var(--vellum-hi) 0%, var(--vellum-crew) 46%, var(--vellum-lo) 100%)}
-/* enemy signatures ride the same deck stock, struck colder — and never roll */
-.card.is-foe{background:radial-gradient(88% 66% at 50% 32%, var(--vellum-hi) 0%, var(--vellum-foe) 46%, var(--vellum-lo) 100%)}
-.card.is-foe .cseal{border-color:var(--ink)}
 .rivet{position:absolute;width:10px;height:10px;border-radius:50%;z-index:6;
   background:radial-gradient(circle at 34% 30%, var(--iron-hi), var(--iron) 62%, #100e0b);
   box-shadow:0 1px 1px rgba(255,250,235,.55), inset 0 -1px 1px rgba(0,0,0,.6)}
@@ -351,11 +354,6 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 .croll .grt{position:relative;padding-left:13px}
 .croll .grt::before{content:'';position:absolute;left:2px;top:6px;width:5px;height:5px;
   transform:rotate(45deg);background:var(--plate)}
-/* the foe card's second block: what the intent banner reads the turn before */
-.ctell{margin-top:9px}
-.ctell .clbl{color:var(--seagreen)}
-.ctell p{font-family:var(--font-flav);font-style:italic;font-size:var(--roll-size);
-  line-height:1.3;color:var(--ink-soft)}
 .codds{margin-top:auto;padding-top:8px}
 .a-noodds .codds{display:none}
 .cmeter{display:flex;height:7px;border:1px solid rgba(20,16,12,.55);background:rgba(20,16,12,.06)}
@@ -492,6 +490,12 @@ input[type=checkbox]{width:auto;accent-color:var(--madder)}
 }
 .spectile .sig b{font-style:normal;color:var(--madder);font-family:var(--font-small);
   font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase}
+/* the enemy tile lists abilities, never cards */
+.spectile .ab{margin-top:7px;text-align:left;font-style:normal}
+.spectile .ab .abn{font-family:var(--font-small);font-weight:800;font-size:9px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--madder)}
+.spectile .ab p{font-family:var(--font-body);font-size:12.5px;line-height:1.35;
+  color:rgba(20,16,12,.78);margin-top:2px}
 
 /* ═══════════ LEADER CARD — large stock, board-game style ═══════════
    The captain is a card too, struck from the same anatomy: tarot-sized,
@@ -928,9 +932,16 @@ function seedDB(){
     ],
     enemies:[
       {id:'en-chorus', name:'The Grey Chorus', role:'Screamer', level:1,
-       portrait:'art/enemy-lesser.jpg', ability:'Scream in the Rigging', cardId:'c-scream-blow'},
+       portrait:'art/enemy-lesser.jpg',
+       abilities:[
+         {name:'Scream in the Rigging', text:'Jams <b>Screaming in the Rigging</b> into your deck. It stays until you pay to remove it.'},
+         {name:'Keep the Distance', text:'Shifts one band away from you.'}
+       ]},
       {id:'en-bonekeel', name:'Bone-Keel', role:'Raider', level:3,
-       portrait:'art/enemy-elite.jpg', ability:'The Ram', cardId:null}
+       portrait:'art/enemy-elite.jpg',
+       abilities:[
+         {name:'The Ram', text:'Closes one band. At close, deal <b>6</b> to your <b>Hull</b>.'}
+       ]}
     ],
     cards:[
       {id:'c-rake', kind:'tactic', title:'Rake the Oar-Bank', sub:'Oar Work', cost:2, stat:'STR',
@@ -961,12 +972,6 @@ function seedDB(){
        bonus:'Resist the next enemy range change.', greater:'Also draw a card.',
        odds:{miss:35,bonus:50,greater:15}, targets:[],
        flav:'He has drowned twice,<br>he says. He is in no hurry.'},
-      {id:'c-scream-blow', kind:'foe', ownerId:'en-chorus', title:'Scream in the Rigging', sub:'Screamer',
-       type:'Enemy — The Grey Chorus', art:'',
-       bands:{far:true,normal:true,close:false}, best:'far', shiftTo:null,
-       text:'Jam <b>Screaming in the Rigging</b> into your deck. It stays until you pay to remove it.',
-       tell:'The horns come up, and the wind goes wrong.',
-       targets:['Crew'], flav:'You will hear it long<br>after the fight is done.'},
       {id:'c-scream', kind:'negative', title:'Screaming in the Rigging',
        source:'Jammed into your deck by a Screamer',
        text:'Occupies a hand slot. <b>Cannot be played.</b> Stays in your deck across turns and across fights until you remove it.',
@@ -1015,12 +1020,9 @@ DB.anatomy = Object.assign({}, DEFAULT_ANATOMY, DB.anatomy || {});
     statCHA:['#96662a','#6e4a7a'], statLUK:['#6b3a4a','#3e6b63']};
   Object.entries(RECOLOR).forEach(([k,[o,n]])=>{ if(DB.anatomy[k]===o) DB.anatomy[k]=n; });
   /* chests from before the enemy shelf existed get it, stocked with the samples */
-  if(!DB.enemies){
-    const s = seedDB();
-    DB.enemies = s.enemies;
-    s.cards.filter(c=>c.kind==='foe' && !DB.cards.some(x=>x.id===c.id))
-      .forEach(c=>DB.cards.push(c));
-  }
+  if(!DB.enemies) DB.enemies = seedDB().enemies;
+  /* enemies briefly owned signature cards; they act through abilities now */
+  tidyEnemies(DB);
 }
 
 let sel = null;                       // {type:'card'|'leader'|'spec'|'enemy'|'consumable', id}
@@ -1084,6 +1086,27 @@ const enemyById = id => DB.enemies.find(e=>e.id===id);
 /* fold keys: enemy classes live behind a prefix so the same class name can exist on both shelves */
 const foldId = (type, role) => (type==='enemy' ? 'e:' : '') + (role||'—');
 
+/* Enemies have a list of abilities, never cards. One early build gave them
+   signature cards ('foe' kind); fold those back into the owner's ability
+   list and retire the kind — runs at boot and after every import. */
+function tidyEnemies(db){
+  (db.enemies||[]).forEach(e=>{
+    if(!e.abilities){
+      e.abilities = [];
+      const sig = e.cardId && (db.cards||[]).find(c=>c.id===e.cardId);
+      if(sig) e.abilities.push({name:sig.title||'Signature', text:sig.text||''});
+      else if(e.ability) e.abilities.push({name:e.ability, text:''});
+    }
+    delete e.cardId; delete e.ability;
+  });
+  (db.cards||[]).filter(c=>c.kind==='foe').forEach(c=>{
+    const owner = (db.enemies||[]).find(e=>e.id===c.ownerId);
+    if(owner && !(owner.abilities||[]).some(a=>a.name===c.title))
+      (owner.abilities = owner.abilities||[]).push({name:c.title||'Blow', text:c.text||''});
+  });
+  db.cards = (db.cards||[]).filter(c=>c.kind!=='foe');
+}
+
 /* ═══════════════════ ANATOMY → CSS ═══════════════════ */
 function mix(a,b,t){
   const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
@@ -1101,7 +1124,6 @@ function applyAnatomy(){
   r.setProperty('--vellum-hi', mix(a.vellum,'#ffffff',.38));
   r.setProperty('--vellum-lo', mix(a.vellum,'#6d5a35',.28));
   r.setProperty('--vellum-crew', mix(a.vellum,'#f8ecc8',.5));
-  r.setProperty('--vellum-foe', mix(a.vellum,'#8f9089',.26));
   r.setProperty('--iron',a.iron);
   r.setProperty('--iron-hi', mix(a.iron,'#c9c2b4',.42));
   STATS.forEach(s=>r.setProperty('--stat-'+s.toLowerCase(), a['stat'+s]));
@@ -1128,26 +1150,36 @@ function statVar(s){ return `var(--stat-${s.toLowerCase()})`; }
 
 function renderCardEl(c, opts={}){
   const el = document.createElement('article');
-  const isFoe = c.kind==='foe';
-  el.className = 'card' + (c.kind==='crew' ? ' is-crew':'') + (isFoe ? ' is-foe':'') + (opts.injured ? ' injured':'');
-  el.style.setProperty('--plate', isFoe ? 'var(--ink)' : statVar(c.stat));
+  el.className = 'card' + (c.kind==='crew' ? ' is-crew':'') + (opts.injured ? ' injured':'');
+  el.style.setProperty('--plate', statVar(c.stat));
   const bands = BANDS.map(b=>{
     const cls=['cband']; if(c.bands[b])cls.push('on');
     if(c.best===b)cls.push('best'); if(c.shiftTo===b)cls.push('shift');
     return `<div class="${cls.join(' ')}">${b==='normal'?'Norm':b}</div>`;
   }).join('');
-  const owner = c.kind==='crew' ? specById(c.ownerId) : isFoe ? enemyById(c.ownerId) : null;
+  const owner = c.kind==='crew' ? specById(c.ownerId) : null;
   const seal = owner ? (owner.portrait
       ? `<div class="cseal" style="background-image:url('${owner.portrait}')"></div>`
       : `<div class="cseal mono">${esc(owner.name[0]||'?')}</div>`) : '';
   const art = c.art
       ? `<img src="${c.art}" alt="">`
       : `<div class="noart">No art yet</div>`;
-  /* enemies never roll: a foe card carries the blow and the telegraph, no d20, no odds */
-  const rules = isFoe ? `
-        <div class="csure"><div class="clbl">The blow — always lands</div><p>${rich(c.text)}</p></div>
-        ${c.tell?`<div class="ctell"><div class="clbl">Telegraph</div><p>${rich(c.tell)}</p></div>`:''}`
-    : `
+  el.innerHTML = `
+    <span class="rivet tl"></span><span class="rivet tr"></span>
+    <span class="rivet bl"></span><span class="rivet br"></span>
+    ${seal}
+    <div class="cinner">
+      <div class="chead">
+        <div class="ccost">${c.cost}</div>
+        <div class="ctitles">
+          <div class="ctitle${(c.title||'').length>17?' long':''}">${esc(c.title)}</div>
+          <div class="csub">${esc(c.sub)}</div>
+        </div>
+        <div class="cstat"><span>${c.stat}</span></div>
+      </div>
+      <div class="cart">${art}</div>
+      <div class="crange">${bands}</div>
+      <div class="crules">
         <div class="csure"><div class="clbl">Sure</div><p>${rich(c.sure)}</p></div>
         <div class="csplit"><i></i><span class="cd20">d20</span><i></i></div>
         <div class="croll">
@@ -1164,23 +1196,7 @@ function renderCardEl(c, opts={}){
           <div class="cokeys">
             <span>${c.odds.miss}% none</span><span><b>${c.odds.bonus}% bonus</b></span><span><b>${c.odds.greater}% greater</b></span>
           </div>
-        </div>`;
-  el.innerHTML = `
-    <span class="rivet tl"></span><span class="rivet tr"></span>
-    <span class="rivet bl"></span><span class="rivet br"></span>
-    ${seal}
-    <div class="cinner">
-      <div class="chead">
-        ${isFoe?'':`<div class="ccost">${c.cost}</div>`}
-        <div class="ctitles">
-          <div class="ctitle${(c.title||'').length>17?' long':''}">${esc(c.title)}</div>
-          <div class="csub">${esc(c.sub)}</div>
         </div>
-        <div class="cstat"${isFoe?' style="background:var(--ink)"':''}><span>${isFoe?'FOE':c.stat}</span></div>
-      </div>
-      <div class="cart">${art}</div>
-      <div class="crange">${bands}</div>
-      <div class="crules">${rules}
       </div>
       <div class="cfoot">
         <div class="ctype">${esc(c.type)}</div>
@@ -1236,17 +1252,20 @@ function renderSpecEl(s){
   return el;
 }
 
-/* the enemy tile: the specialist template, struck for the other side */
+/* the enemy tile: the specialist template, struck for the other side.
+   Enemies act through abilities, never cards — the tile lists them. */
 function renderEnemyEl(s){
   const el = document.createElement('article');
   el.className = 'spectile foe';
-  const sig = s.cardId && cardById(s.cardId);
+  const abl = s.abilities||[];
   el.innerHTML = `
     <div class="badges"><span class="area" style="background:var(--madder)">Enemy</span><span class="lv">Th ${s.level}</span></div>
     <div class="face" style="${s.portrait?`background-image:url('${s.portrait}')`:''}">${s.portrait?'':esc(s.name[0]||'?')}</div>
     <div class="nm">${esc(s.name)}</div>
     <div class="rl">${esc(s.role)}</div>
-    <div class="sig"><b>Signature</b><br>▸ ${sig ? esc(sig.title) : esc(s.ability||'—') + (s.cardId?'':' <span style="opacity:.55">(no card yet)</span>')}</div>`;
+    <div class="sig"><b>Abilities</b>
+      ${abl.length ? abl.map(a=>`<div class="ab"><span class="abn">▸ ${esc(a.name)}</span>${a.text?`<p>${rich(a.text)}</p>`:''}</div>`).join('')
+                   : '<br><span style="opacity:.55">— none yet —</span>'}</div>`;
   return el;
 }
 
@@ -1300,7 +1319,7 @@ function deckListEl(l){
 
 /* ═══════════════════ LIBRARY ═══════════════════ */
 const KIND_CHIP = {tactic:['T','var(--iron)'], crew:['C','var(--seagreen)'], negative:['✕','#6e2a20'], consumable:['⚗','#5a4a28'],
-  leader:['L','var(--madder)'], spec:['S','#3d4a55'], enemy:['E','#703a1e'], foe:['F','#8a5230']};
+  leader:['L','var(--madder)'], spec:['S','#3d4a55'], enemy:['E','#703a1e']};
 
 function libRow(type, id, title, meta, chip){
   const on = sel && sel.type===type && sel.id===id;
@@ -1358,8 +1377,6 @@ function buildLib(){
     rows: DB.cards.filter(c=>c.kind==='tactic'&&match(c.title)).map(c=>libRow('card',c.id,c.title,`${c.stat} ${c.cost}⚡`, KIND_CHIP.tactic))});
   groups.push({name:'Enemies', one:'Enemy', add:'enemy',
     rows: classedRows(DB.enemies,'enemy',KIND_CHIP.enemy,q,match)});
-  groups.push({name:'Enemy cards', one:'Enemy card', add:'foe',
-    rows: DB.cards.filter(c=>c.kind==='foe'&&match(c.title)).map(c=>libRow('card',c.id,c.title,enemyById(c.ownerId)?.role||'', KIND_CHIP.foe))});
   groups.push({name:'Negative cards', add:'negative',
     rows: DB.cards.filter(c=>c.kind==='negative'&&match(c.title)).map(c=>libRow('card',c.id,c.title,'', KIND_CHIP.negative))});
   groups.push({name:'Consumables', add:'consumable',
@@ -1389,7 +1406,6 @@ function editorHTML(){
   if(sel.type==='card'){
     const c = cardById(sel.id); if(!c) return '';
     if(c.kind==='negative') return negForm(c);
-    if(c.kind==='foe') return foeForm(c);
     return cardForm(c);
   }
   if(sel.type==='consumable'){ const k = DB.consumables.find(x=>x.id===sel.id); return k?pouchForm(k):''; }
@@ -1470,8 +1486,8 @@ function pouchForm(k){
 }
 
 /* the signature field: pick an existing card, forge a fresh one, or jump to it */
-function sigRow(s, kind){
-  const cardOpts = DB.cards.filter(c=>c.kind===kind).map(c=>
+function sigRow(s){
+  const cardOpts = DB.cards.filter(c=>c.kind==='crew').map(c=>
     `<option value="${c.id}" ${s.cardId===c.id?'selected':''}>${esc(c.title)}</option>`).join('');
   const linked = s.cardId && cardById(s.cardId);
   return `<div class="sigrow"><select data-k="cardId"><option value="">— none yet —</option>${cardOpts}</select>
@@ -1495,57 +1511,33 @@ function specForm(s){
     ${fld('Station area', `<select data-k="area">${AREAS.map(a=>`<option ${s.area===a?'selected':''}>${a}</option>`).join('')}</select>`)}
     ${fld('Type level <small>1–5</small>', num('level',s.level,1,5))}
     ${fld('Ability line <small>· shows on the roster</small>', txt('ability',s.ability))}
-    ${fld('Signature card', sigRow(s,'crew'))}
+    ${fld('Signature card', sigRow(s))}
     ${fld('Portrait', artWidget(s,'portrait'), true)}
   </div>`;
 }
 
 function enemyForm(s){
+  const abRows = (s.abilities||[]).map((a,i)=>`
+    <div class="abrow">
+      <input data-ab-name="${i}" value="${esc(a.name)}" placeholder="Ability name">
+      <button class="x" data-ab-del="${i}" title="Remove ability">✕</button>
+      <textarea data-ab-text="${i}" placeholder="Effect — always lands as telegraphed">${esc(a.text)}</textarea>
+    </div>`).join('');
   return `
   <div class="ehead"><span class="kind">Enemy — ${esc(s.role||'no class')}</span><h2>${esc(s.name||'Unnamed')}</h2>${headBtns()}</div>
-  <p class="esub">A named foe, cut from the specialist template: the class is the kind of enemy,
-    and the signature blow is shared by everyone of that class. <b>Enemies never roll.</b></p>
+  <p class="esub">A named foe, cut from the specialist template: the class is the kind of enemy.
+    Enemies have no deck and no cards — <b>a list of abilities</b>, telegraphed a turn ahead,
+    and <b>they never roll</b>.</p>
   <div class="fgrid">
     ${fld('Name', txt('name',s.name))}
     ${fld('Class <small>· the kind of foe</small>', rolePick(s, DB.enemies, 'Screamer'))}
     ${fld('Threat <small>1–5 · how hard it hits</small>', num('level',s.level,1,5))}
-    ${fld('Ability line <small>· shows on the roster</small>', txt('ability',s.ability))}
-    ${fld('Signature card', sigRow(s,'foe'))}
     ${fld('Portrait / vessel', artWidget(s,'portrait'), true)}
-  </div>`;
-}
-
-function foeForm(c){
-  const owner = enemyById(c.ownerId);
-  const foeOpts = [...DB.enemies]
-    .sort((a,b)=>(a.role||'').localeCompare(b.role||'') || (a.name||'').localeCompare(b.name||''))
-    .map(e=>`<option value="${e.id}" ${c.ownerId===e.id?'selected':''}>${esc(e.role)} — ${esc(e.name)}</option>`).join('');
-  return `
-  <div class="ehead"><span class="kind">Enemy signature</span>
-    <h2>${esc(c.title||'Untitled')}</h2>
-    ${owner?`<button class="ebtn" data-jump-type="enemy" data-jump-id="${owner.id}" title="Open ${esc(owner.name)}">◂ Owner</button>`:''}${headBtns()}</div>
-  <p class="esub">The class's signature blow. <b>Enemies never roll</b> — no thresholds, no odds:
-    the card is the telegraph, and the telegraph is always kept.</p>
-  <div class="fgrid">
-    ${fld('Title', txt('title',c.title))}
-    ${fld('Subtitle <small>· the class</small>', txt('sub',c.sub))}
-    ${fld('Owner enemy', `<select data-k="ownerId"><option value="">— unowned —</option>${foeOpts}</select>`)}
-    ${fld('Type line', txt('type',c.type))}
-
-    <div class="fsep">Range <span class="hint">click to cycle: off → on → best</span></div>
-    ${fld('Struck from bands', bandPicker(c), true)}
-    ${fld('Shifts range to', `<select data-k="shiftTo">
-        <option value="">— stays put —</option>
-        ${BANDS.map(b=>`<option value="${b}" ${c.shiftTo===b?'selected':''}>${b}</option>`).join('')}</select>`)}
-    ${fld('Struck areas <small>· of your ship</small>', tgtPicker(c))}
-
-    <div class="fsep">The blow <span class="hint">&lt;b&gt; and &lt;br&gt; allowed</span></div>
-    ${fld('Effect — always lands as telegraphed', area2('text',c.text), true)}
-    ${fld('Telegraph <small>· the intent line shown the turn before</small>', area2('tell',c.tell), true)}
-
-    <div class="fsep">Dressing</div>
-    ${fld('Flavour', area2('flav',c.flav), true)}
-    ${fld('Art', artWidget(c,'art'), true)}
+    <div class="fsep">Abilities <span class="hint">what the intent banner can announce · &lt;b&gt; and &lt;br&gt; allowed</span></div>
+    <div class="f wide">
+      ${abRows || '<p style="font-style:italic;color:var(--mid);font-size:13px;margin-bottom:8px">No abilities yet — every enemy needs at least one.</p>'}
+      <button class="ebtn" id="abAdd">＋ Add ability</button>
+    </div>
   </div>`;
 }
 
@@ -1644,12 +1636,7 @@ function buildPreview(){
     const sig = s.cardId && cardById(s.cardId);
     if(sig) el.appendChild(renderCardEl(sig,{}));
   }}
-  if(sel.type==='enemy'){ const s=enemyById(sel.id); if(s){
-    el = document.createElement('div'); el.style.cssText='display:flex;flex-direction:column;gap:26px;align-items:center';
-    el.appendChild(renderEnemyEl(s));
-    const sig = s.cardId && cardById(s.cardId);
-    if(sig) el.appendChild(renderCardEl(sig,{}));
-  }}
+  if(sel.type==='enemy'){ const s=enemyById(sel.id); if(s) el = renderEnemyEl(s); }
   if(sel.type==='leader'){ const l=DB.leaders.find(x=>x.id===sel.id); if(l){
     el = document.createElement('div'); el.style.cssText='display:flex;flex-direction:column;gap:20px;align-items:center;width:100%';
     el.appendChild(renderLeaderCardEl(l));
@@ -1714,19 +1701,15 @@ function buildEditor(){
     save(); buildLib(); buildEditor();
   };
 
-  /* forge a signature from the owner's page, or jump along the link */
+  /* forge a signature from the specialist's page, or jump along the link */
   const fs = $('#editor').querySelector('[data-forge-sig]');
   if(fs) fs.onclick = ()=>{
-    const c = sel.type==='enemy'
-      ? {id:uid('c'), kind:'foe', ownerId:o.id, title:o.ability||'New Blow', sub:o.role||'Enemy',
-         type:`Enemy — ${o.name}`, art:'', bands:{far:true,normal:true,close:true}, best:null, shiftTo:null,
-         text:'Deal <b>4</b> to one of your areas.', tell:'', targets:[], flav:''}
-      : {id:uid('c'), kind:'crew', ownerId:o.id, title:o.ability||'New Signature', sub:o.role||'Crew',
-         cost:1, stat:'STR',
-         type:`Crew — ${o.name}`, art:'', bands:{far:true,normal:true,close:true}, best:null, shiftTo:null,
-         sure:'Deal <b>4</b> to one enemy area.', thr:8,
-         bonus:'…and a little more.', greater:'…and much more.',
-         odds:{miss:40,bonus:45,greater:15}, targets:[], flav:''};
+    const c = {id:uid('c'), kind:'crew', ownerId:o.id, title:o.ability||'New Signature', sub:o.role||'Crew',
+       cost:1, stat:'STR',
+       type:`Crew — ${o.name}`, art:'', bands:{far:true,normal:true,close:true}, best:null, shiftTo:null,
+       sure:'Deal <b>4</b> to one enemy area.', thr:8,
+       bonus:'…and a little more.', greater:'…and much more.',
+       odds:{miss:40,bonus:45,greater:15}, targets:[], flav:''};
     DB.cards.push(c); o.cardId = c.id;
     sel = {type:'card', id:c.id};
     save(); buildLib(); buildEditor();
@@ -1740,6 +1723,23 @@ function buildEditor(){
   if(jo) jo.onclick = ()=>{
     sel = {type:jo.dataset.jumpType, id:jo.dataset.jumpId}; buildLib(); buildEditor();
   };
+
+  /* enemy abilities: a growing list, edited in place */
+  const aa = $('#abAdd');
+  if(aa) aa.onclick = ()=>{
+    o.abilities = o.abilities||[];
+    o.abilities.push({name:'New ability', text:''});
+    saveSoon(); buildEditor();
+  };
+  $('#editor').querySelectorAll('[data-ab-name]').forEach(i=>{
+    i.addEventListener('input', ()=>{ o.abilities[+i.dataset.abName].name = i.value; saveSoon(); buildPreview(); });
+  });
+  $('#editor').querySelectorAll('[data-ab-text]').forEach(i=>{
+    i.addEventListener('input', ()=>{ o.abilities[+i.dataset.abText].text = i.value; saveSoon(); buildPreview(); });
+  });
+  $('#editor').querySelectorAll('[data-ab-del]').forEach(b=>{
+    b.onclick = ()=>{ o.abilities.splice(+b.dataset.abDel,1); saveSoon(); buildEditor(); };
+  });
 
   /* band cycle: off -> on -> best */
   $('#editor').querySelectorAll('[data-band]').forEach(bp=>{
@@ -1824,30 +1824,22 @@ function buildEditor(){
     if(sel.type==='card'){
       DB.leaders.forEach(l=>(l.deck||[]).some(d=>d.cardId===sel.id) && uses.push(`deck of ${l.name}`));
       DB.specialists.forEach(s=>s.cardId===sel.id && uses.push(`signature of ${s.name}`));
-      DB.enemies.forEach(e=>e.cardId===sel.id && uses.push(`signature of ${e.name}`));
     }
     if(sel.type==='spec'){
       DB.cards.forEach(c=>c.ownerId===sel.id && uses.push(`crew card “${c.title}”`));
-    }
-    if(sel.type==='enemy'){
-      DB.cards.forEach(c=>c.ownerId===sel.id && uses.push(`enemy card “${c.title}”`));
     }
     if(!confirm(`Delete permanently?${uses.length?'\nAlso referenced by: '+uses.join(', ')+' — references will be unlinked.':''}`)) return;
     if(sel.type==='card'){
       DB.cards = DB.cards.filter(c=>c.id!==sel.id);
       DB.leaders.forEach(l=>l.deck = (l.deck||[]).filter(d=>d.cardId!==sel.id));
       DB.specialists.forEach(s=>{ if(s.cardId===sel.id) s.cardId=null; });
-      DB.enemies.forEach(e=>{ if(e.cardId===sel.id) e.cardId=null; });
     }
     if(sel.type==='consumable') DB.consumables = DB.consumables.filter(k=>k.id!==sel.id);
     if(sel.type==='spec'){
       DB.specialists = DB.specialists.filter(s=>s.id!==sel.id);
       DB.cards.forEach(c=>{ if(c.ownerId===sel.id) c.ownerId=null; });
     }
-    if(sel.type==='enemy'){
-      DB.enemies = DB.enemies.filter(e=>e.id!==sel.id);
-      DB.cards.forEach(c=>{ if(c.ownerId===sel.id) c.ownerId=null; });
-    }
+    if(sel.type==='enemy') DB.enemies = DB.enemies.filter(e=>e.id!==sel.id);
     if(sel.type==='leader') DB.leaders = DB.leaders.filter(l=>l.id!==sel.id);
     sel = null; save(); buildLib(); buildEditor();
   };
@@ -1896,15 +1888,9 @@ function makeNew(kind){
   }
   if(kind==='enemy'){
     const s = {id:uid('en'), name:'New Enemy', role:'Unassigned', level:1,
-      portrait:'', ability:'Signature blow', cardId:null};
+      portrait:'', abilities:[{name:'Signature blow', text:'Deal <b>4</b> to one of your areas.'}]};
     unfoldRole(foldId('enemy', s.role));
     DB.enemies.push(s); sel={type:'enemy',id:s.id};
-  }
-  if(kind==='foe'){
-    const c = {id:uid('c'), kind:'foe', ownerId:DB.enemies[0]?.id||null, title:'New Blow', sub:'Enemy',
-      type:'Enemy — unnamed', art:'', bands:{far:true,normal:true,close:true}, best:null, shiftTo:null,
-      text:'Deal <b>4</b> to one of your areas.', tell:'', targets:[], flav:''};
-    DB.cards.push(c); sel={type:'card',id:c.id};
   }
   if(kind==='leader'){
     const l = {id:uid('l'), name:'New Leader', epithet:'the Unproven', quote:'Their saga is unwritten.',
@@ -1940,7 +1926,6 @@ function buildAnatomyStage(){
   const a = DB.anatomy;
   const tactic = DB.cards.find(c=>c.kind==='tactic');
   const crew = DB.cards.find(c=>c.kind==='crew');
-  const foe = DB.cards.find(c=>c.kind==='foe');
   const neg = DB.cards.find(c=>c.kind==='negative');
   const item = DB.consumables[0];
   const leader = DB.leaders[0];
@@ -1952,7 +1937,6 @@ function buildAnatomyStage(){
   if(tactic) mk(`Tactic — ${FORMAT_LABEL[a.deckFormat]}`, renderCardEl(tactic));
   if(crew) mk('Crew — warmer stock, sealed', renderCardEl(crew));
   if(crew) mk('The same card, injured', renderCardEl(crew,{injured:true}));
-  if(foe) mk('Enemy blow — colder stock, never rolls', renderCardEl(foe));
   if(neg) mk('Negative — torn scrap, deck-sized', renderScrapEl(neg));
   if(item) mk(`Item — ${FORMAT_LABEL[a.itemFormat]}`, renderItemEl(item));
 }
@@ -2015,6 +1999,7 @@ $('#importFile').onchange = ()=>{
       }
       DB.anatomy = Object.assign({}, DEFAULT_ANATOMY, DB.anatomy||{});
       DB.enemies = DB.enemies||[];      /* chests exported before the enemy shelf */
+      tidyEnemies(DB);                  /* …or from the brief enemy-cards build */
       DB.meta = DB.meta||{}; DB.meta.dirty = true;
       sel = null; persistLocal();
       applyAnatomy(); buildAnatomyControls(); buildAnatomyStage(); buildLib(); buildEditor();
