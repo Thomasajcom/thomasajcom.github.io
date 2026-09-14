@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giftory — One thin string through everyone you buy for</title>
+<meta name="description" content="Giftory remembers every gift you've given, and everything you've received. One thin string strung through everyone you buy for, with today as a bead at the centre. On iPhone, everything on your device.">
+<meta name="theme-color" content="#FDF5EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1E1A21" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://thomasaj.com/giftory/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thomasaj.com/giftory/">
+<meta property="og:title" content="Giftory — One thin string through everyone you buy for">
+<meta property="og:description" content="Every gift you've given, and everything you've received. Occasions pin the string up; gifts hang from them as small paper tags in that person's colour.">
+<meta property="og:image" content="https://thomasaj.com/giftory/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Giftory icon beside the words: One thin string through everyone you buy for — over a drooping string hung with small paper gift tags.">
+<meta property="og:site_name" content="Giftory">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Giftory — One thin string through everyone you buy for">
+<meta name="twitter:description" content="Every gift you've given, and everything you've received, on one thin string. Today is a bead at the centre.">
+<meta name="twitter:image" content="https://thomasaj.com/giftory/assets/og-image.png">
+
+<!-- Icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="/giftory/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/giftory/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/giftory/assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  /* Giftory's own tokens — paper, brown ink, one pink bead */
+  --paper:#FDF5EF;
+  --shelf:#FAF1E8;
+  --card:#FFFDFB;
+  --ink:#241E22;
+  --ink-2:#4A4145;
+  --muted:#6B5F5A;
+  --faint:#8A7C74;
+  --brown-ink:#7A5C3E;
+  --brown-paper:#F5E9DA;
+  --brown-edge:#B08D6A;
+  --accent:#E1467A;          /* the today bead */
+  --accent-text:#C2325F;     /* the same pink, contrast-safe as text */
+  --empty:#C9BDB4;           /* an empty tag's stroke */
+  --hairline:rgba(36,30,34,0.09);
+  --shadow:rgba(122,92,62,0.13);
+  --nav-bg:rgba(253,245,239,0.82);
+  --grain:0.035;
+
+  /* the cast — the app's own person hues */
+  --h-slate:#5C7EA8;
+  --h-olive:#7E8B4E;
+  --h-rose:#C4677C;
+  --h-terracotta:#C1704F;
+  --h-heather:#8A6BA0;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#1E1A21;
+    --shelf:#2A241F;
+    --card:#2A2430;
+    --ink:#F2E9ED;
+    --ink-2:#D9CDD2;
+    --muted:#B3A7A1;
+    --faint:#998C85;
+    --brown-ink:#EADFCE;
+    --brown-paper:#6B5C49;
+    --brown-edge:#8A7458;
+    --accent:#F2769E;
+    --accent-text:#F2769E;
+    --empty:#5A5250;
+    --hairline:rgba(242,233,237,0.11);
+    --shadow:rgba(0,0,0,0.45);
+    --nav-bg:rgba(30,26,33,0.82);
+    --grain:0.05;
+
+    --h-slate:#6F91BC;
+    --h-olive:#929F60;
+    --h-rose:#D87A90;
+    --h-terracotta:#D58260;
+    --h-heather:#9F80B4;
+  }
+}
+
+html{font-size:16px;scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+body{
+  font-family:'Source Sans 3','Helvetica Neue',Helvetica,Arial,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* paper grain */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;opacity:var(--grain);
+}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent-text);outline-offset:3px;border-radius:4px}
+
+.kicker{
+  font-size:0.6875rem;font-weight:600;letter-spacing:0.19em;
+  text-transform:uppercase;color:var(--brown-ink);
+}
+
+h2{
+  font-family:'Newsreader',Georgia,'Times New Roman',serif;
+  font-weight:400;letter-spacing:-0.015em;line-height:1.12;
+  font-size:clamp(1.75rem,4vw,2.5rem);
+}
+h3{font-weight:600;font-size:1.0625rem;letter-spacing:-0.005em}
+
+/* reveal-on-scroll — only armed when JS is running */
+.js .reveal{opacity:0;transform:translateY(20px);
+  transition:opacity .7s cubic-bezier(.25,.46,.45,.94),transform .7s cubic-bezier(.25,.46,.45,.94)}
+.js .reveal.seen{opacity:1;transform:none}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  transition:background .35s,backdrop-filter .35s,box-shadow .35s}
+nav.scrolled{background:var(--nav-bg);
+  backdrop-filter:saturate(170%) blur(18px);-webkit-backdrop-filter:saturate(170%) blur(18px);
+  box-shadow:0 0.5px 0 var(--hairline)}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px}
+.wordmark{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  font-family:'Newsreader',Georgia,serif;font-size:1.3125rem;font-weight:500;
+  letter-spacing:-0.01em;color:var(--ink)}
+.wordmark svg{display:block;color:var(--brown-edge)}
+.nav-links{display:flex;align-items:center;gap:22px;list-style:none}
+.nav-links a:not(.pill){font-size:0.8125rem;font-weight:500;color:var(--muted);
+  text-decoration:none;padding:12px 2px;margin:-12px -2px;transition:color .2s}
+.nav-links a:not(.pill):hover{color:var(--ink)}
+.pill{display:inline-block;font-size:0.8125rem;font-weight:600;text-decoration:none;
+  color:var(--paper);background:var(--ink);padding:9px 18px;border-radius:980px;
+  transition:opacity .2s,transform .2s}
+.pill:hover{opacity:.86;transform:translateY(-1px)}
+
+/* ---------- hero ---------- */
+.hero{padding:136px 24px 0;text-align:center;max-width:900px;margin:0 auto}
+.hero h1{
+  font-family:'Newsreader',Georgia,'Times New Roman',serif;
+  font-weight:400;font-size:clamp(2.15rem,6.2vw,4.15rem);
+  line-height:1.04;letter-spacing:-0.025em;
+  margin:18px auto 20px;max-width:16ch;text-wrap:balance;
+}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--accent-text)}
+.hero .lede{font-size:clamp(1.02rem,2.1vw,1.1875rem);color:var(--ink-2);
+  max-width:37rem;margin:0 auto 28px}
+.cta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  font-size:1rem;font-weight:600;color:var(--paper);background:var(--ink);
+  padding:14px 26px;border-radius:980px;box-shadow:0 6px 20px var(--shadow);
+  transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px var(--shadow)}
+.btn-quiet{color:var(--ink-2);background:none;box-shadow:none;
+  border:1px solid var(--hairline);font-weight:500}
+.btn-quiet:hover{border-color:var(--brown-edge);color:var(--ink);transform:none;box-shadow:none}
+.fineprint{margin-top:16px;font-size:0.75rem;font-weight:600;letter-spacing:0.09em;
+  text-transform:uppercase;color:var(--muted)}
+
+/* ---------- the string ---------- */
+.stage{max-width:1240px;margin:22px auto 0;padding:0 12px}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.string{fill:none;stroke:var(--empty);stroke-width:1.6;stroke-linecap:round}
+.pin{stroke:var(--faint);stroke-width:1.2;stroke-linecap:round}
+.pin-dot{fill:var(--faint)}
+.hang{stroke:var(--empty);stroke-width:1;fill:none}
+.tag rect{fill:var(--card);stroke-width:1.4}
+.tag .hole{fill:none;stroke-width:1.2}
+.tag.idea rect{stroke:var(--empty);stroke-dasharray:4 3.5}
+.cap{font-family:'Source Sans 3',sans-serif;font-size:12px;fill:var(--muted);
+  text-anchor:middle;letter-spacing:.01em}
+.ghost{font-family:'Source Sans 3',sans-serif;font-size:11px;fill:var(--faint);
+  text-anchor:middle;letter-spacing:.16em;opacity:.7}
+.tape{stroke:var(--empty);stroke-width:1}
+.today{font-family:'Source Sans 3',sans-serif;font-size:12.5px;font-weight:600;
+  fill:var(--accent-text);text-anchor:middle;letter-spacing:.04em}
+.bead-core{fill:var(--accent)}
+.bead-halo{fill:var(--accent);opacity:.16}
+
+.string{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.7s cubic-bezier(.3,.7,.3,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.drop{opacity:0;animation:drop .7s cubic-bezier(.25,.46,.45,.94) forwards}
+@keyframes drop{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+.d1{animation-delay:1.0s}.d2{animation-delay:1.15s}.d3{animation-delay:1.3s}
+.d4{animation-delay:1.45s}.d5{animation-delay:1.6s}.d6{animation-delay:1.75s}
+.bead{transform-box:fill-box;transform-origin:center;animation:breathe 4.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .string{stroke-dashoffset:0;animation:none}
+  .drop{opacity:1;animation:none}
+  .bead{animation:none}
+  .js .reveal{opacity:1;transform:none;transition:none}
+}
+
+/* ---------- sections ---------- */
+section{padding:76px 0}
+.sec-head{max-width:40rem}
+.sec-head h2{margin-top:12px}
+.sec-head p{margin-top:12px;color:var(--muted)}
+
+/* how it reads */
+.reads{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px}
+.read{background:var(--card);border:1px solid var(--hairline);border-radius:14px;
+  padding:26px 24px 28px}
+.read .art{margin-bottom:16px}
+.read h3{margin-bottom:8px}
+.read p{font-size:0.9375rem;color:var(--muted)}
+.states{display:flex;gap:16px;align-items:flex-end}
+.state{text-align:center}
+.state span{display:block;margin-top:7px;font-size:0.6875rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted)}
+
+/* screenshots */
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:40px}
+.shot{text-align:center}
+.shot img{width:100%;max-width:270px;height:auto;display:block;margin:0 auto;
+  border-radius:22px;border:1px solid var(--hairline);
+  box-shadow:0 18px 44px -16px var(--shadow)}
+.shot figcaption{margin-top:14px;font-size:0.75rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted)}
+
+/* worth knowing */
+.knowing{margin-top:36px;list-style:none;display:grid;
+  grid-template-columns:repeat(2,1fr);gap:0 40px}
+.knowing li{padding:18px 0 18px 26px;border-top:1px solid var(--hairline);
+  font-size:0.9375rem;color:var(--ink-2);position:relative}
+.knowing li::before{content:'';position:absolute;left:0;top:28px;
+  width:11px;height:1.4px;background:var(--brown-edge)}
+
+/* plus */
+.plus-card{background:var(--brown-paper);border:1px solid var(--brown-edge);
+  border-radius:16px;padding:34px 32px;max-width:46rem}
+.plus-card .lead{font-family:'Newsreader',Georgia,serif;font-size:1.25rem;
+  line-height:1.42;color:var(--brown-ink)}
+.tiers{display:flex;flex-wrap:wrap;gap:10px 26px;margin:22px 0 20px;
+  padding:18px 0;border-top:1px solid var(--brown-edge);border-bottom:1px solid var(--brown-edge)}
+.tier{font-size:0.9375rem;color:var(--brown-ink)}
+.tier b{font-weight:600}
+.tier .amt{font-family:'Newsreader',Georgia,serif;font-size:1.0625rem}
+.plus-card ul{list-style:none;display:grid;gap:8px}
+.plus-card li{font-size:0.9rem;color:var(--brown-ink);opacity:.92}
+.plus-note{margin-top:16px;font-size:0.8125rem;color:var(--brown-ink);opacity:.72}
+
+/* privacy */
+.privacy{background:var(--shelf);border-top:1px solid var(--hairline);
+  border-bottom:1px solid var(--hairline);padding:44px 0}
+.privacy p{font-family:'Newsreader',Georgia,serif;font-size:clamp(1.1rem,2.6vw,1.4rem);
+  line-height:1.45;max-width:40rem}
+.privacy a{color:var(--accent-text);text-decoration:none;
+  border-bottom:1px solid color-mix(in srgb,var(--accent-text) 40%,transparent)}
+.privacy a:hover{border-bottom-color:var(--accent-text)}
+
+/* footer */
+footer{padding:46px 24px 54px;text-align:center;font-size:0.8125rem;color:var(--muted)}
+footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--hairline)}
+footer a:hover{color:var(--ink)}
+footer .home{margin-top:12px}
+footer .home a{font-weight:600;color:var(--ink-2);border:0}
+
+/* ---------- responsive ---------- */
+/* Narrow screens: body's overflow-x:hidden crops the string to its middle
+   stretch — Sofia, today, Mom — so the tags and captions stay legible instead
+   of shrinking to threads. The type sizes are viewBox units, so they scale
+   with it. */
+@media (max-width:900px){
+  .stage{padding:0;overflow:hidden}
+  /* a fixed 760px drawing, centred and clipped: the scale (and so the type
+     size in real pixels) stays put while the window widens with the screen */
+  .stage svg{width:760px;margin-left:calc(50% - 380px)}
+  .cap{font-size:17px}
+  .ghost{font-size:16px}
+  .today{font-size:18px}
+  .string{stroke-width:2.3}
+  .pin,.hang{stroke-width:1.7}
+  .d6{display:none}   /* the past / future ghosts sit outside the crop */
+}
+
+@media (max-width:860px){
+  .reads{grid-template-columns:1fr;gap:16px}
+  .knowing{grid-template-columns:1fr}
+  .shots{grid-template-columns:1fr;gap:36px}
+  .shot img{max-width:300px}
+}
+@media (max-width:620px){
+  .wrap{padding:0 20px}
+  .nav-inner{padding:0 20px;gap:10px}
+  .nav-links{gap:16px}
+  .nav-links li.hide-sm{display:none}
+  .hero{padding:116px 20px 0}
+  section{padding:58px 0}
+  .plus-card{padding:26px 22px}
+  .tiers{gap:8px 20px}
+}
+@media (max-width:380px){
+  .wordmark{font-size:1.1875rem}
+  .nav-links{gap:12px}
+  .btn{padding:13px 20px;font-size:0.9375rem}
+}
+</style>
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<nav id="mainNav" aria-label="Main">
+  <div class="nav-inner">
+    <a href="/giftory/" class="wordmark" aria-label="Giftory home">
+      <svg width="34" height="20" viewBox="0 0 68 40" aria-hidden="true"><path d="M2 12 C 16 34, 52 34, 66 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="34" cy="28.5" r="4.5" fill="var(--accent)"/></svg>
+      giftory
+    </a>
+    <ul class="nav-links">
+      <li class="hide-sm"><a href="#reads">How it reads</a></li>
+      <li class="hide-sm"><a href="#plus">Giftory Plus</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+      <li><a class="pill" href="https://apps.apple.com/app/id1524157033">App&nbsp;Store</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <p class="kicker">Gift memory for iPhone &middot; Since 2020</p>
+  <h1>One thin string through <em>everyone you buy for</em></h1>
+  <p class="lede">
+    Giftory remembers every gift you've given — and everything you've received.
+    One string, strung through everyone you buy for, like bunting at a party.
+  </p>
+  <div class="cta">
+    <a class="btn" href="https://apps.apple.com/app/id1524157033">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.56 5.72C13.35 5.72 14.82 4.62 16.39 4.8C17.07 4.83 18.82 5.08 19.92 6.72C19.82 6.78 17.73 7.98 17.76 10.52C17.79 13.54 20.44 14.55 20.47 14.56C20.44 14.63 20.05 15.99 19.07 17.39L18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+      Download on the App&nbsp;Store
+    </a>
+    <a class="btn btn-quiet" href="#reads">See how it reads</a>
+  </div>
+  <p class="fineprint">Free for five people &middot; Giftory Plus for everyone else</p>
+</header>
+
+<!-- the string -->
+<div class="stage">
+  <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="One thin string draped between four pinned occasions. Today is a pink bead at the centre; small paper gift tags hang from each pin in each person's colour — one still dashed as an idea, the others tied on, one filled in because it has been given.">
+    <!-- the measuring tape along the top edge -->
+    <g class="tape" aria-hidden="true">
+      <line x1="40" y1="34" x2="1160" y2="34"/>
+      <g stroke="var(--empty)" stroke-width="1">
+        <path d="M80 34v5M120 34v9M160 34v5M200 34v5M240 34v5M280 34v5M320 34v5M360 34v5M400 34v9M440 34v5M480 34v5M520 34v5M560 34v5M600 34v5M640 34v5M680 34v9M720 34v5M760 34v5M800 34v5M840 34v5M880 34v5M920 34v5M960 34v9M1000 34v5M1040 34v5M1080 34v5M1120 34v5"/>
+      </g>
+      <text class="ghost" x="120" y="24">JUL</text>
+      <text class="ghost" x="400" y="24">AUG</text>
+      <text class="ghost" x="680" y="24">SEP</text>
+      <text class="ghost" x="960" y="24">OCT</text>
+    </g>
+
+    <!-- the string itself: pinned up four times, slack in between -->
+    <path class="string" pathLength="1"
+          d="M0 176 Q74 166 150 150 Q290 230 430 142 Q600 260 770 146 Q910 222 1050 138 Q1128 148 1200 170"/>
+
+    <!-- pins -->
+    <g class="drop d1">
+      <path class="pin" d="M150 120v30"/><circle class="pin-dot" cx="150" cy="118" r="2.2"/><circle class="pin-dot" cx="150" cy="150" r="3"/>
+      <path class="hang" d="M150 150v26"/>
+      <g class="tag" stroke="var(--h-slate)">
+        <rect x="132" y="176" width="36" height="46" rx="5" fill="color-mix(in srgb,var(--h-slate) 15%,var(--card))"/>
+        <circle class="hole" cx="150" cy="187" r="3" stroke="var(--h-slate)"/>
+        <path d="M141 202h18M141 209h11" stroke="var(--h-slate)" stroke-width="1.2" stroke-linecap="round" opacity=".75"/>
+      </g>
+      <text class="cap" x="150" y="248">Erik &middot; 8 Jul</text>
+    </g>
+
+    <g class="drop d2">
+      <path class="pin" d="M430 112v30"/><circle class="pin-dot" cx="430" cy="110" r="2.2"/><circle class="pin-dot" cx="430" cy="142" r="3"/>
+      <path class="hang" d="M430 142 Q408 152 408 172M430 142 Q452 152 452 172"/>
+      <g class="tag" stroke="var(--h-olive)">
+        <rect x="390" y="172" width="36" height="46" rx="5"/>
+        <circle class="hole" cx="408" cy="183" r="3" stroke="var(--h-olive)"/>
+      </g>
+      <g class="tag idea">
+        <rect x="434" y="172" width="36" height="46" rx="5"/>
+        <circle class="hole" cx="452" cy="183" r="3" stroke="var(--empty)"/>
+        <circle cx="452" cy="200" r="2.6" fill="var(--h-olive)" stroke="none"/>
+      </g>
+      <text class="cap" x="430" y="244">Sofia &middot; Fri</text>
+    </g>
+
+    <g class="drop d3">
+      <path class="pin" d="M770 116v30"/><circle class="pin-dot" cx="770" cy="114" r="2.2"/><circle class="pin-dot" cx="770" cy="146" r="3"/>
+      <path class="hang" d="M770 146 Q748 156 748 176M770 146 Q792 156 792 176"/>
+      <g class="tag" stroke="var(--h-rose)">
+        <rect x="730" y="176" width="36" height="46" rx="5"/>
+        <circle class="hole" cx="748" cy="187" r="3" stroke="var(--h-rose)"/>
+      </g>
+      <g class="tag" stroke="var(--h-rose)">
+        <rect x="774" y="176" width="36" height="46" rx="5"/>
+        <circle class="hole" cx="792" cy="187" r="3" stroke="var(--h-rose)"/>
+      </g>
+      <text class="cap" x="770" y="248">Mom &middot; Sat</text>
+    </g>
+
+    <g class="drop d4">
+      <path class="pin" d="M1050 108v30"/><circle class="pin-dot" cx="1050" cy="106" r="2.2"/><circle class="pin-dot" cx="1050" cy="138" r="3"/>
+      <path class="hang" d="M1050 138v26"/>
+      <g class="tag" stroke="var(--h-terracotta)">
+        <rect x="1032" y="164" width="36" height="46" rx="5"/>
+        <circle class="hole" cx="1050" cy="175" r="3" stroke="var(--h-terracotta)"/>
+      </g>
+      <text class="cap" x="1050" y="236">Kari &middot; 2 Oct</text>
+    </g>
+
+    <!-- today -->
+    <g class="drop d5">
+      <g class="bead"><circle class="bead-halo" cx="600" cy="202" r="13"/><circle class="bead-core" cx="600" cy="202" r="6.5"/></g>
+      <text class="today" x="600" y="228">Today</text>
+    </g>
+
+    <g class="drop d6" aria-hidden="true">
+      <text class="ghost" x="66" y="284" text-anchor="start">&larr; THE PAST</text>
+      <text class="ghost" x="1134" y="284" text-anchor="end">THE FUTURE &rarr;</text>
+    </g>
+  </svg>
+</div>
+
+<main>
+
+<!-- how it reads -->
+<section id="reads">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="kicker">How it reads</p>
+      <h2>One glance tells you how ready you are.</h2>
+      <p>Occasions pin the string up — a birthday, a Christmas, an anniversary — and gifts
+         hang from them as small paper tags in that person's colour.</p>
+    </div>
+
+    <div class="reads">
+      <article class="read reveal">
+        <div class="art states" aria-hidden="true">
+          <div class="state">
+            <svg width="40" height="54" viewBox="0 0 40 54">
+              <rect x="1" y="1" width="38" height="52" rx="6" fill="var(--card)" stroke="var(--empty)" stroke-width="1.4" stroke-dasharray="4 3.5"/>
+              <circle cx="20" cy="13" r="3.2" fill="none" stroke="var(--empty)" stroke-width="1.2"/>
+              <circle cx="20" cy="32" r="2.8" fill="var(--h-heather)"/>
+            </svg>
+            <span>Idea</span>
+          </div>
+          <div class="state">
+            <svg width="40" height="54" viewBox="0 0 40 54">
+              <rect x="1" y="1" width="38" height="52" rx="6" fill="var(--card)" stroke="var(--h-heather)" stroke-width="1.4"/>
+              <circle cx="20" cy="13" r="3.2" fill="none" stroke="var(--h-heather)" stroke-width="1.2"/>
+            </svg>
+            <span>Planned</span>
+          </div>
+          <div class="state">
+            <svg width="40" height="54" viewBox="0 0 40 54">
+              <rect x="1" y="1" width="38" height="52" rx="6" fill="color-mix(in srgb,var(--h-heather) 15%,var(--card))" stroke="var(--h-heather)" stroke-width="1.4"/>
+              <circle cx="20" cy="13" r="3.2" fill="none" stroke="var(--h-heather)" stroke-width="1.2"/>
+              <path d="M11 30h18M11 38h11" stroke="var(--h-heather)" stroke-width="1.3" stroke-linecap="round" opacity=".75"/>
+            </svg>
+            <span>Given</span>
+          </div>
+        </div>
+        <h3>A tag becomes real as the plan does</h3>
+        <p>Dashed while it's just an idea. Tied on once it's planned. Filled in once it's
+           given. Nothing to tick off, nothing to file — the tag simply looks like where
+           you've got to.</p>
+      </article>
+
+      <article class="read reveal">
+        <div class="art" aria-hidden="true">
+          <svg width="200" height="54" viewBox="0 0 200 54">
+            <path d="M4 18 Q52 46 100 34 Q148 22 196 40" fill="none" stroke="var(--empty)" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="100" cy="34" r="12" fill="var(--accent)" opacity=".16"/>
+            <circle cx="100" cy="34" r="6" fill="var(--accent)"/>
+            <text x="4" y="52" font-size="10" fill="var(--faint)" letter-spacing="1.4">PAST</text>
+            <text x="196" y="52" font-size="10" fill="var(--faint)" letter-spacing="1.4" text-anchor="end">FUTURE</text>
+          </svg>
+        </div>
+        <h3>Today is a bead at the centre</h3>
+        <p>Breathing gently, with the past hanging to your left and the future to your right.
+           Quiet stretches aren't empty: the string simply drapes, and a whole quiet season
+           reads as one graceful sag.</p>
+      </article>
+
+      <article class="read reveal">
+        <div class="art" aria-hidden="true">
+          <svg width="200" height="54" viewBox="0 0 200 54">
+            <line x1="4" y1="12" x2="196" y2="12" stroke="var(--empty)" stroke-width="1"/>
+            <path d="M20 12v6M40 12v10M60 12v6M80 12v6M100 12v10M120 12v6M140 12v6M160 12v10M180 12v6" stroke="var(--empty)" stroke-width="1"/>
+            <path d="M4 40 Q60 52 110 38 Q150 27 196 36" fill="none" stroke="var(--empty)" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="pin" d="M110 20v18" stroke="var(--faint)" stroke-width="1.2"/>
+            <circle cx="110" cy="19" r="2.2" fill="var(--faint)"/>
+            <circle cx="110" cy="38" r="3" fill="var(--faint)"/>
+          </svg>
+        </div>
+        <h3>Hold the string, slide, let go</h3>
+        <p>A new occasion is pinned where your finger was. Along the top edge there's a
+           measuring tape — drag it and the months tick past, years at a time.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- screenshots -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="shots">
+      <figure class="shot reveal">
+        <img src="assets/01-timeline.png" width="600" height="1304" loading="lazy"
+             alt="The Giftory timeline: a thin string sagging between two pinned birthdays, today a pink bead at the centre, with a card reading ‘On this day — 2 years ago, a wool scarf’.">
+        <figcaption>Timeline</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <img src="assets/02-people.png" width="600" height="1304" loading="lazy"
+             alt="The People list: each person a thin loop of thread in their own colour, soonest day first, with the rhythm of their year drawn beside the name.">
+        <figcaption>People</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <img src="assets/03-gifts.png" width="600" height="1304" loading="lazy"
+             alt="The Gifts ledger: given and received, grouped year by year, each entry dotted in that person's colour.">
+        <figcaption>Gifts</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- worth knowing -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="kicker">Worth knowing</p>
+      <h2>The small things it does quietly.</h2>
+    </div>
+    <ul class="knowing reveal">
+      <li>People are loops of thread, soonest day first, with the rhythm of every year drawn
+          beside their name — what you gave hangs below the line, what they gave rises above it.</li>
+      <li>Gifts is a ledger: given and received, year by year.</li>
+      <li>Spot something in March — save the idea, and when that person's day comes around,
+          Giftory hands it back.</li>
+      <li>On someone's actual birthday their pin blooms, once a year.</li>
+      <li>On a quiet day the string remembers what this day looked like years ago.</li>
+      <li>Beyond birthdays — Christmas, anniversaries, whatever you celebrate.</li>
+      <li>Pick people straight from Contacts — name, birthday, photo — and they arrive
+          already looking like themselves.</li>
+      <li>Rebuilt for iOS 26, and every gift logged since 2020 comes along untouched.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Giftory Plus -->
+<section id="plus" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="kicker">Giftory Plus</p>
+      <h2>Free for five people.</h2>
+    </div>
+    <div class="plus-card reveal" style="margin-top:28px">
+      <p class="lead">Giftory is free for up to five people. Giftory Plus lifts the limit
+        and opens the ideas shelf.</p>
+      <div class="tiers">
+        <p class="tier"><b>Monthly</b> <span class="amt">$2.99</span></p>
+        <p class="tier"><b>Annual</b> <span class="amt">$14.99</span>, two weeks free</p>
+        <p class="tier"><b>Lifetime</b> <span class="amt">$29.99</span> once</p>
+      </div>
+      <ul>
+        <li>Downloaded Giftory back in 2020? The app offers you Lifetime at $9.99.</li>
+        <li>Family Sharing on every tier.</li>
+        <li>Only adding is ever gated. Nothing is hidden or locked if Giftory Plus lapses.</li>
+      </ul>
+      <p class="plus-note">Prices in USD; the app shows your own currency.</p>
+    </div>
+  </div>
+</section>
+
+<!-- privacy -->
+<section class="privacy" style="padding:44px 0">
+  <div class="wrap">
+    <p>Everything stays on your device. No account, no sign-in, no tracking.
+      <a href="privacy.html">How Giftory handles your data &rarr;</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>
+    &copy; 2026 Giftory &middot; Thomas A Johansen &middot;
+    <a href="privacy.html">Privacy</a> &middot;
+    <a href="support.html">Support</a> &middot;
+    <a href="terms.html">Terms</a>
+  </p>
+  <p class="home"><a href="/">More apps by Thomas &rarr;</a></p>
+</footer>
+
+<script>
+// nav shadow on scroll
+var nav = document.getElementById('mainNav');
+addEventListener('scroll', function(){
+  nav.classList.toggle('scrolled', scrollY > 20);
+}, { passive: true });
+
+// reveal on scroll
+var els = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px' });
+  els.forEach(function(el){ io.observe(el); });
+} else {
+  els.forEach(function(el){ el.classList.add('seen'); });
+}
+</script>
+</body>
+</html>

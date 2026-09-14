@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — Giftory</title>
+<meta name="description" content="Help and answers for Giftory — the string and its days, gifts and ideas, Giftory Plus, your data, and how to reach me.">
+<meta name="theme-color" content="#FDF5EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1E1A21" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://thomasaj.com/giftory/support">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://thomasaj.com/giftory/support">
+<meta property="og:title" content="Support — Giftory">
+<meta property="og:description" content="Help and answers for Giftory — the string and its days, gifts and ideas, Giftory Plus, and your data.">
+<meta property="og:image" content="https://thomasaj.com/giftory/assets/og-image.png">
+<meta property="og:site_name" content="Giftory">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/giftory/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/giftory/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/giftory/assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#FDF5EF; --shelf:#FAF1E8; --card:#FFFDFB;
+  --ink:#241E22; --ink-2:#4A4145; --muted:#6B5F5A; --faint:#8A7C74;
+  --brown-ink:#7A5C3E; --brown-paper:#F5E9DA; --edge:#B08D6A;
+  --accent:#E1467A; --accent-text:#C2325F;
+  --hairline:rgba(36,30,34,0.09); --shadow:rgba(36,30,34,0.09);
+  --nav-bg:rgba(253,245,239,0.86); --grain:0.030;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#1E1A21; --shelf:#2A241F; --card:#2A2430;
+    --ink:#F2E9ED; --ink-2:#D9CDD2; --muted:#B3A7A1; --faint:#998C85;
+    --brown-ink:#EADFCE; --brown-paper:#6B5C49; --edge:#8A7458;
+    --accent:#F2769E; --accent-text:#F2769E;
+    --hairline:rgba(242,233,237,0.11); --shadow:rgba(0,0,0,0.42);
+    --nav-bg:rgba(30,26,33,0.86); --grain:0.045;
+  }
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{
+  font-family:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.6; overflow-x:hidden;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;opacity:var(--grain);pointer-events:none;z-index:9999;
+}
+a{color:var(--accent-text)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent-text);outline-offset:3px;border-radius:5px}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;
+  background:var(--nav-bg);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  box-shadow:0 0.5px 0 var(--hairline)}
+nav .nav-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;gap:14px}
+.wordmark{display:inline-flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none;
+  font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:500;font-size:1.28rem;letter-spacing:-0.01em}
+nav .back{font-size:0.8125rem;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap}
+nav .back:hover{color:var(--ink)}
+
+main{max-width:780px;margin:0 auto;padding:124px 28px 20px}
+.kicker{font-size:0.6875rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted)}
+.page-head{text-align:center;margin-bottom:22px}
+.page-head h1{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:400;
+  font-size:clamp(2rem,5.5vw,2.8rem);line-height:1.12;letter-spacing:-0.015em;margin:12px 0 14px}
+.page-head h1 em{font-style:italic;font-weight:500;color:var(--accent-text)}
+.page-head p{font-size:1rem;color:var(--ink-2);max-width:520px;margin:0 auto}
+.contact-inline{text-align:center;margin-bottom:14px}
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:0.95rem;font-weight:600;
+  color:var(--paper);background:var(--ink);padding:12px 24px;border-radius:980px;text-decoration:none;
+  box-shadow:0 4px 16px var(--shadow);transition:transform 0.2s}
+.btn:hover{transform:translateY(-1px)}
+.btn .bead{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.contact-inline .hint{display:block;margin-top:10px;font-size:0.82rem;color:var(--muted)}
+
+.sag{position:relative;height:30px;margin:26px 0 34px;color:var(--edge)}
+.sag svg{display:block;width:100%;height:30px}
+.sag .bead{position:absolute;left:50%;top:19px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--accent)}
+
+.topic{margin-bottom:40px}
+.topic-head{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.topic-head .paper-tag{flex:none;width:17px;height:22px;border-radius:2px;
+  background:radial-gradient(circle at 50% 15%, var(--paper) 0 1.7px, transparent 1.7px), var(--brown-paper);
+  border:1px solid var(--edge);transform:rotate(-4deg)}
+.topic-head h2{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:500;font-size:1.3rem;
+  letter-spacing:-0.01em}
+
+details{background:var(--card);border:1px solid var(--hairline);border-radius:13px;
+  box-shadow:0 2px 10px var(--shadow);margin-bottom:9px;overflow:hidden}
+details summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  gap:14px;padding:15px 19px;font-size:0.97rem;font-weight:600;color:var(--ink)}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:'';flex:none;width:9px;height:9px;border-radius:50%;
+  border:1.5px solid var(--accent);transition:background 0.2s}
+details[open] summary::after{background:var(--accent)}
+details .a{padding:0 19px 17px;font-size:0.94rem;color:var(--ink-2)}
+details .a p{margin-bottom:9px}
+details .a p:last-child{margin-bottom:0}
+details .a strong{color:var(--ink);font-weight:600}
+details .a a{font-weight:500}
+details .a ul{margin:2px 0 9px 18px}
+details .a li{margin-bottom:5px}
+
+.contact-card{text-align:center;background:var(--card);border:1px solid var(--hairline);border-radius:16px;
+  box-shadow:0 4px 20px var(--shadow);padding:36px 26px;margin-top:52px}
+.contact-card h2{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:400;font-size:1.55rem;
+  letter-spacing:-0.01em;margin-bottom:9px}
+.contact-card h2 em{font-style:italic;font-weight:500;color:var(--accent-text)}
+.contact-card p{font-size:0.95rem;color:var(--ink-2);margin:0 auto 18px;max-width:440px}
+
+footer{padding:36px 24px 46px;text-align:center;border-top:1px solid var(--hairline);margin-top:62px}
+footer p{font-size:0.8125rem;color:var(--muted)}
+footer p + p{margin-top:10px}
+footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--hairline)}
+footer a:hover{color:var(--ink)}
+@media (max-width:600px){
+  nav{padding:0 18px}
+  main{padding:104px 18px 16px}
+  details summary{padding:14px 16px}
+  details .a{padding:0 16px 15px}
+}
+</style>
+</head>
+<body>
+
+<nav aria-label="Main">
+  <div class="nav-inner">
+    <a href="/giftory/" class="wordmark" aria-label="Giftory home">
+      <svg width="34" height="20" viewBox="0 0 68 40" aria-hidden="true"><path d="M2 12 C 16 34, 52 34, 66 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="34" cy="28.5" r="4.5" fill="var(--accent)"/></svg>
+      giftory
+    </a>
+    <a class="back" href="/giftory/">← Back to Giftory</a>
+  </div>
+</nav>
+
+<main>
+  <div class="page-head">
+    <span class="kicker">Support</span>
+    <h1>Something <em>come loose?</em></h1>
+    <p>The questions below cover most of it. If yours isn't here, write to me — it's one person reading, and I answer every message.</p>
+  </div>
+
+  <div class="contact-inline">
+    <a class="btn" href="mailto:support@thomasaj.com?subject=Giftory%20support"><span class="bead" aria-hidden="true"></span>Email support@thomasaj.com</a>
+    <span class="hint">Read by the person who built it.</span>
+  </div>
+
+  <div class="sag" aria-hidden="true">
+    <svg viewBox="0 0 600 30" preserveAspectRatio="none"><path d="M0 6 C 150 28, 450 28, 600 6" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"/></svg>
+    <span class="bead"></span>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head"><span class="paper-tag" aria-hidden="true"></span><h2>Getting started</h2></div>
+
+    <details>
+      <summary>Do I need an account?</summary>
+      <div class="a"><p>No. There is nothing to sign up for and no password to invent. Everything you record
+      lives on your iPhone, so you can open the app and start adding people straight away.</p></div>
+    </details>
+
+    <details>
+      <summary>What is the string, exactly?</summary>
+      <div class="a"><p>One thin string runs through everyone you buy for. Occasions pin it up, and the gifts
+      for that day hang from the pin as paper tags. A tag tells you where it stands by how it looks:
+      <strong>dashed</strong> is an idea, <strong>tied</strong> is planned, <strong>filled</strong> is given.</p>
+      <p>The legend under the header names the parts if you'd rather read it than work it out.</p></div>
+    </details>
+
+    <details>
+      <summary>How do I put a new day on the string?</summary>
+      <div class="a"><p>Hold the string, slide along it to the date you want, and let go. A pin goes up there
+      and you can name the day. The first time you see the garland, a small slip hanging from it says the
+      same thing — it only appears once.</p>
+      <p>To check a pin later, hold it and its date appears.</p></div>
+    </details>
+
+    <details>
+      <summary>How do I get to another month?</summary>
+      <div class="a"><p>The tape under the header. Drag it and the months tick past; a second after you let go
+      it fades away, and it still works from wherever it was sitting. The <strong>Today</strong> chip brings
+      you back to now whenever you've wandered off.</p></div>
+    </details>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head"><span class="paper-tag" aria-hidden="true"></span><h2>People and days</h2></div>
+
+    <details>
+      <summary>How do I add people — and can I use my contacts?</summary>
+      <div class="a"><p>Add a person by typing a name, or tap <strong>Choose from Contacts</strong> to pick one
+      from your address book. On first run Giftory offers a picker that lists the contacts who have a
+      birthday, and imports only the ones you tick. They arrive with their name, their birthday and the
+      picture on the card — nothing else is read.</p>
+      <p>If a birthday turns out to be wrong, correct it on the person and it moves along the string to its
+      new place.</p></div>
+    </details>
+
+    <details>
+      <summary>Why can't I add a birthday as a day?</summary>
+      <div class="a"><p>Birthdays hang themselves. Add the person, give them a birthday, and the day appears
+      on the string — and repeats every year without being asked twice.</p>
+      <p>If you name a new day like a birthday, Giftory says so gently and points you at the person instead.
+      There's an <strong>Add anyway</strong> if you really did mean a separate day.</p></div>
+    </details>
+
+    <details>
+      <summary>Two people share a date. Do I get two pins?</summary>
+      <div class="a"><p>No — one pin, with their faces stacked on it. The day holds everyone who's on it, and
+      each person's gifts stay their own.</p></div>
+    </details>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head"><span class="paper-tag" aria-hidden="true"></span><h2>Gifts and ideas</h2></div>
+
+    <details>
+      <summary>How do I add a gift?</summary>
+      <div class="a"><p>Tap a tag to open its card. It offers <strong>Add a gift</strong>,
+      <strong>Add an idea</strong> and <strong>The day</strong>, which is where the date, the title and the
+      notes live.</p>
+      <p>There's a quicker way once you know it: give a tag a short tug downwards — a little over twenty
+      points — and let go. A gift attaches itself right there.</p></div>
+    </details>
+
+    <details>
+      <summary>What do the three tag looks mean?</summary>
+      <div class="a"><p>They're the life of a gift, in order. <strong>Dashed</strong> is an idea you're
+      turning over. <strong>Tied</strong> is planned — you know what you're giving. <strong>Filled</strong> is
+      given, and stays in the ledger as a record of what they got.</p></div>
+    </details>
+
+    <details>
+      <summary>How does the ideas shelf work?</summary>
+      <div class="a"><p>The shelf lip sits under the header; pull it down and the ideas you've saved are
+      waiting on it. Ideas aren't tied to a date, so they keep until they're useful.</p>
+      <p>They come back on their own: open the person's day and the <strong>NEXT UP</strong> band offers up to
+      two of their ideas to drag onto the pin. The ideas shelf is part of Giftory Plus.</p></div>
+    </details>
+
+    <details>
+      <summary>Can I note what a gift cost?</summary>
+      <div class="a"><p>Yes. A gift or an idea can carry a value alongside its title, its notes and a photo.
+      All of those are optional — leave the value empty if you'd rather not keep score.</p></div>
+    </details>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head"><span class="paper-tag" aria-hidden="true"></span><h2>Giftory Plus</h2></div>
+
+    <details>
+      <summary>What's free, and what does Giftory Plus cost?</summary>
+      <div class="a"><p>The whole app is free for up to five people. <strong>Giftory Plus</strong> lifts that
+      limit and adds the ideas shelf.</p>
+      <ul>
+        <li>Monthly — $2.99, no trial.</li>
+        <li>Annual — $14.99, with a two-week free trial.</li>
+        <li>Lifetime — $29.99 once.</li>
+      </ul>
+      <p>Apple Family Sharing works on every option. Prices are shown in the app for your storefront.</p></div>
+    </details>
+
+    <details>
+      <summary>What happens if Giftory Plus lapses?</summary>
+      <div class="a"><p>Nothing disappears and nothing locks. Every person, gift and idea stays visible and
+      editable, exactly as you left it. Only <em>adding</em> is ever gated: the app asks when you go to add a
+      sixth person or save a new idea.</p></div>
+    </details>
+
+    <details>
+      <summary>I've had Giftory since 2020 — is there something for me?</summary>
+      <div class="a"><p>There is: <strong>Lifetime since 2020</strong>, $9.99 once. The app offers it itself
+      when it sees from the App Store that your original download was the 2020 version, so it only appears on
+      a real install over that old copy — not in a fresh download, and not in a test build.</p>
+      <p>It's shown once, and after that it waits for you in Settings.</p></div>
+    </details>
+
+    <details>
+      <summary>How do I cancel, restore, or get a refund?</summary>
+      <div class="a"><p>Cancel in iOS Settings → your name → Subscriptions, at least 24 hours before the
+      period ends, or it renews. On a new iPhone, tap <strong>Restore purchases</strong> in the app's
+      Settings and it re-checks your Apple Account.</p>
+      <p>Refunds are Apple's to give:
+      <a href="https://support.apple.com/118223">reportaproblem.apple.com</a>. A free trial is one per Apple
+      Account, and unused trial time is forfeited when you buy.</p></div>
+    </details>
+  </div>
+
+  <div class="topic">
+    <div class="topic-head"><span class="paper-tag" aria-hidden="true"></span><h2>Your data, your iPhone, and me</h2></div>
+
+    <details>
+      <summary>Where is my data kept, and what happens when I get a new iPhone?</summary>
+      <div class="a"><p>In a database on your iPhone, and nowhere else. There's no iCloud sync and no server
+      behind Giftory, so I hold no copy of your people or your gifts.</p>
+      <p>Your data does travel in your iPhone's own backup. A new phone picks Giftory up when you restore
+      from an iCloud Backup or an encrypted computer backup, or transfer device to device — so back the old
+      one up before you hand it on. Purchases come back with <strong>Restore purchases</strong>.</p></div>
+    </details>
+
+    <details>
+      <summary>How do I remove a day, a person, or everything?</summary>
+      <div class="a"><p>Delete any person, gift or idea inside the app. Deleting a person takes their days
+      with them, birthdays included — that's the only way a birthday comes off the string.</p>
+      <p><strong>Remove this day</strong> takes an occasion off the string for everyone on it and stops it
+      repeating; gifts you already logged stay in the ledger, unfiled. Deleting the app removes everything it
+      stored on the device.</p></div>
+    </details>
+
+    <details>
+      <summary>Does Giftory work with larger text, Reduce Motion and VoiceOver?</summary>
+      <div class="a"><p>Yes, and it changes shape rather than shrinking. At larger text sizes the garland
+      becomes a list, so nothing has to be pinched at. Reduce Motion stills the string, the swing and the
+      little ceremonies.</p>
+      <p>With VoiceOver, each day is read out with the people on it and where their gifts stand.</p></div>
+    </details>
+
+    <details>
+      <summary>Which iPhone do I need?</summary>
+      <div class="a"><p>Giftory is made for iPhone, and the current release needs iOS 26 or later. It runs on
+      iPad too, in its iPhone layout, and follows your system's light or dark appearance.</p></div>
+    </details>
+
+    <details>
+      <summary>I found a bug. Do you want to hear about it?</summary>
+      <div class="a"><p>Very much.
+      <a href="mailto:support@thomasaj.com?subject=Giftory%20bug">Email me</a> what happened and what you
+      expected instead — a screenshot helps, and so does your iOS version. You can also write from the app's
+      Settings, which opens Mail with the message already addressed.</p></div>
+    </details>
+  </div>
+
+  <div class="contact-card">
+    <h2>Still <em>hanging?</em></h2>
+    <p>Write to me and we'll sort it out. Tell me roughly what happened and which iPhone you're on — I read and answer everything myself.</p>
+    <a class="btn" href="mailto:support@thomasaj.com?subject=Giftory%20support"><span class="bead" aria-hidden="true"></span>support@thomasaj.com</a>
+  </div>
+</main>
+
+<footer>
+  <p>
+    &copy; 2026 Giftory &middot; Thomas A Johansen &middot;
+    <a href="privacy.html">Privacy</a> &middot;
+    <a href="support.html">Support</a> &middot;
+    <a href="terms.html">Terms</a>
+  </p>
+  <p><a href="/">More apps by Thomas →</a></p>
+</footer>
+
+</body>
+</html>
