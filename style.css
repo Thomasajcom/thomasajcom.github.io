@@ -25,10 +25,10 @@
   --line-soft: rgba(242, 237, 227, 0.055);
 
   /* App accents, tuned for legibility on ink */
-  /* kraft: Giftory's brown-paper edge (#B08D6A) lifted to 8.2:1 on ink.
-     Giftory's own accent is a pink, but Little Knots already owns the pink
+  /* kraft: Presang's brown-paper edge (#B08D6A) lifted to 8.2:1 on ink.
+     Presang's own accent is a pink, but Little Knots already owns the pink
      here, so the card wears the app's other half — its paper. */
-  --giftory: #C9A07A;
+  --presang: #C9A07A;
   --knots: #E96B9F;
   --percent: #7361FF;
   --regrocer: #7BC466;
@@ -168,7 +168,7 @@ a {
   height: 58%;
   left: -2%;
   top: 14%;
-  background: radial-gradient(circle, var(--giftory) 0%, transparent 68%);
+  background: radial-gradient(circle, var(--presang) 0%, transparent 68%);
   animation: drift-a 26s var(--ease) infinite alternate;
 }
 
@@ -362,7 +362,7 @@ a {
   /* the six accents, in the order they appear below */
   background: linear-gradient(
     100deg,
-    var(--giftory) 0%,
+    var(--presang) 0%,
     var(--knots) 20%,
     var(--percent) 40%,
     var(--regrocer) 60%,
@@ -529,7 +529,7 @@ a {
 /* Several source icons ship with a flat margin baked into the PNG, which reads
    as a pale square on this background. --icon-zoom crops each one to its own
    artwork edge; the measured margins are 11.3% (Regrocer), 5.9% (Little
-   Knots), 4.3% (Atten), 0% (100 Percent), 0% (Giftory — a full-bleed coloured
+   Knots), 4.3% (Atten), 0% (100 Percent), 0% (Presang — a full-bleed coloured
    ground, so there is nothing to crop). */
 .card .icon img {
   width: 100%;

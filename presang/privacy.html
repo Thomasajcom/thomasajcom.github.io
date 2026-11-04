@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy — Presang</title>
+<meta name="description" content="Presang's privacy policy: everything you record stays in a database on your iPhone. No account, no server, no analytics, no tracking.">
+<meta name="theme-color" content="#FDF5EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1E1A21" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://thomasaj.com/presang/privacy">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://thomasaj.com/presang/privacy">
+<meta property="og:title" content="Privacy — Presang">
+<meta property="og:description" content="Everything you record stays in a database on your iPhone. No account, no server, no analytics, no tracking.">
+<meta property="og:image" content="https://thomasaj.com/presang/assets/og-image.png">
+<meta property="og:site_name" content="Presang">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/presang/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/presang/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/presang/assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#FDF5EF; --shelf:#FAF1E8; --card:#FFFDFB;
+  --ink:#241E22; --ink-2:#4A4145; --muted:#6B5F5A; --faint:#8A7C74;
+  --brown-ink:#7A5C3E; --brown-paper:#F5E9DA; --edge:#B08D6A;
+  --accent:#E1467A; --accent-text:#C2325F;
+  --hairline:rgba(36,30,34,0.09); --shadow:rgba(36,30,34,0.09);
+  --nav-bg:rgba(253,245,239,0.86); --grain:0.030;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#1E1A21; --shelf:#2A241F; --card:#2A2430;
+    --ink:#F2E9ED; --ink-2:#D9CDD2; --muted:#B3A7A1; --faint:#998C85;
+    --brown-ink:#EADFCE; --brown-paper:#6B5C49; --edge:#8A7458;
+    --accent:#F2769E; --accent-text:#F2769E;
+    --hairline:rgba(242,233,237,0.11); --shadow:rgba(0,0,0,0.42);
+    --nav-bg:rgba(30,26,33,0.86); --grain:0.045;
+  }
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{
+  font-family:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.65; overflow-x:hidden;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;opacity:var(--grain);pointer-events:none;z-index:9999;
+}
+a{color:var(--accent-text)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent-text);outline-offset:3px;border-radius:5px}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;
+  background:var(--nav-bg);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  box-shadow:0 0.5px 0 var(--hairline)}
+nav .nav-inner{max-width:740px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;gap:14px}
+.wordmark{display:inline-flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none;
+  font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:500;font-size:1.28rem;letter-spacing:-0.01em}
+nav .back{font-size:0.8125rem;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap}
+nav .back:hover{color:var(--ink)}
+
+main{max-width:740px;margin:0 auto;padding:124px 28px 20px}
+.doc-head{background:var(--card);border:1px solid var(--hairline);border-radius:16px;
+  box-shadow:0 4px 20px var(--shadow);padding:38px 36px 32px}
+.kicker{font-size:0.6875rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted)}
+.doc-head h1{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:400;
+  font-size:clamp(1.85rem,5vw,2.5rem);line-height:1.14;letter-spacing:-0.015em;margin:12px 0 12px}
+.doc-head h1 em{font-style:italic;font-weight:500;color:var(--accent-text)}
+.doc-head .date{font-size:0.85rem;color:var(--muted)}
+.doc-head .tldr{margin-top:20px;padding-top:20px;border-top:1px solid var(--hairline);
+  font-size:0.98rem;color:var(--ink-2)}
+.doc-head .tldr .serif{font-family:'Newsreader',Georgia,serif;font-style:italic;font-weight:500;color:var(--ink);font-size:1.06rem}
+
+.sag{position:relative;height:30px;margin:26px 0 30px;color:var(--edge)}
+.sag svg{display:block;width:100%;height:30px}
+.sag .bead{position:absolute;left:50%;top:19px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--accent)}
+
+.strand{position:relative;padding-left:42px}
+.strand::before{content:'';position:absolute;left:11px;top:8px;bottom:10px;width:1px;background:var(--edge);opacity:0.55}
+section.tag{position:relative;margin-bottom:34px}
+section.tag::before{content:'';position:absolute;left:-39.5px;top:5px;width:17px;height:22px;border-radius:2px;
+  background:radial-gradient(circle at 50% 15%, var(--paper) 0 1.7px, transparent 1.7px) , var(--brown-paper);
+  border:1px solid var(--edge);transform:rotate(-4deg)}
+section.tag h2{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:500;font-size:1.32rem;
+  letter-spacing:-0.01em;line-height:1.3;margin-bottom:9px}
+section.tag p{font-size:0.97rem;color:var(--ink-2);margin-bottom:11px}
+section.tag p:last-child{margin-bottom:0}
+section.tag p strong,section.tag li strong{color:var(--ink);font-weight:600}
+section.tag ul{margin:2px 0 12px 19px}
+section.tag li{font-size:0.97rem;color:var(--ink-2);margin-bottom:7px}
+section.tag a{font-weight:500}
+
+.note{background:var(--brown-paper);border:1px solid var(--edge);border-radius:12px;padding:18px 20px;
+  font-size:0.94rem;color:var(--brown-ink);margin:22px 0 4px}
+.note strong{font-weight:600}
+
+footer{padding:36px 24px 46px;text-align:center;border-top:1px solid var(--hairline);margin-top:62px}
+footer p{font-size:0.8125rem;color:var(--muted)}
+footer p + p{margin-top:10px}
+footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--hairline)}
+footer a:hover{color:var(--ink)}
+@media (max-width:600px){
+  nav{padding:0 18px}
+  main{padding:104px 18px 16px}
+  .doc-head{padding:30px 22px 26px}
+  .strand{padding-left:36px}
+  section.tag::before{left:-33.5px}
+  .strand::before{left:9px}
+}
+</style>
+</head>
+<body>
+
+<nav aria-label="Main">
+  <div class="nav-inner">
+    <a href="/presang/" class="wordmark" aria-label="Presang home">
+      <svg width="34" height="20" viewBox="0 0 68 40" aria-hidden="true"><path d="M2 12 C 16 34, 52 34, 66 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="34" cy="28.5" r="4.5" fill="var(--accent)"/></svg>
+      presang
+    </a>
+    <a class="back" href="/presang/">← Back to Presang</a>
+  </div>
+</nav>
+
+<main>
+  <div class="doc-head">
+    <span class="kicker">Privacy policy</span>
+    <h1>Privacy, in <em>plain language.</em></h1>
+    <p class="date">Effective October 2, 2026 · Applies to the Presang iOS app</p>
+    <p class="tldr">
+      The short version: <span class="serif">Presang collects nothing.</span>
+      Your people, your days and every gift you log live in a database on your iPhone.
+      There is no account to make, no server behind the app, no analytics and no tracking.
+      I run nothing that could see your data, so I don't.
+    </p>
+  </div>
+
+  <div class="sag" aria-hidden="true">
+    <svg viewBox="0 0 600 30" preserveAspectRatio="none"><path d="M0 6 C 150 28, 450 28, 600 6" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"/></svg>
+    <span class="bead"></span>
+  </div>
+
+  <div class="strand">
+
+    <section class="tag">
+      <h2>What the app stores, and where</h2>
+      <p>
+        Everything you put into Presang is written to a database <strong>on your iPhone</strong>, inside the
+        app's own storage. It never leaves the device on its own. That database holds:
+      </p>
+      <ul>
+        <li><strong>People</strong> — first name, surname, birthday, and a photo if you add one.</li>
+        <li><strong>Occasions</strong> — a date, a title, notes, and whether the day repeats each year.</li>
+        <li><strong>Gifts and ideas</strong> — a title, notes, an optional value, an optional photo, who gave it and who received it, and when you captured it.</li>
+        <li><strong>Your settings</strong> — plus a few one-time flags, such as whether you have seen the first run, which hints you have dismissed, and whether the 2020 offer has been shown.</li>
+      </ul>
+      <p>
+        There is <strong>no iCloud sync</strong> and no server of mine. Your Presang data is included in your
+        iPhone's own backup — iCloud Backup, or an encrypted backup on your computer. Those backups are
+        Apple's, under Apple's terms, and a new phone gets your gifts through one of them or through a
+        device-to-device transfer.
+      </p>
+    </section>
+
+    <section class="tag">
+      <h2>Contacts</h2>
+      <p>
+        Reading your contacts is optional, and only two places ask: <strong>Choose from Contacts</strong> when
+        you add a person, and the picker offered on first run. Presang reads a card's name, birthday and
+        picture, and nothing else — the given and family name, or, on a company's card with no person's
+        name, the company name.
+      </p>
+      <p>
+        The first-run picker lists the contacts that have a birthday, and imports only the ones you tick.
+        No phone numbers, e-mail addresses, postal addresses or notes are read, and nothing is sent anywhere:
+        what you import is copied into the same on-device database as everything else.
+      </p>
+    </section>
+
+    <section class="tag">
+      <h2>Photos</h2>
+      <p>
+        Also optional. Presang uses Apple's photo picker, which hands the app <strong>only the item you
+        pick</strong> — it never gets a look at your library.
+      </p>
+      <p>
+        The picture is downsized and stored in the app's database on your iPhone, next to the
+        person or the gift it belongs to.
+      </p>
+    </section>
+
+    <section class="tag">
+      <h2>Purchases</h2>
+      <p>
+        Presang Plus and the optional tips are sold through Apple's App Store using StoreKit. Apple processes
+        the payment; I never see your name, your payment details or your Apple Account. Whether you own
+        Presang Plus is checked on your device.
+      </p>
+      <p>
+        The app also asks the App Store, on the device, which build you originally downloaded. That is how it
+        knows to offer the 2020 Lifetime price to people who have had Presang since the beginning.
+      </p>
+    </section>
+
+    <section class="tag">
+      <h2>What can leave the device</h2>
+      <p>
+        Presang makes no network requests of its own. There is no networking code in it and no third-party
+        SDK — only Apple's own frameworks. Three things can still travel, and each one is something you start:
+      </p>
+      <ul>
+        <li><strong>A purchase</strong>, handled by Apple as described above.</li>
+        <li><strong>An e-mail you send from Settings</strong> — the app opens your Mail app with a message addressed to me. Nothing is attached that you cannot see, and you can cancel before sending.</li>
+        <li><strong>A link you tap</strong> — the App Store review page, or my Instagram. Those open in their own apps, and what happens there is between you and them.</li>
+      </ul>
+    </section>
+
+    <section class="tag">
+      <h2>What Presang doesn't do</h2>
+      <ul>
+        <li><strong>No account</strong> — there is nothing to sign up for and no password to invent.</li>
+        <li><strong>No server and no sync of mine</strong> — I hold no copy of anything.</li>
+        <li><strong>No analytics and no crash reporting</strong> — I don't know how you use the app.</li>
+        <li><strong>No advertising</strong> — and no ad identifiers.</li>
+        <li><strong>No tracking</strong> — in Apple's App Tracking Transparency sense, and in the everyday one.</li>
+        <li><strong>No selling or sharing of data</strong> — there is nothing to sell.</li>
+      </ul>
+      <p>
+        That is how the app is built, not a promise added afterwards: it contains no code that could do any
+        of it.
+      </p>
+    </section>
+
+    <section class="tag">
+      <h2>Children</h2>
+      <p>
+        Presang is made for adults who buy gifts. It records a person's name and days only because you typed
+        them in, and they stay on your iPhone. No personal information is collected from anyone — children
+        included.
+      </p>
+    </section>
+
+    <section class="tag">
+      <h2>Deleting your data</h2>
+      <ul>
+        <li>Delete any person, gift or idea inside the app. Deleting a person takes their days with them.</li>
+        <li><strong>Remove this occasion</strong> takes an occasion off the string for everyone on it and stops it repeating. Gifts you already logged stay in the ledger, unfiled. A birthday comes off in Edit person (Birthday › Remove), or with the person.</li>
+        <li>Deleting the app removes everything it stored on the device.</li>
+      </ul>
+      <p class="note">
+        There is nothing for me to delete on your behalf, because there is nothing on my side.
+        The flip side is worth saying plainly: <strong>if the only copy is on a phone you lose, it is gone.</strong>
+        Keep your iPhone backed up.
+      </p>
+    </section>
+
+    <section class="tag">
+      <h2>Changes to this policy</h2>
+      <p>
+        If the app changes in a way that changes this page, the new version appears here with a new
+        effective date. I'll keep it as short as it is now.
+      </p>
+    </section>
+
+    <section class="tag">
+      <h2>Contact</h2>
+      <p>
+        Questions about any of this? Email
+        <a href="mailto:support@thomasaj.com?subject=Presang%20privacy">support@thomasaj.com</a>.
+        You can also read the <a href="terms.html">terms of use</a> or browse
+        <a href="support.html">support</a>.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <p>
+    &copy; 2026 Presang &middot; Thomas A Johansen &middot;
+    <a href="privacy.html">Privacy</a> &middot;
+    <a href="support.html">Support</a> &middot;
+    <a href="terms.html">Terms</a>
+  </p>
+  <p><a href="/">More apps by Thomas →</a></p>
+</footer>
+
+</body>
+</html>
