@@ -13,6 +13,7 @@
  *               see  ids of related modules
  *               tag  a small label, e.g. "Deferred"
  *   numbers — quantities that still need a value. Never invent one here.
+ *   profiles — optional side-by-side panels, e.g. captains: { name, role, fields: [[label, text]] }
  *
  * Decided = chosen, not yet played.   Played = proven in a running game.
  * Open    = undecided; ask the designer, never infer.
@@ -28,7 +29,7 @@ window.GDD = {
     pitch: "Captain a longship. Steal a saga's prize. Carry it home. Then decide whether to set out again with everything you now carry.",
     facts: [
       ["Genre", "Viking naval roguelite"],
-      ["Platform", "PC, Steam"],
+      ["Platform", "PC, Steam Early Access"],
       ["Engine", "Godot"],
       ["Team", "One person"],
       ["One voyage", "45–60 minutes"],
@@ -189,30 +190,89 @@ window.GDD = {
 
     {
       id: "captains", part: "captain", title: "Captains",
-      sum: "Five captains, five fixed stat lines, one ability each.",
+      sum: "Each captain champions one statistic and one way to win a fight.",
       items: [
-        { s: "decided", t: "Five captains, one championing each statistic: Strength, Dexterity, Constitution, Charisma, Luck.", see: ["dice"] },
+        { s: "decided", t: "Each captain champions one statistic, and with it one way to win a fight.", why: "Without this, captains would be the same captain with a different number highlighted.",
+          list: [
+            "Strength: sink them",
+            "Dexterity: strip them, area by area",
+            "Charisma: break their crew and make them surrender",
+            "Constitution: outlast them (a later captain)",
+            "Luck: gamble on the dice (a later captain)"
+          ], see: ["roster", "dice", "enemies"] },
+        { s: "decided", t: "The first version has three captains: Strength, Dexterity and Charisma.", why: "These are the three ways the rules actually end a fight. Constitution and Luck are the hardest to design, and get easier once combat has been played.", see: ["roster", "production"] },
+        { s: "decided", t: "More captains are added over Early Access. The total may pass five." },
+        { s: "decided", t: "The first captains share one home settlement. Each had a trade before raiding, and the trade explains the kit.", why: "It fits the grounded tone and a settlement that sends its own people. Later captains may come from further afield." },
+        { s: "decided", t: "A captain's statistics have one peak, one hole and three in the middle.", why: "The hole matters as much as the peak. It decides which rewards you pass on." },
         { s: "decided", t: "Statistics are fixed when you pick a captain and never change.", why: "Every economy in the game assumes a player who never out-scales the content." },
         { s: "decided", t: "That makes captain choice the weightiest decision in the game. It sets which cards sparkle and which range you prefer." },
         { s: "decided", t: "The captain is fixed for the whole expedition." },
         { s: "decided", t: "Each captain has a two-part kit: one always-on passive and one unique active ability." },
-        { s: "decided", t: "The passive creates a route, economy or reward preference.", why: "It must be explainable in one sentence, never mandatory for a saga, and need no micromanagement." },
-        { s: "decided", t: "The active ability is an energy-costed combat action.", see: ["turn"] },
+        { s: "decided", t: "The passive bends one resource: cargo, repair supplies, crew or silver.", why: "It must be explainable in one sentence, never mandatory for a saga, and need no micromanagement." },
+        { s: "decided", t: "The active ability works like a card: a guaranteed effect, then a d20 roll on the captain's best statistic.", why: "One rule for everything the player does, and the champion of a statistic feels it every turn.", see: ["turn", "dice"] },
         { s: "decided", t: "No part of a kit grants information. Scouting belongs to specialists.", see: ["map"] },
-        { s: "decided", t: "The Luck captain's kit bends the dice rule for them alone.", why: "Luck only enlarges bonuses that another statistic triggers, so a Luck-first captain would otherwise be its worst user. For everyone else Luck stays 'bigger, never more often'.", see: ["dice"] },
+        { s: "decided", t: "When a Luck captain is added, their kit bends the dice rule for them alone.", why: "Luck only enlarges bonuses that another statistic triggers, so a Luck-first captain would otherwise be its worst user. For everyone else Luck stays 'bigger, never more often'.", see: ["dice"] },
         { s: "decided", t: "Each captain has a set base deck that defines how they play. You may customise it before an expedition, within limits." },
-        { s: "decided", t: "You begin with a limited set of captains." },
-        { s: "decided", t: "A new captain arrives after a number of finished expeditions, won or lost.", why: "Help still reaches a struggling player, and nobody gains by throwing a voyage." },
-        { s: "decided", t: "Captains can also be met and recruited through story events." },
-        { s: "risk", t: "Five captains means ten ability designs, five stat lines and five starting decks to tell apart and balance." },
+        { s: "decided", t: "A new player picks from two captains. The third arrives after a number of finished expeditions, won or lost.", why: "A real choice on day one, and one thing to earn. Counting losses too means nobody gains by throwing a voyage.", see: ["roster"] },
+        { s: "decided", t: "Captains added later arrive the same way, or are met and recruited through story events." },
+        { s: "risk", t: "Every captain is two ability designs, a stat line and a starting deck to tell apart and balance." },
+        { s: "risk", t: "Nobody champions Constitution or Luck at first. Check that cards keyed to them are still rewards worth taking." },
         { s: "risk", t: "Deck limits must be tight enough that a Strength captain still feels like one after customising." },
         { s: "risk", t: "The captain-select screen must show how each one plays, not only their numbers." },
-        { s: "open", t: "The five identities: passives and active abilities." },
-        { s: "open", t: "How exactly the Luck captain bends the dice. A reroll is one example." },
+        { s: "open", t: "The Constitution and Luck captains, and any beyond five." },
+        { s: "open", t: "How exactly a Luck captain bends the dice. A reroll is one example." },
         { s: "open", t: "The starting-deck limits.", rec: "A maximum deck size, and minimum counts by role: attack, defence, healing." },
         { s: "open", t: "Should a captain's passive be able to grant limited field repair?", rec: "Yes, as a way to tell captains apart." }
       ],
-      numbers: ["Captains available at the start", "Finished expeditions needed for a new captain", "Starting deck size and make-up per captain"]
+      numbers: ["Finished expeditions needed for a new captain", "The statistic scale: how high a peak, how low a hole", "Starting deck size and make-up per captain"]
+    },
+
+    {
+      id: "roster", part: "captain", title: "The first three captains",
+      sum: "A whaler who sinks them, a sailmaker who strips them, a skald who talks them out of fighting.",
+      profiles: [
+        { name: "Thorgrim Cold-Iron", role: "The Whaler", fields: [
+          ["Best at", "Strength"],
+          ["Worst at", "Charisma"],
+          ["Wins by", "Sinking them"],
+          ["Ability", "Harpoon the Hull and haul the enemy one band closer. On a Strength roll the line holds, and they cannot pull away next turn."],
+          ["Passive", "Cargo. A ship you sink gives up more salvage."],
+          ["Available", "From the start"]
+        ] },
+        { name: "Thora Wool-Wind", role: "The Sailmaker", fields: [
+          ["Best at", "Dexterity"],
+          ["Worst at", "Strength"],
+          ["Wins by", "Stripping them, area by area"],
+          ["Ability", "Strike one chosen area precisely, from any range. On a Dexterity roll the damage is harder for them to repair."],
+          ["Passive", "Repair supplies. Your own area repairs use fewer."],
+          ["Available", "From the start"]
+        ] },
+        { name: "Eirikur Gull-Tongue", role: "The Skald", fields: [
+          ["Best at", "Charisma"],
+          ["Worst at", "Dexterity"],
+          ["Wins by", "Breaking their crew, then demanding surrender"],
+          ["Ability", "A mocking verse that damages the enemy's Crew area. On a Charisma roll, a ship that is damaged enough surrenders."],
+          ["Passive", "Crew. Your injured specialists are rescued more often."],
+          ["Available", "Arrives after a number of finished expeditions"]
+        ] }
+      ],
+      items: [
+        { s: "decided", t: "Each one's worst statistic is another's best.", why: "Each captain is bad at one of the other two ways to win. None can do everything, and their reward choices differ sharply.",
+          list: ["Thorgrim is worst at Charisma", "Eirikur is worst at Dexterity", "Thora is worst at Strength"] },
+        { s: "decided", t: "Thorgrim's harpoon changes the range without a card. Everyone else needs a range card for that.", why: "He hunted whales from an open boat. Choosing the distance is his whole trade.", see: ["range"] },
+        { s: "decided", t: "Thora's ability is precise at any range. Everyone else must close to reliably hit the area they choose.", why: "Stripping a ship needs dependable aim, and she spent a life learning where rigging fails.", see: ["range", "areas"] },
+        { s: "decided", t: "Eirikur's verse is a demand for surrender that is always to hand. Other captains need a Charisma card to make one.", see: ["enemies"] },
+        { s: "decided", t: "Thorgrim and Thora are available from the start. Eirikur arrives later.", see: ["captains"] },
+        { s: "risk", t: "Thorgrim can change range every turn without a card. Check that range cards still matter in his deck." },
+        { s: "risk", t: "Thora never needs to close. Check that close range still matters to her." },
+        { s: "risk", t: "Eirikur's passive stacks with Charisma, which already improves the rescue roll. He may lose almost no crew." },
+        { s: "risk", t: "Nobody can surrender in a multi-ship fight. There Eirikur leans on Crew damage and on his own crew.", see: ["enemies"] },
+        { s: "open", t: "Final wording and names for the three abilities and the three passives." },
+        { s: "open", t: "The three base decks." },
+        { s: "open", t: "A line or two of story for each captain, and their portraits." },
+        { s: "open", t: "The home settlement's name." }
+      ],
+      numbers: ["The three stat lines", "Energy cost of each ability", "How much extra salvage Thorgrim takes", "How many supplies Thora's repairs save", "How much Eirikur improves the rescue roll"]
     },
 
     {
@@ -235,6 +295,8 @@ window.GDD = {
         { s: "decided", t: "Before an expedition sails.",
           list: ["Choose a captain", "Customise the starting deck", "Equip consumables", "Visit the travelling salesman"] },
         { s: "decided", t: "The salesman sells consumables, cards and more." },
+        { s: "decided", t: "The settlement is the home screen between expeditions. It does not grow, and has nothing to upgrade.",
+          list: ["Captain select", "The deck builder", "The consumable chest", "The travelling salesman", "The hall of prizes"], see: ["rejected"] },
         { s: "decided", t: "One difficulty. No selector, no tiers, no scaling to player power." },
         { s: "decided", t: "The game gets easier as crew levels, consumables and silver accumulate. This is intended.", why: "Accumulating is how a player earns the harder sagas and the convergence." },
         { s: "decided", t: "The veteran's challenge is the expedition chain: structure, not a difficulty dial.", see: ["expedition"] },
@@ -531,7 +593,7 @@ window.GDD = {
             "Hull: lowers Hull HP, the path to sinking",
             "Sail: less Speed and range control, and no withdrawing",
             "Weapons: weaker attacks",
-            "Crew: slower repairs, loss of special actions",
+            "Crew: slower repairs, loss of special actions, and open to a demand for surrender",
             "Cargo: destroys repair supplies and loot"
           ] },
         { s: "decided", t: "Hull has no disable state. Its state is the HP pool." },
@@ -590,7 +652,12 @@ window.GDD = {
         { s: "decided", t: "Only elites and bosses have crewed stations. Wreck a station and they lose the ability it gave." },
         { s: "decided", t: "Each elite has one signature mechanic: a ram that punishes closing, a shieldwall that blunts area hits, archers that punish distance." },
         { s: "decided", t: "The map always marks an elite. Scouting reveals its mechanic." },
-        { s: "decided", t: "Enemies can surrender once damaged enough. Charisma and intimidation improve the odds. No surrender in multi-ship fights." },
+        { s: "decided", t: "Surrender is damage first, then a demand. Once a ship is damaged enough, a demand can be made, and a Charisma roll decides it.", why: "It follows the dice rule: a refused demand costs nothing but its energy." },
+        { s: "decided", t: "Damaged enough means the Crew area is disabled, or the Hull is nearly gone." },
+        { s: "decided", t: "Charisma effects deal damage too, to the enemy's Crew area.", why: "Taunts, threats and verses hit their people. The Crew area is the enemy's nerve, with no extra bar on screen.", see: ["areas"] },
+        { s: "decided", t: "Any captain can demand surrender, through Charisma cards.", why: "It keeps all three ways to win open to everyone. The Skald simply always has a demand to hand.", see: ["roster"] },
+        { s: "decided", t: "A boss fought alone can be made to yield, at a tougher threshold. In a raid, that means they hand over the prize." },
+        { s: "decided", t: "No surrender in multi-ship fights." },
         { s: "decided", t: "Some fights carry weather or terrain, set by node type. The effects hit both ships equally.", why: "One-sided weather would read as the game targeting your build." },
         { s: "decided", t: "In those fights, conditions escalate the longer the battle lasts." },
         { s: "decided", t: "There is no universal fight clock. Open-water duels rely on a tuning contract.",
@@ -599,10 +666,11 @@ window.GDD = {
         { s: "risk", t: "An unbounded enemy count is an interface constraint, not only an encounter freedom.", see: ["interface"] },
         { s: "risk", t: "A normal fight lasting half again its target length means the tuning contract is broken. The cheapest fix is escalating conditions on every fight." },
         { s: "risk", t: "Surrender is Charisma's way to win, and it is unavailable in multi-ship fights." },
-        { s: "open", t: "The enemy roster, archetypes, preferred ranges and targeting logic." },
-        { s: "open", t: "How surrender is triggered: a card effect, a roll bonus, or a damage threshold." }
+        { s: "risk", t: "The Crew area must be tough enough that breaking it is not the fastest win every time." },
+        { s: "risk", t: "Each raid needs a surrender ending written, and tuning so that it is not the easy route." },
+        { s: "open", t: "The enemy roster, archetypes, preferred ranges and targeting logic." }
       ],
-      numbers: ["Surrender thresholds", "Turns before a neutralised ship withdraws", "How fast conditions escalate"]
+      numbers: ["How low Hull must be before a demand can be made", "The tougher surrender threshold for a boss", "Turns before a neutralised ship withdraws", "How fast conditions escalate"]
     },
 
     {
@@ -713,17 +781,22 @@ window.GDD = {
 
     {
       id: "production", part: "make", title: "Scope and build order",
-      sum: "Everything ships. The design locks before anything is tested.",
+      sum: "Everything ships, in stages. The design locks before anything is tested.",
       items: [
-        { s: "decided", t: "Release scope is everything in this document. Nothing is optional." },
-        { s: "decided", t: "No cut order and no fallback scope. All or nothing." },
+        { s: "decided", t: "The finished game is everything in this document. Nothing is optional." },
+        { s: "decided", t: "It reaches players in stages, through Steam Early Access.", why: "Early Access changes the order players receive the game, not what the game is." },
+        { s: "decided", t: "The first version.",
+          list: ["Three captains", "The settlement", "A couple of sagas", "Act I", "The raid"], see: ["roster", "voyage"] },
+        { s: "decided", t: "Features still to come, such as Act II, are described clearly to players." },
+        { s: "decided", t: "Whether to build more before the Early Access release is decided once the first version is playable." },
+        { s: "decided", t: "No cut order and no fallback scope. Everything ships by the full release." },
         { s: "decided", t: "No testing until the design is locked." },
         { s: "decided", t: "The heaviest content costs, in order.",
           list: [
             "Three sagas and the convergence, by a wide margin",
             "Event writing",
             "Combat's own surface: cards, enemies, elite mechanics, numbers",
-            "Five captains",
+            "The captains: two abilities, a stat line and a base deck each",
             "Named specialists",
             "Persistence systems"
           ] },
@@ -757,6 +830,10 @@ window.GDD = {
           ] },
         { s: "decided", t: "Having no reputation system is the largest single scope saving.", see: ["rejected"] },
         { s: "risk", t: "A solo build of this size is a multi-year effort." },
+        { s: "risk", t: "The first version stops at the raid. It leaves out Act II, the most original and least proven idea, so players first judge the more familiar half." },
+        { s: "open", t: "What happens after a won raid in the first version: does the prize come home, and can you set out again?" },
+        { s: "open", t: "What a prize's boon and drawback do in a version without Act II." },
+        { s: "open", t: "Which sagas are in the first version." },
         { s: "open", t: "What 'locked' means: which open questions must be answered before testing starts." },
         { s: "open", t: "The first saga, captain and prize to build against." },
         { s: "open", t: "A per-saga content checklist: event counts, enemy counts, boss definitions." }
@@ -776,7 +853,7 @@ window.GDD = {
         { s: "rejected", t: "Difficulty tiers.", why: "A dial exists only to offset persistent stat growth, which the game does not have." },
         { s: "rejected", t: "Renown: a meta-currency earned every voyage, building into ranks.", why: "Crew levelling does its job better: it accrues in defeat and is concrete. If ever revived: only as a currency spent on crew training, never a parallel ladder." },
         { s: "rejected", t: "Leader scars: captains gathering scars and a visible history.", why: "Unnecessary. The captain always survives, and that is the whole story." },
-        { s: "rejected", t: "Settlement growth.", why: "The settlement survives only as fiction: the voice that offers new captains." },
+        { s: "rejected", t: "Settlement growth.", why: "The settlement is a home screen and a voice in the fiction. It has nothing to build or upgrade." },
         { s: "rejected", t: "Shared tactical objects to contest in combat.", why: "Weather and terrain cover the need." },
         { s: "rejected", t: "Passive items.", why: "Consumables are one-use and active. The starting loadout covers the passive niche." },
         { s: "rejected", t: "Flooding as a combat state.", why: "Too complex for what it adds.", tag: "Deferred" },
