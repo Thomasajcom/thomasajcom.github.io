@@ -203,7 +203,7 @@ window.GDD = {
         { s: "decided", t: "The first version has three captains: Strength, Dexterity and Charisma.", why: "These are the three ways the rules actually end a fight. Constitution and Luck are the hardest to design, and get easier once combat has been played.", see: ["roster", "production"] },
         { s: "decided", t: "More captains are added over Early Access. The total may pass five." },
         { s: "decided", t: "The first captains share one home settlement. Each had a trade before raiding, and the trade explains the kit.", why: "It fits the grounded tone and a settlement that sends its own people. Later captains may come from further afield." },
-        { s: "decided", t: "A captain's statistics have one peak, one hole and three in the middle.", why: "The hole matters as much as the peak. It decides which rewards you pass on." },
+        { s: "decided", t: "A captain's statistics have one peak, one hole and three equal ones in the middle.", why: "The hole matters as much as the peak. It decides which rewards you pass on." },
         { s: "decided", t: "Statistics are fixed when you pick a captain and never change.", why: "Every economy in the game assumes a player who never out-scales the content." },
         { s: "decided", t: "That makes captain choice the weightiest decision in the game. It sets which cards sparkle and which range you prefer." },
         { s: "decided", t: "The captain is fixed for the whole expedition." },
@@ -224,7 +224,7 @@ window.GDD = {
         { s: "open", t: "The starting-deck limits.", rec: "A maximum deck size, and minimum counts by role: attack, defence, healing." },
         { s: "open", t: "Should a captain's passive be able to grant limited field repair?", rec: "Yes, as a way to tell captains apart." }
       ],
-      numbers: ["Finished expeditions needed for a new captain", "The statistic scale: how high a peak, how low a hole", "Starting deck size and make-up per captain"]
+      numbers: ["Finished expeditions needed for a new captain", "Starting deck size and make-up per captain"]
     },
 
     {
@@ -232,47 +232,51 @@ window.GDD = {
       sum: "A whaler who sinks them, a sailmaker who strips them, a skald who talks them out of fighting.",
       profiles: [
         { name: "Thorgrim Cold-Iron", role: "The Whaler", fields: [
-          ["Best at", "Strength"],
-          ["Worst at", "Charisma"],
+          ["Best at", "Strength, 10"],
+          ["Worst at", "Charisma, 0"],
           ["Wins by", "Sinking them"],
-          ["Ability", "Harpoon the Hull and haul the enemy one band closer. On a Strength roll the line holds, and they cannot pull away next turn."],
-          ["Passive", "Cargo. A ship you sink gives up more salvage."],
+          ["Ability: Cold Iron", "Harpoon the Hull and haul the enemy one band closer. At close range the blow lands harder instead. Strength roll: the line holds, and they cannot pull away next turn."],
+          ["Passive: Nothing Wasted", "A ship you sink gives up more salvage."],
           ["Available", "From the start"]
         ] },
         { name: "Thora Wool-Wind", role: "The Sailmaker", fields: [
-          ["Best at", "Dexterity"],
-          ["Worst at", "Strength"],
+          ["Best at", "Dexterity, 10"],
+          ["Worst at", "Strength, 0"],
           ["Wins by", "Stripping them, area by area"],
-          ["Ability", "Strike one chosen area precisely, from any range. On a Dexterity roll the damage is harder for them to repair."],
-          ["Passive", "Repair supplies. Your own area repairs use fewer."],
+          ["Ability: Needle's Eye", "Strike one chosen area precisely, from any range. Dexterity roll: the strike also damages a second area of your choice."],
+          ["Passive: Mend and Make Do", "Your own area repairs use fewer supplies."],
           ["Available", "From the start"]
         ] },
         { name: "Eirikur Gull-Tongue", role: "The Skald", fields: [
-          ["Best at", "Charisma"],
-          ["Worst at", "Dexterity"],
+          ["Best at", "Charisma, 10"],
+          ["Worst at", "Dexterity, 0"],
           ["Wins by", "Breaking their crew, then demanding surrender"],
-          ["Ability", "A mocking verse that damages the enemy's Crew area. On a Charisma roll, a ship that is damaged enough surrenders."],
-          ["Passive", "Crew. Your injured specialists are rescued more often."],
+          ["Ability: The Shaming Verse", "A mocking verse that damages the enemy's Crew area. Charisma roll: a ship that is damaged enough surrenders. If it cannot surrender yet, the verse does more Crew damage."],
+          ["Passive: Sung Home", "Your injured specialists are rescued more often."],
           ["Available", "Arrives after a number of finished expeditions"]
         ] }
       ],
       items: [
         { s: "decided", t: "Each one's worst statistic is another's best.", why: "Each captain is bad at one of the other two ways to win. None can do everything, and their reward choices differ sharply.",
           list: ["Thorgrim is worst at Charisma", "Eirikur is worst at Dexterity", "Thora is worst at Strength"] },
+        { s: "decided", t: "Each stat line is 10 in the best statistic, 0 in the worst, and 5 in the other three.", see: ["dice"] },
+        { s: "decided", t: "Each passive bends a different resource: cargo for Thorgrim, repair supplies for Thora, crew for Eirikur." },
+        { s: "decided", t: "Eirikur's roll always matters. When a ship cannot surrender yet, the verse does more Crew damage instead.", why: "Early in a fight no ship is damaged enough, and in multi-ship fights nobody can surrender. Without this his roll would usually do nothing." },
         { s: "decided", t: "Thorgrim's harpoon changes the range without a card. Everyone else needs a range card for that.", why: "He hunted whales from an open boat. Choosing the distance is his whole trade.", see: ["range"] },
         { s: "decided", t: "Thora's ability is precise at any range. Everyone else must close to reliably hit the area they choose.", why: "Stripping a ship needs dependable aim, and she spent a life learning where rigging fails.", see: ["range", "areas"] },
         { s: "decided", t: "Eirikur's verse is a demand for surrender that is always to hand. Other captains need a Charisma card to make one.", see: ["enemies"] },
         { s: "decided", t: "Thorgrim and Thora are available from the start. Eirikur arrives later.", see: ["captains"] },
         { s: "risk", t: "Thorgrim can change range every turn without a card. Check that range cards still matter in his deck." },
         { s: "risk", t: "Thora never needs to close. Check that close range still matters to her." },
+        { s: "risk", t: "Needle's Eye can damage two areas in one action. Keep its numbers small." },
         { s: "risk", t: "Eirikur's passive stacks with Charisma, which already improves the rescue roll. He may lose almost no crew." },
         { s: "risk", t: "Nobody can surrender in a multi-ship fight. There Eirikur leans on Crew damage and on his own crew.", see: ["enemies"] },
-        { s: "open", t: "Final wording and names for the three abilities and the three passives." },
+        { s: "open", t: "The greater effect of each ability, on its Luck roll." },
         { s: "open", t: "The three base decks." },
         { s: "open", t: "A line or two of story for each captain, and their portraits." },
         { s: "open", t: "The home settlement's name." }
       ],
-      numbers: ["The three stat lines", "Energy cost of each ability", "How much extra salvage Thorgrim takes", "How many supplies Thora's repairs save", "How much Eirikur improves the rescue roll"]
+      numbers: ["Energy cost of each ability", "How much harder Cold Iron hits at close range", "How much extra salvage Thorgrim takes", "How many supplies Thora's repairs save", "How much Eirikur improves the rescue roll"]
     },
 
     {
@@ -486,6 +490,9 @@ window.GDD = {
         { s: "decided", t: "There is no failure penalty anywhere.", why: "Punishing dice on top of random draws, no escape and expedition-ending loss would make a death spiral driven by luck, not decisions." },
         { s: "decided", t: "Two thresholds: a lower one for a modest bonus, a higher one for a much larger effect." },
         { s: "decided", t: "The card's primary statistic sets the chance of the bonus. Luck sets the chance it becomes the greater effect.", why: "Luck can never make a bonus happen, only make one bigger. That stops it being a super-stat." },
+        { s: "decided", t: "A statistic is the number you add to the d20. Nothing is hidden.", why: "Anyone can check the odds in their head, and a curse that dulls Strength by 2 means exactly that." },
+        { s: "decided", t: "First values: 10 in a captain's best statistic, 5 in the middle, 0 in the worst, against a card target of 16.", why: "The bonus lands 3 times in 4 on your best statistic, half the time in the middle, and 1 time in 4 on your worst.", see: ["roster"] },
+        { s: "decided", t: "The greater effect is a second d20, rolled with Luck, and only when the bonus has landed." },
         { s: "decided", t: "Odds are capped below certainty.", why: "Otherwise a well-matched captain's dice quietly stop existing." },
         { s: "decided", t: "Odds also shift with range and situation: enemy state, disabled areas, conditions." },
         { s: "decided", t: "Exact odds are shown before you commit." },
@@ -501,10 +508,12 @@ window.GDD = {
         { s: "decided", t: "No card can be Luck-primary." },
         { s: "risk", t: "All pressure comes from the enemy and the environment, because dice never punish. Design them accordingly." },
         { s: "risk", t: "Luck must be worth having without becoming the stat everyone needs." },
+        { s: "risk", t: "A second die on every landed bonus adds waiting to fights that must take 2–3 minutes. Keep that roll fast." },
+        { s: "open", t: "Do all cards share the target of 16, or does each card set its own?" },
         { s: "risk", t: "Constitution is the classic dead stat. If six interesting Constitution cards cannot be written, fold it into Hull, knowing that orphans a captain." },
         { s: "open", t: "What a natural 1 and a natural 20 do.", rec: "A 20 grants the greater effect outright. A 1 just means no bonus. A penalty on a 1 would bring back punishing dice." }
       ],
-      numbers: ["The two thresholds", "How a statistic converts to odds", "The cap below certainty", "How much range and enemy state shift the odds", "Luck's escalation curve"]
+      numbers: ["The Luck roll's target for the greater effect", "The cap below certainty", "How much range and enemy state shift the odds"]
     },
 
     {
