@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flatt er fint · Flat is fine. Life coaching with no summits.</title>
+  <meta name="description" content="I don't want to climb that mountain. Flat is fine. Flat is great! Life coaching for people who are done being told to climb.">
+  <meta property="og:title" content="Flatt er fint · Flat is fine.">
+  <meta property="og:description" content="Life coaching for people who are done being told to climb. Zero elevation gain.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://thomasaj.com/flatterfint/">
+  <link rel="canonical" href="https://thomasaj.com/flatterfint/">
+  <meta name="theme-color" content="#F4EEDF">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="logo" href="#top" aria-label="Flatt er fint">
+    <svg viewBox="0 0 64 40" aria-hidden="true"><circle cx="32" cy="30" r="20" fill="#FF4A1C"/><rect y="30" width="64" height="10" fill="currentColor"/></svg>
+    <span>Flatt er fint</span>
+  </a>
+  <nav class="nav__links" aria-label="Sections">
+    <a href="#philosophy" data-i18n="nav.phil">Philosophy</a>
+    <a href="#descartes">Descartes</a>
+    <a href="#plans" data-i18n="nav.plans">Plans</a>
+  </nav>
+  <div class="nav__actions">
+    <button class="lang" id="lang" type="button" aria-label="Bytt til norsk">Norsk</button>
+    <a class="btn btn--small" href="#contact" data-mail data-i18n="nav.cta">Book a flat chat</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO: the mountains flatten as you scroll -->
+  <section class="hero">
+    <div class="hero__pin">
+      <div class="hero__copy">
+        <p class="eyebrow" data-i18n="hero.eyebrow">Life coaching. No summits.</p>
+        <h1 class="display" data-i18n="hero.h1"><span>Flat</span> <span>is fine.</span></h1>
+        <p class="hero__motto" data-i18n="hero.motto">“I don't want to climb that mountain. Flat is fine. Flat is great!”</p>
+        <div class="hero__actions">
+          <a class="btn" href="#contact" data-mail data-i18n="hero.cta">Book a flat chat</a>
+          <span class="hero__hint" data-i18n="hero.hint">Scroll to flatten the mountain ↓</span>
+        </div>
+      </div>
+      <div class="hero__scene" aria-hidden="true">
+        <div class="sun"></div>
+        <svg class="range range--back" viewBox="0 0 1200 400" preserveAspectRatio="none">
+          <polygon points="0,400 0,230 100,150 190,230 310,80 410,210 520,40 640,200 740,100 830,180 940,120 1040,60 1120,170 1200,110 1200,400"/>
+        </svg>
+        <svg class="range range--front" viewBox="0 0 1200 400" preserveAspectRatio="none">
+          <polygon points="0,400 0,310 70,250 130,290 230,150 300,230 380,180 450,270 540,110 610,210 680,170 740,250 800,170 900,40 990,150 1060,230 1130,180 1200,260 1200,400"/>
+        </svg>
+        <div class="horizon"></div>
+        <div class="readout" id="readout">Elevation 2 469 m</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <span>Flat is fine <i></i> Flatt er fint <i></i> No summits <i></i> Ingen topper <i></i> Zero elevation gain <i></i> Null høydemeter <i></i> </span>
+      <span>Flat is fine <i></i> Flatt er fint <i></i> No summits <i></i> Ingen topper <i></i> Zero elevation gain <i></i> Null høydemeter <i></i> </span>
+    </div>
+  </div>
+
+  <!-- THE IDIOM -->
+  <section class="idiom" id="philosophy">
+    <div class="wrap">
+      <div class="idiom__old" data-reveal>
+        <p class="eyebrow" data-i18n="idiom.l1">An old Norwegian saying</p>
+        <p class="idiom__saying" lang="nb"><span class="strike">«Det er i motbakke det går oppover.»</span></p>
+        <p class="gloss">“It's on the uphill that you go up.”</p>
+      </div>
+      <div class="idiom__new" data-reveal>
+        <p class="eyebrow" data-i18n="idiom.l2">My reply</p>
+        <p class="idiom__reply display" lang="nb"><span>Jeg vil ikke ha motbakke.</span> <span>Jeg vil ikke oppover.</span> <span><mark>Flatt er fint!</mark></span></p>
+        <p class="gloss">“I don't want the uphill. I don't want to go up. Flat is fine!”</p>
+      </div>
+      <div class="idiom__body" data-reveal>
+        <p data-i18n="idiom.body1">Every coach, every podcast and every poster with an eagle on it is selling you the same thing: a summit. Nobody stops to ask whether you wanted to be up there. It's cold. It's windy. You take one photo and walk back down.</p>
+        <p data-i18n="idiom.body2"><strong>I coach the other thing.</strong> Life at ground level, where the cafés are.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREE FLAT TRUTHS -->
+  <section class="truths">
+    <div class="wrap">
+      <h2 class="display" data-reveal data-i18n="truths.h">Three flat truths.</h2>
+      <ol class="truths__grid">
+        <li data-reveal>
+          <span class="truths__n">01</span>
+          <h3 data-i18n="t1.h">Up is a direction. Not a virtue.</h3>
+          <p data-i18n="t1.p">Most of the mountains on your list were put there by someone else: a boss, a parent, a stranger on LinkedIn. We go through them one by one and hand them back.</p>
+        </li>
+        <li data-reveal>
+          <span class="truths__n">02</span>
+          <h3 data-i18n="t2.h">Easy isn't cheating.</h3>
+          <p data-i18n="t2.p">When something feels light, that's not a sign you're slacking. It's a sign it fits. We build your days out of more of exactly that.</p>
+        </li>
+        <li data-reveal>
+          <span class="truths__n">03</span>
+          <h3 data-i18n="t3.h">Enough is a place you can live.</h3>
+          <p data-i18n="t3.p">Not a base camp on the way to more. An actual address. I help you find it, and then we furnish it.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- DESCARTES -->
+  <section class="descartes" id="descartes">
+    <div class="wrap">
+      <div class="descartes__top">
+        <div data-reveal>
+          <p class="eyebrow" data-i18n="d.eyebrow">A word from René Descartes (1596–1650)</p>
+          <h2 class="display" data-i18n="d.h">Even Descartes stayed on the plane.</h2>
+          <p class="lead" data-i18n="d.lead">The man gave us the Cartesian plane. A <em>plane</em>. Flat in every direction, forever. Four hundred years on, people still call it genius. He also said a few things, and I've read them the way he would have: lying down.</p>
+        </div>
+        <figure class="graph" data-reveal>
+          <svg viewBox="0 0 600 380" role="img" aria-labelledby="graph-title">
+            <title id="graph-title">A graph of effort over your life: a dashed curve climbing steeply, and a solid flat line labelled y = fine.</title>
+            <g class="graph__grid">
+              <path d="M60,60H570M60,112H570M60,164H570M60,216H570M60,268H570M162,30V320M264,30V320M366,30V320M468,30V320M570,30V320"/>
+            </g>
+            <path class="graph__axis" d="M60,30V320H570"/>
+            <path class="graph__hype" d="M60,318C220,312 330,270 400,170C440,110 470,60 500,34"/>
+            <path class="graph__flat" d="M60,240H570" pathLength="1"/>
+            <circle class="graph__dot" cx="570" cy="240" r="8"/>
+            <text class="graph__label" x="388" y="64" text-anchor="end" data-i18n="g.sell">what they sell you ↗</text>
+            <text class="graph__label graph__label--fine" x="556" y="222" text-anchor="end" data-i18n="g.fine">y = fine</text>
+            <text class="graph__label graph__label--axis" x="570" y="350" text-anchor="end" data-i18n="g.x">your life →</text>
+            <text class="graph__label graph__label--axis" transform="translate(40 34) rotate(-90)" text-anchor="end" data-i18n="g.y">effort →</text>
+          </svg>
+        </figure>
+      </div>
+
+      <div class="quotes">
+        <figure class="q" data-reveal>
+          <blockquote data-i18n="q1.q">“I think, therefore I am.”</blockquote>
+          <figcaption data-i18n="q1.s">Discourse on the Method, 1637</figcaption>
+          <p class="q__reading"><b data-i18n="d.reading">Flat reading</b> <span data-i18n="q1.r">Not “I strive, therefore I am.” Existing was already enough for him.</span></p>
+        </figure>
+        <figure class="q" data-reveal>
+          <blockquote data-i18n="q2.q">“…those who travel very slowly may yet make far greater progress, provided they keep always to the straight road, than those who, while they run, forsake it.”</blockquote>
+          <figcaption data-i18n="q2.s">Discourse on the Method, Part I</figcaption>
+          <p class="q__reading"><b data-i18n="d.reading">Flat reading</b> <span data-i18n="q2.r">Slowly. Straight. Road. The man is describing a flat walk.</span></p>
+        </figure>
+        <figure class="q" data-reveal>
+          <blockquote data-i18n="q3.q">“…to conquer myself rather than fortune, and change my desires rather than the order of the world.”</blockquote>
+          <figcaption data-i18n="q3.s">Discourse on the Method, Part III</figcaption>
+          <p class="q__reading"><b data-i18n="d.reading">Flat reading</b> <span data-i18n="q3.r">You can move the mountain, or you can stop wanting it. Only one of those is free.</span></p>
+        </figure>
+        <figure class="q" data-reveal>
+          <blockquote data-i18n="q4.q">“It is not enough to have a good mind; the main thing is to use it well.”</blockquote>
+          <figcaption data-i18n="q4.s">Discourse on the Method, Part I</figcaption>
+          <p class="q__reading"><b data-i18n="d.reading">Flat reading</b> <span data-i18n="q4.r">Using it well includes noticing you never wanted the summit.</span></p>
+        </figure>
+      </div>
+
+      <aside class="bed" data-reveal>
+        <svg viewBox="0 0 120 40" aria-hidden="true"><circle cx="14" cy="20" r="10"/><rect x="30" y="14" width="86" height="12"/><rect y="34" width="120" height="6"/></svg>
+        <div>
+          <h3 data-i18n="bed.h">A cautionary tale</h3>
+          <p data-i18n="bed.p">For most of his life Descartes stayed in bed until late morning, thinking. It went brilliantly: modern philosophy, analytic geometry. In 1649 he took a job in Stockholm, tutoring Queen Christina at five in the morning, in winter. By February 1650 he was dead. I'm not saying it was the early starts. I'm saying he was fine while he was flat.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- FLATTEN A MOUNTAIN -->
+  <section class="flattener" id="flatten">
+    <div class="wrap flattener__grid">
+      <div data-reveal>
+        <p class="eyebrow" data-i18n="f.eyebrow">Free sample</p>
+        <h2 class="display" data-i18n="f.h">Bring a mountain. I'll flatten it.</h2>
+        <p class="lead" data-i18n="f.p">Type in the thing you think you're supposed to climb.</p>
+        <form class="flat-form" id="flat-form" novalidate>
+          <label class="sr-only" for="mountain" data-i18n="f.label">Your mountain</label>
+          <input id="mountain" type="text" maxlength="40" autocomplete="off" placeholder="e.g. run a marathon" data-i18n-placeholder="f.ph">
+          <button class="btn" type="submit" data-i18n="f.btn">Flatten it</button>
+        </form>
+        <div class="chips">
+          <button type="button" data-i18n="c1">Run a marathon</button>
+          <button type="button" data-i18n="c2">Inbox zero</button>
+          <button type="button" data-i18n="c3">Get up at 5 a.m.</button>
+          <button type="button" data-i18n="c4">Make partner</button>
+          <button type="button" data-i18n="c5">Love networking</button>
+        </div>
+      </div>
+      <div class="stage" id="stage" data-reveal>
+        <div class="stage__sky">
+          <div class="stage__label" id="stage-label">Your mountain</div>
+          <svg class="stage__peak" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,200 90,90 140,125 200,0 275,115 320,85 400,200"/></svg>
+        </div>
+        <div class="stage__ground"></div>
+        <div class="stage__out" aria-live="polite">
+          <p class="stage__result" id="stage-result"></p>
+          <p class="stage__count" id="stage-count"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="plans" id="plans">
+    <div class="wrap">
+      <div class="plans__head" data-reveal>
+        <p class="eyebrow" data-i18n="p.eyebrow">Coaching plans</p>
+        <h2 class="display" data-i18n="p.h">Three plans. Zero elevation gain.</h2>
+        <p class="lead" data-i18n="p.sub">Every plan comes with the same guarantee: you will not be asked to climb anything.</p>
+      </div>
+      <div class="plans__grid">
+        <article class="plan" data-reveal>
+          <p class="plan__dur" data-i18n="p1.dur">One conversation</p>
+          <h3 class="display" data-i18n="p1.name">The Stroll</h3>
+          <p class="plan__pitch" data-i18n="p1.pitch">Bring one mountain. We look at it together, from a comfortable distance, and work out whether it was ever yours.</p>
+          <ul>
+            <li data-i18n="p1.b1">One 60-minute session</li>
+            <li data-i18n="p1.b2">One mountain, properly examined</li>
+            <li data-i18n="p1.b3">A written flat plan to keep</li>
+          </ul>
+          <p class="plan__price" data-price="stroll" hidden></p>
+          <p class="plan__stat"><span data-i18n="p.stat">Elevation gain</span><b>0 m</b></p>
+          <a class="btn" href="#contact" data-mail data-plan="p1.name" data-i18n="p.btn">Choose flat</a>
+        </article>
+        <article class="plan plan--featured" data-reveal>
+          <p class="plan__tag" data-i18n="p2.tag">Coach's pick</p>
+          <p class="plan__dur" data-i18n="p2.dur">Six weeks</p>
+          <h3 class="display" data-i18n="p2.name">The Plateau</h3>
+          <p class="plan__pitch" data-i18n="p2.pitch">Find your level and stay there. On purpose.</p>
+          <ul>
+            <li data-i18n="p2.b1">Six weekly sessions</li>
+            <li data-i18n="p2.b2">The borrowed-goals audit: whose mountains are these?</li>
+            <li data-i18n="p2.b3">A week built around what's already easy</li>
+            <li data-i18n="p2.b4">Messages between sessions</li>
+          </ul>
+          <p class="plan__price" data-price="plateau" hidden></p>
+          <p class="plan__stat"><span data-i18n="p.stat">Elevation gain</span><b>0 m</b></p>
+          <a class="btn" href="#contact" data-mail data-plan="p2.name" data-i18n="p.btn">Choose flat</a>
+        </article>
+        <article class="plan" data-reveal>
+          <p class="plan__dur" data-i18n="p3.dur">Three months</p>
+          <h3 class="display" data-i18n="p3.name">The Great Plain</h3>
+          <p class="plan__pitch" data-i18n="p3.pitch">A whole life, re-laid on level ground.</p>
+          <ul>
+            <li data-i18n="p3.b1">Twelve sessions at walking pace</li>
+            <li data-i18n="p3.b2">Work, home and head: all three flattened</li>
+            <li data-i18n="p3.b3">A plan for the next time someone hands you a mountain</li>
+            <li data-i18n="p3.b4">Everything in The Plateau</li>
+          </ul>
+          <p class="plan__price" data-price="plain" hidden></p>
+          <p class="plan__stat"><span data-i18n="p.stat">Elevation gain</span><b>0 m</b></p>
+          <a class="btn" href="#contact" data-mail data-plan="p3.name" data-i18n="p.btn">Choose flat</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT THE MOUNTAINS ARE SAYING -->
+  <section class="peaks">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal data-i18n="m.h">What the mountains are saying</p>
+      <div class="peaks__grid">
+        <figure data-reveal>
+          <blockquote data-i18n="m1">“Nobody has climbed me in weeks. I've never felt so respected.”</blockquote>
+          <figcaption>Galdhøpiggen · 2 469 m</figcaption>
+        </figure>
+        <figure data-reveal>
+          <blockquote data-i18n="m2">“Honestly, the foot traffic was getting to me.”</blockquote>
+          <figcaption>Besseggen · 1 743 m</figcaption>
+        </figure>
+        <figure data-reveal>
+          <blockquote data-i18n="m3">“I look better from down there anyway.”</blockquote>
+          <figcaption>Stetind · 1 392 m</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <div class="wrap faq__grid">
+      <h2 class="display" data-reveal data-i18n="faq.h">Fair questions.</h2>
+      <div class="faq__list" data-reveal>
+        <details open>
+          <summary data-i18n="fq1">Isn't this just giving up?</summary>
+          <p data-i18n="fa1">No. Giving up is turning back halfway and feeling bad about it. This is choosing the valley on purpose and feeling great about it.</p>
+        </details>
+        <details>
+          <summary data-i18n="fq2">What if I actually want to climb something?</summary>
+          <p data-i18n="fa2">Then climb it. I'll wave from the bottom. The work is telling the mountains you want apart from the ones you were handed.</p>
+        </details>
+        <details>
+          <summary data-i18n="fq3">Will I still grow?</summary>
+          <p data-i18n="fa3">Sideways. There's far more room.</p>
+        </details>
+        <details>
+          <summary data-i18n="fq4">Are you a flat-earther?</summary>
+          <p data-i18n="fa4">No. The Earth is round. It's your calendar that doesn't have to be steep.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="cta" id="contact">
+    <div class="wrap">
+      <h2 class="display" data-reveal data-i18n="cta.h">Come down from there.</h2>
+      <p class="lead" data-reveal data-i18n="cta.p">Send me a note and tell me which mountain you're tired of. We'll take it from there. Slowly.</p>
+      <a class="btn btn--big" href="#contact" data-mail data-reveal data-i18n="cta.btn">Book a flat chat</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© <span id="year">2026</span> Flatt er fint</span>
+    <span data-i18n="foot.elev">Elevation: 0 m</span>
+    <span data-i18n="foot.note">No mountains were climbed in the making of this website.</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
