@@ -25,7 +25,7 @@ window.GDD = {
   meta: {
     title: "Viking Voyage",
     kind: "Game design document",
-    revised: "2026-11-16",
+    revised: "2026-11-18",
     pitch: "Captain a longship. Steal a saga's prize. Carry it home. Then decide whether to set out again with everything you now carry.",
     facts: [
       ["Genre", "Viking naval roguelite"],
@@ -235,7 +235,7 @@ window.GDD = {
           ["Best at", "Strength, 10"],
           ["Worst at", "Charisma, 0"],
           ["Wins by", "Sinking them"],
-          ["Ability: Cold Iron", "Harpoon the Hull and haul the enemy one band closer. At close range the blow lands harder instead. Strength roll: the line holds, and they cannot pull away next turn."],
+          ["Ability: Cold Iron", "Harpoon the Hull. At Far, haul the enemy to Close. At Close, the blow lands harder instead. Strength roll: the line holds, and they cannot pull away next turn."],
           ["Passive: Nothing Wasted", "A ship you sink gives up more salvage."],
           ["Available", "From the start"]
         ] },
@@ -266,17 +266,19 @@ window.GDD = {
         { s: "decided", t: "Thora's ability is precise at any range. Everyone else must close to reliably hit the area they choose.", why: "Stripping a ship needs dependable aim, and she spent a life learning where rigging fails.", see: ["range", "areas"] },
         { s: "decided", t: "Eirikur's verse is a demand for surrender that is always to hand. Other captains need a Charisma card to make one.", see: ["enemies"] },
         { s: "decided", t: "Thorgrim and Thora are available from the start. Eirikur arrives later.", see: ["captains"] },
-        { s: "risk", t: "Thorgrim can change range every turn without a card. Check that range cards still matter in his deck." },
+        { s: "risk", t: "One use of Cold Iron always brings a Far ship to Close. The enemy roster needs ships that hurt at Close, or nothing can keep him off.", see: ["enemies"] },
+        { s: "risk", t: "Thorgrim changes range without a card. Check that range cards still matter in his deck." },
         { s: "risk", t: "Thora never needs to close. Check that close range still matters to her." },
         { s: "risk", t: "Needle's Eye can damage two areas in one action. Keep its numbers small." },
         { s: "risk", t: "Eirikur's passive stacks with Charisma, which already improves the rescue roll. He may lose almost no crew." },
         { s: "risk", t: "Nobody can surrender in a multi-ship fight. There Eirikur leans on Crew damage and on his own crew.", see: ["enemies"] },
         { s: "open", t: "The greater effect of each ability, on its Luck roll." },
+        { s: "open", t: "Can Cold Iron still haul a ship in when Thorgrim's own Sail is disabled?" },
         { s: "open", t: "The three base decks." },
         { s: "open", t: "A line or two of story for each captain, and their portraits." },
         { s: "open", t: "The home settlement's name." }
       ],
-      numbers: ["Energy cost of each ability", "How much harder Cold Iron hits at close range", "How much extra salvage Thorgrim takes", "How many supplies Thora's repairs save", "How much Eirikur improves the rescue roll"]
+      numbers: ["Energy cost of each ability", "How much harder Cold Iron hits at Close", "How much extra salvage Thorgrim takes", "How many supplies Thora's repairs save", "How much Eirikur improves the rescue roll"]
     },
 
     {
@@ -400,6 +402,7 @@ window.GDD = {
         { s: "risk", t: "Most nodes are fights and most choices offer two routes, so the map often decides which fight, not whether to fight." },
         { s: "open", t: "Generation rules: spacing of ports, elites and events; duplicate prevention; rarity of mythic nodes and small raids." },
         { s: "open", t: "What exactly a navigator reveals. Deliberately modest." },
+        { s: "open", t: "Does the map show the range a fight will start at?", rec: "Yes. Enemy class is always shown before you commit, so the class can tell you." },
         { s: "open", t: "Specs for salvage, rival, mythic and small-raid nodes. Each is one line so far." },
         { s: "open", t: "Seed display and sharing." }
       ]
@@ -566,26 +569,29 @@ window.GDD = {
         { s: "risk", t: "Speed means two things: smaller turns for you, simply more turns for an enemy. The interface must not imply they match." },
         { s: "risk", t: "A Speed step with less than 3 energy can never play a 3-cost card. Check this when the steps are set." }
       ],
-      numbers: ["How many Speed steps: two or three", "Hand size and energy at each step", "Baseline energy", "The five ability costs", "Consumable energy costs", "Timeline granularity"]
+      numbers: ["How many Speed steps: two or three", "Hand size and energy at each step", "Baseline energy", "Consumable energy costs", "Timeline granularity"]
     },
 
     {
       id: "range", part: "combat", title: "Range and movement",
-      sum: "Three bands. Your deck decides which one you want.",
+      sum: "Two bands, Close and Far. Your deck decides which one you want.",
       items: [
-        { s: "decided", t: "Three range bands: far, normal, close. Facing is not modelled." },
-        { s: "decided", t: "Most cards work at any range, stronger or weaker by band. Some work at only one." },
+        { s: "decided", t: "Two range bands: Close and Far. Facing is not modelled.", why: "Decks want to be close or want to be far. A middle band nobody builds for only adds travel, and every card would need a third behaviour." },
+        { s: "decided", t: "Most cards work at either range, stronger at one. Some work at only one." },
         { s: "decided", t: "Close range grants precision: you reliably hit the area you choose." },
         { s: "decided", t: "Your preferred range is a property of your deck, not a universal rule.", why: "Both sides fight for their own band, and neither band is simply better." },
         { s: "decided", t: "Every range change is a card. There is no separate move action." },
         { s: "decided", t: "Range cards always do something else too: strike and close, fire and pull away.", why: "It kills the empty tug-of-war where both ships shove at the distance and nothing happens." },
         { s: "decided", t: "Holding range is also a card. A family of Constitution cards denies enemy movement.", why: "A statistic never blocks anything by itself. It makes the cards that block better." },
         { s: "decided", t: "Enemy range moves are ordinary telegraphed actions." },
-        { s: "decided", t: "Sail state and Speed set how strong each side's moves are." },
+        { s: "decided", t: "Either side can flip the range until its Sail is disabled. A ship with a disabled Sail cannot change range at all.", why: "With two bands, one move turns the fight around. Wrecking the rigging is how the tug-of-war ends.", see: ["areas"] },
+        { s: "decided", t: "The enemy's type sets where a fight starts. Raiders might ambush at Close; archers might open at Far.", see: ["enemies"] },
         { s: "decided", t: "Some fights have several enemy ships, each at its own range. There is no hard cap on their number.", see: ["interface"] },
         { s: "decided", t: "Being outnumbered is meant to feel dire." },
         { s: "decided", t: "Multi-target cards are uncommon. More often, hitting a second target is the roll bonus." },
-        { s: "risk", t: "A deck committed to one range is badly hurt when denied it." },
+        { s: "risk", t: "With no middle band, one move takes a deck from its best range to its worst." },
+        { s: "risk", t: "A deck built for one range can be denied it on the first turn, in a fight it cannot flee." },
+        { s: "risk", t: "Sail is now an even more tempting first target. Its extra toughness has to carry more weight.", see: ["areas"] },
         { s: "risk", t: "The fight over range must never settle into a stalemate." }
       ],
       numbers: ["How sharply being denied your range punishes"]
@@ -600,7 +606,7 @@ window.GDD = {
         { s: "decided", t: "What each target does.",
           list: [
             "Hull: lowers Hull HP, the path to sinking",
-            "Sail: less Speed and range control, and no withdrawing",
+            "Sail: less Speed. Once disabled, no range changes and no withdrawing",
             "Weapons: weaker attacks",
             "Crew: slower repairs, loss of special actions, and open to a demand for surrender",
             "Cargo: destroys repair supplies and loot"
@@ -751,7 +757,7 @@ window.GDD = {
       sum: "An over-the-shoulder camera that shows only what the rules model.",
       items: [
         { s: "decided", t: "The combat camera sits over the player's shoulder: above and behind the stern, looking down the deck at the enemy." },
-        { s: "decided", t: "The three range bands are rungs receding up the frame: close past the bow, far near the horizon.", why: "The rules have one axis, toward or away. A top-down view promises heading and flanking that the rules do not model." },
+        { s: "decided", t: "The two range bands are rungs up the frame: Close past the bow, Far near the horizon.", why: "The rules have one axis, toward or away. A top-down view promises heading and flanking that the rules do not model." },
         { s: "decided", t: "Enemies are drawn broadside.", why: "Heading carries no information, and broadside is the clearest longship silhouette." },
         { s: "decided", t: "Areas are targeted with five markers anchored to the ship, drawn at a constant size. Never by clicking the artwork.", why: "At far range a sail is a few pixels, and parts overlap." },
         { s: "decided", t: "Damage is shown by shape and pattern, not colour alone." },
